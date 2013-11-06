@@ -1,43 +1,43 @@
 define(["underscore"], function(_) {
-	var actions = {	
+	var cards = {
 		stepForward: {
-			name: "step-forward",
+			action: "step-forward",
 			text: "\u21E7",
 			classes: ["action"],
 			initiallyEnabled: true
 		},
 		stepBackward: {
-			name: "step-forward",
+			action: "step-forward",
 			text: "\u21E9",
 			classes: ["action"],
 			initiallyEnabled: true
 		},
 		jumpForward: {
-			name: "jump-forward",
+			action: "jump-forward",
 			text: "\u21EA",
 			classes: ["action"],
 			initiallyEnabled: true
 		},
 		turnAnticlockwise: {
-			name: "turn-anticlockwise",
+			action: "turn-anticlockwise",
 			text: "\u21B6",
 			classes: ["action"],
 			initiallyEnabled: true
 		},
 		turnClockwise: {
-			name: "turn-clockwise",
+			action: "turn-clockwise",
 			text: "\u21B7",
 			classes: ["action"],
 			initiallyEnabled: true
 		},
 		pickUp: {
-			name: "pick-up",
+			action: "pick-up",
 			text: "\u261D",
 			classes: ["action"],
 			initiallyEnabled: true
 		},
 		putDown: {
-			name: "put-down",
+			action: "put-down",
 			text: "\u261F",
 			classes: ["action"],
 			initiallyEnabled: true
@@ -51,7 +51,7 @@ define(["underscore"], function(_) {
 	};
     
     for (var i in [0,1,2,3,4,5,6,7,8,9]) {
-		actions["repeat"+i] = {
+		cards["repeat"+i] = {
 			name: "repeat-" + i,
 			text: "" + i,
 			classes: ["numeric"],
@@ -59,9 +59,5 @@ define(["underscore"], function(_) {
 		};
 	}
     
-    _.each(actions, function(a) {
-		a.audio = new Audio("audio/" + a.name + ".mp3");
-    }); 
-    
-    return actions;
+    return cards;
 });

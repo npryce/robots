@@ -1,0 +1,16 @@
+#!/bin/bash
+
+function make_sample() {
+	echo "$@" | espeak -v english_rp --stdin -w audio/$(echo -n $@ | tr [:space:] '-').wav
+}
+
+make_sample step forward
+make_sample step backward
+make_sample turn clockwise
+make_sample turn anticlockwise
+make_sample jump forward
+make_sample pick up
+make_sample put down
+make_sample crouch
+make_sample crawl
+make_sample stand

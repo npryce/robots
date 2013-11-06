@@ -1,0 +1,76 @@
+
+html, body {
+	position: static;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	padding: 0;
+	margin: 0;
+}
+
+body {
+	display: -webkit-flex;
+	display: flex;
+	flex-direction: column;
+	-webkit-flex-direction: column;
+	justify-content: flex-start;
+	align-items: stretch;
+}
+
+#program {
+	flex: 1;
+	-webkit-flex: 1;
+	background-color: #FFFFCC;
+	overflow-y: scroll;
+	overflow-x: hidden;
+}
+
+#keyboard {
+	flex: 0;
+	-webkit-flex: 0;
+	background-color: #FFCCFF;
+}
+
+.cardgroup {
+	table-layout: fixed;
+	padding: 0.125em;
+	font-family: Slackey, sans-serif;
+	font-size: 40px;
+}
+
+.card {
+	display: inline-block;
+	position: relative;
+	font-family: inherit;
+	font-size: inherit;
+    width: 1.5em;
+    height:  1.5em;
+	color: #111111;
+	border-style: solid;
+	border-color: #111111;
+	border-radius: 0.25em;
+	border-width: 0.08em;
+	margin: 0.03125em;
+    vertical-align: middle;
+    text-align: center;
+	overflow: none;
+}
+
+.card.numeric {
+	background-color: #AAAAFF;
+}
+
+.card.action {
+	background-color: #FFFFAA;
+}
+
+.card.meta {
+	background-color: #CCCCCC;
+	color: black;
+}	
+
+.card.focus {
+	background-color: #CCCCCC;
+	color: #FEFEFE;
+}

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function make_sample() {
-	echo "$@" | espeak -v english_rp --stdin -w audio/$(echo -n $@ | tr [:space:] '-').wav
+	echo "$@" | espeak -v english_rp --stdin -w audio/action-$(echo -n $@ | tr [:space:] '-').wav
 }
 
 make_sample step forward

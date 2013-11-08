@@ -1,63 +1,68 @@
 define(["underscore"], function(_) {
-	var cards = {
-		stepForward: {
-			action: "step-forward",
-			text: "\u21E7",
-			classes: ["action"],
-			initiallyEnabled: true
+	var card_types = {
+		actions: {
+			stepForward: {
+				action: "step-forward",
+				text: "\u21E7",
+				initiallyEnabled: true
+			},
+			stepBackward: {
+				action: "step-backward",
+				text: "\u21E9",
+				initiallyEnabled: true
+			},
+			jumpForward: {
+				action: "jump-forward",
+				text: "\u21EA",
+				initiallyEnabled: true
+			},
+			turnAnticlockwise: {
+				action: "turn-anticlockwise",
+				text: "\u21B6",
+				initiallyEnabled: true
+			},
+			turnClockwise: {
+				action: "turn-clockwise",
+				text: "\u21B7",
+				initiallyEnabled: true
+			},
+			pickUp: {
+				action: "pick-up",
+				text: "\u261D",
+				initiallyEnabled: true
+			},
+			putDown: {
+				action: "put-down",
+				text: "\u261F",
+				initiallyEnabled: true
+			}
 		},
-		stepBackward: {
-			action: "step-forward",
-			text: "\u21E9",
-			classes: ["action"],
-			initiallyEnabled: true
+		
+		numeric: {
 		},
-		jumpForward: {
-			action: "jump-forward",
-			text: "\u21EA",
-			classes: ["action"],
-			initiallyEnabled: true
-		},
-		turnAnticlockwise: {
-			action: "turn-anticlockwise",
-			text: "\u21B6",
-			classes: ["action"],
-			initiallyEnabled: true
-		},
-		turnClockwise: {
-			action: "turn-clockwise",
-			text: "\u21B7",
-			classes: ["action"],
-			initiallyEnabled: true
-		},
-		pickUp: {
-			action: "pick-up",
-			text: "\u261D",
-			classes: ["action"],
-			initiallyEnabled: true
-		},
-		putDown: {
-			action: "put-down",
-			text: "\u261F",
-			classes: ["action"],
-			initiallyEnabled: true
-		},
-		newline: {
-			name: "newline",
-			text: "",
-			classes: "meta",
-			initiallyEnabled: false
+		
+		inputOnly: {
+			newline: {
+				name: "newline",
+				text: "\u23CE",
+				initiallyEnabled: false
+			}
 		}
 	};
     
     for (var i in [0,1,2,3,4,5,6,7,8,9]) {
-		cards["repeat"+i] = {
+		card_types.numeric["repeat"+i] = {
 			name: "repeat-" + i,
 			text: "" + i,
-			classes: ["numeric"],
 			initiallyEnabled: i > 1
 		};
 	}
+	
+    function all() {
+		return _.flatten(_.values(this).map(_.values));
+	}
+
+    card_types.all = all;
     
-    return cards;
+    return card_types;
 });

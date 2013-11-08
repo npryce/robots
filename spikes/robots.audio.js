@@ -6,13 +6,13 @@ define(["underscore"], function(_) {
 		this.loading = 0;
         this.completion_callback = function() {};
     }
-		   
-	function load(card_name) {
-		var resource_name = "audio/" + card_name + "." + this.format;
+	
+	function load(sample_name) {
+		var resource_name = "audio/" + sample_name + "." + this.format;
 		console.log("loading " + resource_name);
 		var sample = new Audio(resource_name);
 		sample.onload = _.bind(function() { this.sampleLoaded(resource_name); }, this);
-		this.samples[card_name] = sample;
+		this.samples[sample_name] = sample;
 		this.loading += 1;
 	}
 	

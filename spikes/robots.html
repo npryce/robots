@@ -8,30 +8,16 @@
 	<script src="require.js" type="text/javascript" data-main="main"></script>
   </head>
   <body>
+	<div id="controls">
+	  <button type="button" id="run">Run!&nbsp;&#9654;</button>
+	</div>
 	<div id="program" class="cardgroup">
-	  <div class="cardgroup">
-		<button type="button" class="focus card">?</button>
-	  </div>
+	  <button type="button" class="focus card"></button>
 	</div>
 	<div id="keyboard" class="cardgroup">
-	  <div class="cardgroup">
-		<button type="button" class="numeric card" data-action="repeat-2">2</button>
-		<button type="button" class="numeric card" data-action="repeat-3">3</button>
-		<button type="button" class="numeric card" data-action="repeat-4">4</button>
-		<button type="button" class="numeric card" data-action="repeat-5">5</button>
-		<button type="button" class="numeric card" data-action="repeat-6">6</button>
-		<button type="button" class="numeric card" data-action="repeat-7">7</button>
-		<button type="button" class="numeric card" data-action="repeat-8">8</button>
-		<button type="button" class="numeric card" data-action="repeat-9">9</button>
-		<button type="button" class="numeric card" data-action="repeat-10">10</button>
-		<button type="button" class="meta card" data-action="newline">&#9166;</button>
+	  <div id="numeric">
 	  </div>
-	  <div class="cardgroup">
-		<button type="button" class="action card" data-action="step-forward">&#8679;</button>
-		<button type="button" class="action card" data-action="jump-forward">&#8682;</button>
-		<button type="button" class="action card" data-action="step-backward">&#8681;</button>
-		<button type="button" class="action card" data-action="turn-anticlockwise">&#8630;</button>
-		<button type="button" class="action card" data-action="turn-clockwise">&#8631;</button>
+	  <div id="actions">
 	  </div>
 	</div>
   </body>

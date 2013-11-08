@@ -22,6 +22,29 @@ body {
 	-webkit-flex-direction: column;
 	justify-content: flex-start;
 	align-items: stretch;
+	font-family: Slackey, sans-serif;
+	font-size: 40px;
+}
+
+button {
+	font-family: inherit;
+	font-size: inherit;
+}
+
+#controls {
+	flex: 0;
+	-webkit-flex: 0;
+	background-color: #CCFFFF;
+	padding: 0.125em;
+	text-align: right;
+}
+
+#controls button {
+	border-style: solid;
+	border-color: #111111;
+	border-radius: 0.25em;
+	border-width: 0.08em;
+	font-size: 75%;
 }
 
 #program {
@@ -41,15 +64,9 @@ body {
 .cardgroup {
 	table-layout: fixed;
 	padding: 0.125em;
-	font-family: Slackey, sans-serif;
-	font-size: 40px;
 }
 
 .card {
-	display: inline-block;
-	position: relative;
-	font-family: inherit;
-	font-size: inherit;
     width: 1.5em;
     height:  1.5em;
 	color: #111111;
@@ -57,7 +74,7 @@ body {
 	border-color: #111111;
 	border-radius: 0.25em;
 	border-width: 0.08em;
-	margin: 0.03125em;
+	margin: 0.125em;
     vertical-align: middle;
     text-align: center;
 	overflow: none;
@@ -71,12 +88,13 @@ body {
 	background-color: #FFFFAA;
 }
 
-.card.meta {
+.card.input-only {
 	background-color: #CCCCCC;
 	color: black;
 }	
 
 .card.focus {
-	background-color: #CCCCCC;
-	color: #FEFEFE;
+	border-style: dotted;
+	background-color: transparent;
+	color: rgba(0,0,0,0.5);
 }

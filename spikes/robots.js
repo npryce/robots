@@ -25,14 +25,11 @@ define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, car
 		
 		var programPanel = d3.select("#program");
 		
-		d3.select("#program").selectAll(".card").remove().data(program).enter()
-		    .append("button")
+		d3.select("#program").selectAll(".card").data(program).enter()
+		    .insert("button", "#cursor")
 			.attr("type", "button")
-			.classed("card", true).classed("program", true).classed("action", true)
+			.classed("card", true).classed("action", true)
 			.text(attr("text"));
-		d3.select("#program").append("button")
-			.attr("type", "button")
-			.classed("card", true).classed("focus", true);
 	}
 	
 	function start() {

@@ -6,7 +6,6 @@
 }
 
 html, body {
-	position: static;
 	top: 0;
 	bottom: 0;
 	left: 0;
@@ -16,6 +15,7 @@ html, body {
 }
 
 body {
+	position: static;
 	display: -webkit-flex;
 	display: flex;
 	flex-direction: column;
@@ -26,17 +26,41 @@ body {
 	font-size: 40px;
 }
 
-button {
-	font-family: inherit;
-	font-size: inherit;
-}
-
 #controls {
-	flex: 0;
+	flex: initial;
 	-webkit-flex: 0;
 	background-color: #CCFFFF;
 	padding: 0.125em;
 	text-align: right;
+}
+
+#content {
+	position: relative;
+	flex: 1 1;
+	-webkit-flex: 1 1;
+	background-color: #FFFFCC;
+}
+
+#program {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	padding: 0;
+	margin: 0;
+	overflow-y: scroll;
+}
+
+#keyboard {
+	flex: initial;
+	-webkit-flex: 0;
+	background-color: #FFCCFF;
+}
+
+button {
+	font-family: inherit;
+	font-size: inherit;
 }
 
 #controls button {
@@ -44,21 +68,7 @@ button {
 	border-color: #111111;
 	border-radius: 0.25em;
 	border-width: 0.08em;
-	font-size: 75%;
-}
-
-#program {
-	flex: 1;
-	-webkit-flex: 1;
-	background-color: #FFFFCC;
-	overflow-y: scroll;
-	overflow-x: hidden;
-}
-
-#keyboard {
-	flex: 0;
-	-webkit-flex: 0;
-	background-color: #FFCCFF;
+	font-size: 65%;
 }
 
 .cardgroup {
@@ -66,7 +76,7 @@ button {
 	padding: 0.125em;
 }
 
-.card {
+.card, #cursor {
     width: 1.5em;
     height:  1.5em;
 	color: #111111;
@@ -93,7 +103,7 @@ button {
 	color: black;
 }	
 
-.card.focus {
+#cursor {
 	border-style: dotted;
 	background-color: transparent;
 	color: rgba(0,0,0,0.5);

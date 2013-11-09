@@ -25,6 +25,8 @@ define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, car
 		
 		var programPanel = d3.select("#program");
 		
+		d3.select("#card-count").text(program.length);
+		
 		d3.select("#program").selectAll(".card").data(program).enter()
 		    .insert("button", "#cursor")
 			.attr("type", "button")

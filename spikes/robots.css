@@ -56,7 +56,7 @@ body {
 	flex-direction: row;
 	-webkit-flex-direction: row;
 	justify-content: flex-start;
-	align-items: stretch;
+	align-items: center;
 	flex: initial;
 	-webkit-flex: initial;
 	background-color: #CCFFFF;
@@ -67,7 +67,9 @@ body {
 
 #header #stats {
 	flex: 1 1;
+	-webkit-flex: 1 1;
 	text-align: left;
+	margin-left: 0.125em;
 }
 
 #header #controls {
@@ -123,4 +125,12 @@ button {
 	border-style: dotted;
 	background-color: transparent;
 	color: rgba(0,0,0,0.5);
+}
+
+.running .editcontrol {
+	display: none;
+}
+
+.editing .runcontrol {
+	display:none;
 }

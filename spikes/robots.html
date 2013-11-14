@@ -9,15 +9,18 @@
   </head>
   <body>
 	<div id="header">
-	  <div id="stats"><span id="card-count">0</span> cards used</div>
-	  <div id="controls"><button type="button" id="run">Run!&nbsp;&#9654;</button></div>
+	  <div id="stats">Cost: <span id="card-count">0</span>¢</div>
+	  <div id="controls">
+        <button class="editcontrol" type="button" id="run">Run!</button>
+        <button class="runcontrol" type="button" id="stop">Stop</button>
+	  </div>
 	</div>
 	<div id="content">
 	  <div id="program" class="cardgroup">
 		<button type="button" id="cursor">&nbsp;</button>
 	  </div>
 	</div>
-	<div id="keyboard" class="cardgroup">
+	<div id="keyboard" class="editcontrol cardgroup">
 	  <div id="numeric">
 	  </div>
 	  <div id="actions">

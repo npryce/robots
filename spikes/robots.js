@@ -1,7 +1,8 @@
-define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, card_types, AudioPlayer) {
+define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, cards, AudioPlayer) {
     var audio_player = new AudioPlayer();
     var program = [];
 	var is_running = false;
+    var dragged_card = null;
     
     function attr(name) {
 		return function(obj) {
@@ -9,11 +10,7 @@ define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, car
 		};
 	}
     
-    card_types.all().forEach(function (card_type) {
-        if (card_type.action) {
-			audio_player.load("actions/"+card_type.action);
-		}
-    });
+    cards.preload(audio_player);
     
     function viewToRunMode() {
 		d3.select("body")
@@ -59,7 +56,7 @@ define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, car
 		viewToEditMode();
 	}
 	
-	function keyboardCardClicked(card_type) {
+	function addNewCard(card_type) {
 		program.push(card_type);
 		
 		var cardCount =	program.length;
@@ -68,12 +65,38 @@ define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, car
 		d3.select("#card-count").text(cardCount);
 		
 		d3.select("#program").selectAll(".card").data(program).enter()
-		    .insert("button", "#cursor")
-			.attr("type", "button")
+		    .insert("div", "#cursor")
 			.classed("card", true).classed("action", true)
 			.text(attr("text"));
 		
 		d3.select("#run").attr("enabled", cardCount > 0);
+	}
+	
+    function newCardDragStarted(card_type) {
+		var dt = d3.event.dataTransfer;
+		dt.effectAllowed = 'copy';
+		dt.setData("application/x-robot-card", "");
+		
+		dragged_card = card_type;
+	}
+
+    function newCardDragEnded(card_type) {
+		dragged_card = null;
+	}
+    
+    function newCardDragEnter() {
+		d3.event.preventDefault();
+		return true;
+	}
+	
+    function newCardDragOver() {
+		d3.event.preventDefault();
+		return true;
+	}
+    
+    function newCardDropped() {
+		addNewCard(dragged_card);
+		d3.event.stopPropagation();
 	}
 	
 	function start() {
@@ -81,13 +104,20 @@ define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, car
 		d3.select("#stop").on("click", stopProgram);
 		
 		d3.selectAll("#keyboard #actions").selectAll(".card")
-			.data(_.values(card_types.actions))
+			.data(_.values(cards.actions))
 			.enter()
-		    .append("button")
-			.attr("type", "button")
-			.classed("card", true).classed("action", true)
+		    .append("div")
+		    .attr("draggable", true)
+			.classed("card", true)
+			.classed("action", true)
 			.text(attr("text"))
-			.on("click", keyboardCardClicked);
+		    .on("dragstart", newCardDragStarted)
+		    .on("dragend", newCardDragEnded);
+		
+		d3.select("#cursor")
+		    .on("dragenter", newCardDragEnter)
+		    .on("dragover", newCardDragOver)
+			.on("drop", newCardDropped);
 		
 		viewToEditMode();
 	}

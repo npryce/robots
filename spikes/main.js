@@ -5,7 +5,10 @@ requirejs.config({
 		},
         d3: {
             exports: 'd3'
-        }
+        },
+		when: {
+			exports: 'when'
+		}
     }
 });
 

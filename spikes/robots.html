@@ -8,6 +8,7 @@
 	<script src="require.js" type="text/javascript" data-main="main"></script>
   </head>
   <body>
+	
 	<div id="header">
 	  <div id="stats">Cost: <span id="card-count">0</span>¢</div>
 	  <div id="controls">
@@ -15,16 +16,17 @@
         <button class="runcontrol" type="button" id="stop">Stop</button>
 	  </div>
 	</div>
+	
 	<div id="content">
 	  <div id="program" class="cardgroup">
-		<button type="button" id="cursor">&nbsp;</button>
+        <div id="cursor"></div>
 	  </div>
 	</div>
-	<div id="keyboard" class="editcontrol cardgroup">
-	  <div id="numeric">
-	  </div>
-	  <div id="actions">
+	
+	<div id="keyboard" class="editcontrol">
+	  <div id="actions" class="cardgroup">
 	  </div>
 	</div>
+	
   </body>
 </html>

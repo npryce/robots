@@ -76,25 +76,21 @@ body {
 	flex: initial;
 }
 
-button {
-	font-family: inherit;
-	font-size: inherit;
-}
-
 #controls button {
 	border-style: solid;
 	border-color: #111111;
 	border-radius: 0.25em;
 	border-width: 0.08em;
 	font-size: 65%;
+	font-family: inherit;
 }
 
 .cardgroup {
-	table-layout: fixed;
 	padding: 0.125em;
 }
 
 .card, #cursor {
+	display: inline-block;
     width: 1.5em;
     height:  1.5em;
 	color: #111111;
@@ -106,6 +102,9 @@ button {
     vertical-align: middle;
     text-align: center;
 	overflow: none;
+	font-family: inherit;
+	font-size: inherit;
+	cursor: move;
 }
 
 .card.numeric {
@@ -120,6 +119,11 @@ button {
 	background-color: #CCCCCC;
 	color: black;
 }	
+
+.card.dragging {
+	opacity: 0.66;
+	transform: rotate(30);
+}
 
 #cursor {
 	border-style: dotted;

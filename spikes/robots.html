@@ -3,12 +3,21 @@
   <head>
 	<meta charset="UTF-8">
 	<title>Robots!</title>
+	
+	<!-- iOS web-app configuration -->
+	<link rel="apple-touch-icon" sizes="76x76" href="robot-76.png"/>
+	<link rel="apple-touch-icon" sizes="120x120" href="robot-120.png"/>
+	<link rel="apple-touch-icon" sizes="152x152" href="robot-152.png"/>
+	<meta name="apple-mobile-web-app-capable" content="yes"/>
+	<meta name="apple-mobile-web-app-status-bar-style" content="translucent black">
+	<meta name="viewport" content="user-scalable=no, width=device-width"/>
+	<meta name="format-detection" content="telephone=no"/>
+	
 	<link href="html5reset.css" rel="stylesheet" type="text/css"/>
 	<link href="robots.css" rel="stylesheet" type="text/css"/>
 	<script src="require.js" type="text/javascript" data-main="main"></script>
   </head>
   <body>
-	
 	<div id="header">
 	  <div id="stats">Cost: <span id="card-count">0</span>¢</div>
 	  <div id="controls">
@@ -27,6 +36,5 @@
 	  <div id="actions" class="cardgroup">
 	  </div>
 	</div>
-	
   </body>
 </html>

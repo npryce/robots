@@ -104,7 +104,6 @@ body {
 	overflow: none;
 	font-family: inherit;
 	font-size: inherit;
-	cursor: move;
 }
 
 .card.numeric {
@@ -123,6 +122,10 @@ body {
 .card.dragging {
 	opacity: 0.66;
 	transform: rotate(30);
+}
+
+#keyboard .card {
+	cursor: move;
 }
 
 #cursor {

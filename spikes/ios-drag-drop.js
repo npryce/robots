@@ -2,8 +2,6 @@
 
   log = function() {}; // noOp, remove this line to enable debugging
 
-  main()
-
   var coordinateSystemForElementFromPoint;
 
   function main() {
@@ -16,25 +14,25 @@
     var needsPatch = !(dragDiv || evts) || /iPad|iPhone|iPod/.test(navigator.userAgent);
     log((needsPatch ? "" : "not ") + "patching html5 drag drop");
 
-    if(false && !needsPatch) return
-
-    doc.addEventListener("touchstart", touchstart);
+    if(needsPatch) {
+		doc.addEventListener("touchstart", touchstart);
+	}
   }
 
   function DragDrop(event, el) {
 
     this.touchPositions = {};
     this.dragData = {};
-    this.el = el || event.target
+    this.el = el || event.target;
 
     event.preventDefault();
 
     log("dragstart");
 
-    this.dispatchDragStart()
+    this.dispatchDragStart();
     this.elTranslation = readTransform(this.el);
 
-    this.listen()
+    this.listen();
 
   }
 
@@ -70,7 +68,7 @@
         }
         lastPosition.x = touch.pageX;
         lastPosition.y = touch.pageY;
-      }.bind(this))
+      }.bind(this));
 
       this.elTranslation.x += average(deltas.x);
       this.elTranslation.y += average(deltas.y);
@@ -83,13 +81,13 @@
       // drop comes first http://www.whatwg.org/specs/web-apps/current-work/multipage/dnd.html#drag-and-drop-processing-model
       log("dragend");
 
-      var target = elementFromTouchEvent(this.el,event)
+      var target = elementFromTouchEvent(this.el,event);
 
       if (target) {
         log("found drop target " + target.tagName);
-        this.dispatchDrop()
+        this.dispatchDrop();
       } else {
-        log("no drop target, scheduling snapBack")
+        log("no drop target, scheduling snapBack");
         once(doc, "dragend", this.snapBack, this);
       }
 
@@ -115,7 +113,7 @@
 
       once(doc, "drop", function() {
         log("drop event not canceled");
-        if (snapBack) this.snapBack()
+        if (snapBack) this.snapBack();
       },this);
 
       target.dispatchEvent(dropEvt);
@@ -140,7 +138,7 @@
       };
       this.el.dispatchEvent(evt);
     }
-  }
+  };
 
   // event listeners
   function touchstart(evt) {
@@ -156,7 +154,7 @@
   // DOM helpers
   function elementFromTouchEvent(el,event) {
     var parent = el.parentElement;
-    var next = el.nextSibling
+    var next = el.nextSibling;
     parent.removeChild(el);
 
     var touch = event.changedTouches[0];
@@ -171,23 +169,23 @@
       parent.appendChild(el);
     }
 
-    return target
+    return target;
   }
 
   function readTransform(el) {
     var transform = el.style["-webkit-transform"];
-    var x = 0
-    var y = 0
-    var match = /translate\(\s*(\d+)[^,]*,\D*(\d+)/.exec(transform)
+    var x = 0;
+    var y = 0;
+    var match = /translate\(\s*(\d+)[^,]*,\D*(\d+)/.exec(transform);
     if(match) {
-      x = parseInt(match[1],10)
-      y = parseInt(match[2],10)
+      x = parseInt(match[1],10);
+      y = parseInt(match[2],10);
     }
     return { x: x, y: y };
   }
 
   function onEvt(el, event, handler, context) {
-    if(context) handler = handler.bind(context)
+    if(context) handler = handler.bind(context);
     el.addEventListener(event, handler);
     return {
       off: function() {
@@ -197,7 +195,7 @@
   }
 
   function once(el, event, handler, context) {
-    if(context) handler = handler.bind(context)
+    if(context) handler = handler.bind(context);
     function listener(evt) {
       handler(evt);
       return el.removeEventListener(event,listener);
@@ -218,4 +216,6 @@
     }), 0) / arr.length;
   }
 
+  main();
+  
 })(document);

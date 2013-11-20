@@ -100,6 +100,10 @@ define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, car
 	}
 	
 	function start() {
+		d3.select("div").on("touchmove", function() {
+		    d3.event.preventDefault();
+		});
+		
 		d3.select("#run").on("click", runProgram);
 		d3.select("#stop").on("click", stopProgram);
 		

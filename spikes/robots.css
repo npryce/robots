@@ -39,15 +39,21 @@ body {
 	bottom: 0;
 	left: 0;
 	right: 0;
-	padding: 0;
+	padding: 0.125em;
 	margin: 0;
 	overflow-y: scroll;
+}
+
+#header:after {
+	bottom: 16px;
+	box-shadow: 0px 8px 16px rgba(0,0,0,.3);
 }
 
 #keyboard {
 	flex: initial;
 	-webkit-flex: 0;
 	background-color: #FFCCFF;
+	padding: 0.125em;
 }
 
 #header {
@@ -86,7 +92,6 @@ body {
 }
 
 .cardgroup {
-	padding: 0.125em;
 }
 
 .card, #cursor {

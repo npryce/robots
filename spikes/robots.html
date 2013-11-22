@@ -18,9 +18,15 @@
 	
 	<link href="html5reset.css" rel="stylesheet" type="text/css"/>
 	<link href="robots.css" rel="stylesheet" type="text/css"/>
+	<style type="text/css">
+	  .loading #controls {
+          display: none;
+      }
+	</style>
+	
 	<script src="require.js" type="text/javascript" data-main="main"></script>
   </head>
-  <body>
+  <body class="loading">
 	<header id="header">
 	  <div id="stats">Cost: <span id="card-count">0</span>¢</div>
 	  <div id="controls">

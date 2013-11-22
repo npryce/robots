@@ -56,6 +56,14 @@ define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, car
 		viewToEditMode();
 	}
 	
+    function toggleProgram() {
+		if (is_running) {
+			stopProgram();
+		} else {
+			runProgram();
+		}
+	}
+    
 	function addNewCard(card_type) {
 		program.push(card_type);
 		
@@ -123,6 +131,7 @@ define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, car
 		    .on("dragover", newCardDragOver)
 			.on("drop", newCardDropped);
 		
+		d3.select("body").classed("loading", false);
 		viewToEditMode();
 	}
 	

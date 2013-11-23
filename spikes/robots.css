@@ -111,6 +111,10 @@ body {
 	font-size: inherit;
 }
 
+.running #cursor {
+	display: none;
+}
+
 .card.numeric {
 	background-color: #AAAAFF;
 }

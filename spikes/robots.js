@@ -1,6 +1,6 @@
 define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, cards, AudioPlayer) {
     var audio_player = new AudioPlayer();
-    var program = [];
+    var program = cards.newProgram();
 	var is_running = false;
     var dragged_card = null;
     
@@ -25,28 +25,14 @@ define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, car
 	}
     
     function runProgram() {
-		var step = 0;
-		
-		function pauseBetweenInstructions() {
-			console.log("pausing between instructions");
-			setTimeout(runNextProgramStep, 250);
-		}
-		
-		function runNextProgramStep() {
-			if (is_running) {
-				if (step < program.length) {
-					audio_player.play("actions/" + program[step].action, pauseBetweenInstructions);
-					step++;
-				}
-				else {
-					viewToEditMode();			
-				}
-			}
+		function pauseBetweenInstructions(next_step) {
+			setTimeout(function() { if (is_running) next_step(); }, 
+					   250);
 		}
 		
 		is_running = true;
 		viewToRunMode();
-		runNextProgramStep();
+		program.run(audio_player, viewToEditMode);
 	}
     
     function stopProgram() {
@@ -56,24 +42,18 @@ define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, car
 		viewToEditMode();
 	}
 	
-    function toggleProgram() {
-		if (is_running) {
-			stopProgram();
-		} else {
-			runProgram();
-		}
-	}
-    
 	function addNewCard(card_type) {
-		program.push(card_type);
+		var card = card_type.newCard();
+		program.append(card);
 		
-		var cardCount =	program.length;
+		var cardCount =	program.length();
 		var programPanel = d3.select("#program");
 		
 		d3.select("#card-count").text(cardCount);
 		
-		d3.select("#program").selectAll(".card").data(program).enter()
+		d3.select("#program").selectAll(".card").data(program.contents()).enter()
 		    .insert("div", "#cursor")
+		    .attr("id", attr("id"))
 			.classed("card", true).classed("action", true)
 			.text(attr("text"));
 		
@@ -87,7 +67,7 @@ define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, car
 		
 		dragged_card = card_type;
 	}
-
+	
     function newCardDragEnded(card_type) {
 		dragged_card = null;
 	}

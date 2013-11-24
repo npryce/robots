@@ -42,19 +42,20 @@ define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, car
 		viewToEditMode();
 	}
 	
-	function addNewCard(card_type) {
-		var card = card_type.newCard();
+	function addNewCard(stack) {
+		var card = stack.newCard();
 		program.append(card);
 		
 		var cardCount =	program.length();
-		var programPanel = d3.select("#program");
 		
 		d3.select("#card-count").text(cardCount);
 		
-		d3.select("#program").selectAll(".card").data(program.contents()).enter()
+		d3.select("#program").selectAll(".card").data(program.toArray()).enter()
 		    .insert("div", "#cursor")
 		    .attr("id", attr("id"))
-			.classed("card", true).classed("action", true)
+			.classed("card", true)
+			.classed("action", function(card) { return card.isAtomic; })
+			.classed("control", function(card) { return !card.isAtomic; })
 			.text(attr("text"));
 		
 		d3.select("#run").attr("enabled", cardCount > 0);
@@ -95,6 +96,17 @@ define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, car
 		d3.select("#run").on("click", runProgram);
 		d3.select("#stop").on("click", stopProgram);
 		
+		d3.selectAll("#keyboard #control").selectAll(".card")
+			.data(_.values(cards.control))
+			.enter()
+		    .append("div")
+		    .attr("draggable", true)
+			.classed("card", true)
+			.classed("control", true)
+			.text(attr("text"))
+		    .on("dragstart", newCardDragStarted)
+		    .on("dragend", newCardDragEnded);
+		
 		d3.selectAll("#keyboard #actions").selectAll(".card")
 			.data(_.values(cards.actions))
 			.enter()
@@ -105,7 +117,7 @@ define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, car
 			.text(attr("text"))
 		    .on("dragstart", newCardDragStarted)
 		    .on("dragend", newCardDragEnded);
-		
+
 		d3.select("#cursor")
 		    .on("dragenter", newCardDragEnter)
 		    .on("dragover", newCardDragOver)

@@ -24,7 +24,10 @@ define(["underscore"], function(_) {
 	CardSequence.prototype.length = function() {
 		return this.steps.length;
 	};
-    CardSequence.prototype.contents = function() {
+	CardSequence.prototype.step = function(i) {
+		return this.steps[i];
+	};
+    CardSequence.prototype.toArray = function() {
 		return _.toArray(this.steps);
 	};
 	CardSequence.prototype.append = function(step) {
@@ -54,6 +57,7 @@ define(["underscore"], function(_) {
 	ActionCard.prototype.run = function(context, onfinished) {
 		this.stack.play_audio(context, onfinished);
 	};
+	ActionCard.prototype.isAtomic = true;
 	ActionCard.prototype.contents = function() {
 		return [];
 	};
@@ -80,17 +84,23 @@ define(["underscore"], function(_) {
 		this.stack = stack;
 		this.body = new CardSequence();
 	}
+	RepeatCard.prototype.isAtomic = false;
+    RepeatCard.prototype.contents = function() {
+		return this.body.toArray();
+	};
     RepeatCard.prototype.run = function(context, onfinished) {
         var iteration = 0;
 		
         var runNextIteration = _.bind(function() {
 		    if (iteration < this.stack.repeat) {
 				iteration++;
-				this.body(context, runNextIteration);
+				this.body.run(context, runNextIteration);
 			} else {
 				onfinished();
 			}
 		}, this);
+		
+		runNextIteration();
 	};
 	RepeatCard.prototype.append = function(step) {
 	    this.body.append(step);

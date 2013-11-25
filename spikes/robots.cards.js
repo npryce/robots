@@ -160,12 +160,12 @@ define(["underscore"], function(_) {
 		}
 	};
     
-    for (var i in [0,1,2,3,4,5,6,7,8,9]) {
+    _.forEach([2,3,4,5,6,7,8,9,10], function(i) {
 		cards.control["repeat_"+i] = new RepeatCardStack({
 			repeat: i,
 			text: i.toString()
 		});
-	}
+	});
 	
     cards.preload = function(audio_player) {
 		_.values(this.actions).forEach(function (card_type) {

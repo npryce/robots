@@ -3,7 +3,6 @@
 */
 
 * {
-    -webkit-user-select: none;
     user-select: none;
 }
 
@@ -21,7 +20,6 @@ body {
 	display: flex;
 	display: -webkit-flex;
 	flex-direction: column;
-	-webkit-flex-direction: column;
 	justify-content: flex-start;
 	align-items: stretch;
 	font-family: Slackey, sans-serif;
@@ -31,7 +29,6 @@ body {
 #content {
 	position: relative;
 	flex: 1 1;
-	-webkit-flex: 1 1;
 	background-color: #FFFFCC;
 }
 
@@ -53,7 +50,6 @@ body {
 
 #keyboard {
 	flex: initial;
-	-webkit-flex: 0;
 	background-color: #FFCCFF;
 	padding: 0.125em;
 }
@@ -62,11 +58,9 @@ body {
 	display: flex;
 	display: -webkit-flex;
 	flex-direction: row;
-	-webkit-flex-direction: row;
 	justify-content: flex-start;
 	align-items: center;
 	flex: initial;
-	-webkit-flex: initial;
 	background-color: #CCFFFF;
 	padding: 0.125em;
 	text-align: right;
@@ -75,7 +69,6 @@ body {
 
 #header #stats {
 	flex: 1 1;
-	-webkit-flex: 1 1;
 	text-align: left;
 	margin-left: 0.125em;
 }

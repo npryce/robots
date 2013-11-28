@@ -46,19 +46,23 @@ define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, car
 		var card = stack.newCard();
 		program.append(card);
 		
-		var cardCount =	program.length();
-		
+		var cardCount =	program.totalCardCount();
 		d3.select("#card-count").text(cardCount);
 		
-		d3.select("#program").selectAll(".card").data(program.toArray()).enter()
-		    .insert("div", "#cursor")
+		bindProgramToHtml(d3.select("#program"));
+		
+		d3.select("#run").attr("enabled", cardCount > 0);
+	}
+	
+    function bindProgramToHtml(group) {
+		var cards = group.selectAll(".card").data(program.toArray(), attr("id"));
+		cards.enter().insert("div", "#cursor")
 		    .attr("id", attr("id"))
 			.classed("card", true)
 			.classed("action", function(card) { return card.isAtomic; })
 			.classed("control", function(card) { return !card.isAtomic; })
 			.text(attr("text"));
-		
-		d3.select("#run").attr("enabled", cardCount > 0);
+		cards.exit().remove();
 	}
 	
     function newCardDragStarted(card_type) {

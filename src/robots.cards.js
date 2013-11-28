@@ -39,6 +39,9 @@ define(["underscore"], function(_) {
     CardSequence.prototype.insert = function(i, step) {
 		this.steps.splice(i, 0, step);
 	};
+    CardSequence.prototype.totalCardCount = function() {
+		return _(this.steps).map(function(s){return s.totalCardCount();}).reduce(function(a,b){return a+b;}, 0);
+	};
     
     
     function CardStack() {
@@ -60,6 +63,9 @@ define(["underscore"], function(_) {
 	ActionCard.prototype.isAtomic = true;
 	ActionCard.prototype.contents = function() {
 		return [];
+	};
+    ActionCard.prototype.totalCardCount = function() {
+		return 1;
 	};
     
     
@@ -111,7 +117,9 @@ define(["underscore"], function(_) {
     RepeatCard.prototype.insert = function(i, step) {
 		this.body.remove(i, step);
 	};
-	
+	RepeatCard.prototype.totalCardCount = function() {
+		return 1 + this.body.totalCardCount();
+	};
     
     function RepeatCardStack(args) {
 		this.repeat = args.repeat;
@@ -154,12 +162,10 @@ define(["underscore"], function(_) {
 				action: "put-down",
 				text: "\u261F"
 			})
-		},
-		
-		control: {
-		}
+		}		
 	};
     
+    cards.control = {};
     _.forEach([2,3,4,5,6,7,8,9,10], function(i) {
 		cards.control["repeat_"+i] = new RepeatCardStack({
 			repeat: i,

@@ -16,35 +16,31 @@ define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, car
 		d3.select("body")
 			.classed("editing", false)
 			.classed("running", true);
-		d3.selectAll("#program .active")
-			.classed("active",false);
 	}
     
     function viewToEditMode() {
 		d3.select("body")
 			.classed("editing", true)
 			.classed("running", false);
+		d3.selectAll("#program .active")
+			.classed("active",false);
 	}
     
+    function activateCard(card_name) {
+		d3.select("#"+card_name).classed("active", true);
+	}
+		   
+	function deactivateCard(card_name) {
+		d3.select("#"+card_name).classed("active", false);
+	}
+		
     function runProgram() {
-		function pauseBetweenInstructions(next_step) {
-			setTimeout(function() { if (is_running) next_step(); }, 
-					   250);
-		}
-
-		function activateCard(card_name) {
-			d3.select("#"+card_name).classed("active", true);
-		}
-
-		function deactivateCard(card_name) {
-			d3.select("#"+card_name).classed("active", false);
-		}
-		
-		
-		var is_first_audio_clip = true;
-		
 		var context = {
+			is_first_audio_clip: true,
+			
 			run: function(action, done_callback) {
+				if (! is_running) return;
+				
 				activateCard(action.id);
 				action.run(this, function() {
 					deactivateCard(action.id);
@@ -52,15 +48,19 @@ define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, car
 				});
 			},
 		    play: function(clip_name, done_callback) {
-				if (is_first_audio_clip) {
+				if (this.is_first_audio_clip) {
 					audio_player.play(clip_name, done_callback);
-					is_first_audio_clip = false;
+					this.is_first_audio_clip = false;
 				}
 				else {
-					pauseBetweenInstructions(function() {
+					this.pauseBetweenInstructions(function() {
 						audio_player.play(clip_name, done_callback);
 					});
 				}
+			},
+			pauseBetweenInstructions: function(next_step) {
+				setTimeout(function() { if (is_running) next_step(); }, 
+						   250);
 			}
 		};
 		
@@ -86,6 +86,8 @@ define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, car
 		bindProgramToHtml(d3.select("#program"));
 		
 		d3.select("#run").attr("enabled", cardCount > 0);
+		
+		return card;
 	}
 	
     function bindProgramToHtml(group) {
@@ -165,7 +167,7 @@ define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, car
 		
 		addNewCard(cards.actions.stepForward);
 		addNewCard(cards.actions.stepBackward);
-
+		
 		viewToEditMode();
 	}
 	

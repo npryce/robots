@@ -129,7 +129,7 @@ body {
 }
 
 #program .card.active {
-	border-color: white;
+	border-color: red;
 }
 
 #stacks .card {

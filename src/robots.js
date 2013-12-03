@@ -16,6 +16,8 @@ define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, car
 		d3.select("body")
 			.classed("editing", false)
 			.classed("running", true);
+		d3.selectAll("#program .active")
+			.classed("active",false);
 	}
     
     function viewToEditMode() {
@@ -29,10 +31,42 @@ define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, car
 			setTimeout(function() { if (is_running) next_step(); }, 
 					   250);
 		}
+
+		function activateCard(card_name) {
+			d3.select("#"+card_name).classed("active", true);
+		}
+
+		function deactivateCard(card_name) {
+			d3.select("#"+card_name).classed("active", false);
+		}
+		
+		
+		var is_first_audio_clip = true;
+		
+		var context = {
+			run: function(action, done_callback) {
+				activateCard(action.id);
+				action.run(this, function() {
+					deactivateCard(action.id);
+					done_callback();
+				});
+			},
+		    play: function(clip_name, done_callback) {
+				if (is_first_audio_clip) {
+					audio_player.play(clip_name, done_callback);
+					is_first_audio_clip = false;
+				}
+				else {
+					pauseBetweenInstructions(function() {
+						audio_player.play(clip_name, done_callback);
+					});
+				}
+			}
+		};
 		
 		is_running = true;
 		viewToRunMode();
-		program.run(audio_player, viewToEditMode);
+		program.run(context, viewToEditMode);
 	}
     
     function stopProgram() {
@@ -100,7 +134,7 @@ define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, car
 		d3.select("#run").on("click", runProgram);
 		d3.select("#stop").on("click", stopProgram);
 		
-		d3.selectAll("#keyboard #control").selectAll(".card")
+		d3.selectAll("#stacks #control").selectAll(".card")
 			.data(_.values(cards.control))
 			.enter()
 		    .append("div")
@@ -111,7 +145,7 @@ define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, car
 		    .on("dragstart", newCardDragStarted)
 		    .on("dragend", newCardDragEnded);
 		
-		d3.selectAll("#keyboard #actions").selectAll(".card")
+		d3.selectAll("#stacks #actions").selectAll(".card")
 			.data(_.values(cards.actions))
 			.enter()
 		    .append("div")
@@ -128,6 +162,10 @@ define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, car
 			.on("drop", newCardDropped);
 		
 		d3.select("body").classed("loading", false);
+		
+		addNewCard(cards.actions.stepForward);
+		addNewCard(cards.actions.stepBackward);
+
 		viewToEditMode();
 	}
 	

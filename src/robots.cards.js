@@ -12,7 +12,7 @@ define(["underscore"], function(_) {
 			if (next < this.steps.length) {
 				var step = this.steps[next];
 				next++;
-				step.run(context, runNextStep);
+				context.run(step, runNextStep);
 			}
 			else {
 			    onfinished();
@@ -58,7 +58,7 @@ define(["underscore"], function(_) {
 		this.stack = stack;
 	}
 	ActionCard.prototype.run = function(context, onfinished) {
-		this.stack.play_audio(context, onfinished);
+		context.play(this.stack.clip(), onfinished);
 	};
 	ActionCard.prototype.isAtomic = true;
 	ActionCard.prototype.contents = function() {
@@ -77,9 +77,6 @@ define(["underscore"], function(_) {
 	ActionCardStack.prototype.card = ActionCard;
     ActionCardStack.prototype.preload = function(audio_player) {
 		audio_player.load(this.clip());
-	};
-    ActionCardStack.prototype.play_audio = function(audio_player, onfinished) {
-		audio_player.play(this.clip(), onfinished);
 	};
     ActionCardStack.prototype.clip = function() {
 		return "actions/" + this.action;

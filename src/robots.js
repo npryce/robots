@@ -2,6 +2,7 @@ define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, car
     var audio_player = new AudioPlayer();
     var program = cards.newProgram();
 	var is_running = false;
+	var is_first_audio_clip;
     var dragged_card = null;
     
     function attr(name) {
@@ -33,40 +34,40 @@ define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, car
 	function deactivateCard(card_name) {
 		d3.select("#"+card_name).classed("active", false);
 	}
-		
+
+    function runSingleCard(action, done_callback) {
+		if (is_running) {
+			activateCard(action.id);
+			action.run(this, function() {
+			   deactivateCard(action.id);
+			   done_callback();
+		   });
+		}
+	}
+    
+    function playAudioClip(clip_name, done_callback) {
+		if (is_first_audio_clip) {
+			audio_player.play(clip_name, done_callback);
+			is_first_audio_clip = false;
+		}
+		else {
+			pauseBetweenInstructions(function() {
+				audio_player.play(clip_name, done_callback);
+			});
+		}
+	}
+	
+	function pauseBetweenInstructions(next_step) {
+		setTimeout(function() { if (is_running) next_step(); }, 
+				   250);
+	}
+	
     function runProgram() {
-		var context = {
-			is_first_audio_clip: true,
-			
-			run: function(action, done_callback) {
-				if (! is_running) return;
-				
-				activateCard(action.id);
-				action.run(this, function() {
-					deactivateCard(action.id);
-					done_callback();
-				});
-			},
-		    play: function(clip_name, done_callback) {
-				if (this.is_first_audio_clip) {
-					audio_player.play(clip_name, done_callback);
-					this.is_first_audio_clip = false;
-				}
-				else {
-					this.pauseBetweenInstructions(function() {
-						audio_player.play(clip_name, done_callback);
-					});
-				}
-			},
-			pauseBetweenInstructions: function(next_step) {
-				setTimeout(function() { if (is_running) next_step(); }, 
-						   250);
-			}
-		};
-		
 		is_running = true;
+		is_first_audio_clip = true;
 		viewToRunMode();
-		program.run(context, viewToEditMode);
+		program.run({run: runSingleCard, play: playAudioClip},
+					viewToEditMode);
 	}
     
     function stopProgram() {

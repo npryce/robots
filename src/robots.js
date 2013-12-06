@@ -34,16 +34,6 @@ define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, car
 	function deactivateCard(card_name) {
 		d3.select("#"+card_name).classed("active", false);
 	}
-
-    function runSingleCard(action, done_callback) {
-		if (is_running) {
-			activateCard(action.id);
-			action.run(this, function() {
-			   deactivateCard(action.id);
-			   done_callback();
-		   });
-		}
-	}
     
     function playAudioClip(clip_name, done_callback) {
 		if (is_first_audio_clip) {
@@ -66,7 +56,9 @@ define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, car
 		is_running = true;
 		is_first_audio_clip = true;
 		viewToRunMode();
-		program.run({run: runSingleCard, play: playAudioClip},
+		program.run({activate: activateCard,
+					 deactivate: deactivateCard,
+					 play: playAudioClip},
 					viewToEditMode);
 	}
     

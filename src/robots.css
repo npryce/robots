@@ -33,6 +33,7 @@ body {
 }
 
 #program {
+	display: flex;
 	position: absolute;
 	top: 0;
 	bottom: 0;
@@ -86,11 +87,25 @@ body {
 	font-family: inherit;
 }
 
+#program, .cardgroup {
+	flex-flow: row wrap;
+	justify-content: flex-start;
+	align-items: flex-start;
+	align-content: flex-start;
+}
+
 .cardgroup {
+	display: inline-flex;
+	flex-grow: 1;
+	flex-shrink: 1;
+	
+	/* for debugging */
+	background-color: rgba(0,0,0, 0.25);
 }
 
 .card, #cursor {
 	display: inline-block;
+	flex: initial;
     width: 1.5em;
     height:  1.5em;
 	color: #111111;

@@ -12,7 +12,7 @@ define(["underscore"], function(_) {
 			if (next < this.steps.length) {
 				var step = this.steps[next];
 				next++;
-				context.run(step, runNextStep);
+				step.run(context, runNextStep);
 			}
 			else {
 			    onfinished();
@@ -44,6 +44,19 @@ define(["underscore"], function(_) {
 	};
     
     
+    function Card() {
+	    this.id = _.uniqueId("card-");	
+	}
+	Card.prototype.run = function(context, onfinished) {
+		var cardId = this.id;
+		
+		context.activate(cardId);
+		this.behaviour(context, function() {
+			context.deactivate(cardId);
+			onfinished();
+		});
+	};
+    
     function CardStack() {
 	}
 	CardStack.prototype.newCard = function() {
@@ -55,9 +68,11 @@ define(["underscore"], function(_) {
     
     
     function ActionCard(stack) {
+		Card.call(this);
 		this.stack = stack;
 	}
-	ActionCard.prototype.run = function(context, onfinished) {
+    ActionCard.prototype = new Card();
+	ActionCard.prototype.behaviour = function(context, onfinished) {
 		context.play(this.stack.clip(), onfinished);
 	};
 	ActionCard.prototype.isAtomic = true;
@@ -84,14 +99,16 @@ define(["underscore"], function(_) {
     
     
     function RepeatCard(stack) {
+		Card.call(this);
 		this.stack = stack;
 		this.body = new CardSequence();
 	}
+	RepeatCard.prototype = new Card();
 	RepeatCard.prototype.isAtomic = false;
     RepeatCard.prototype.contents = function() {
 		return this.body.toArray();
 	};
-    RepeatCard.prototype.run = function(context, onfinished) {
+    RepeatCard.prototype.behaviour = function(context, onfinished) {
         var iteration = 0;
 		
         var runNextIteration = _.bind(function() {

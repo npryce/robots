@@ -21,6 +21,8 @@ $(OUTDIR)/robots.manifest: $(BUILT)
 	echo >> $@
 	for f in $(BUILT:$(OUTDIR)/%=%); do echo $$f >> $@; done
 
+check: all
+	./node_modules/karma/bin/karma start --browsers PhantomJS --no-auto-watch --single-run --log-level debug
 
 clean: 
 	rm -rf built/
@@ -30,7 +32,7 @@ distclean: clean
 
 again: clean all
 
-.PHONY: all clean distclean again
+.PHONY: all clean distclean again check
 
 
 # Install build tools

@@ -1,8 +1,7 @@
-define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, cards, AudioPlayer) {
-    var audio_player = new AudioPlayer();
+define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, cards, audio) {
+    var audio_player = new audio.PausingAudioPlayer(250);
     var program = cards.newProgram();
 	var is_running = false;
-	var is_first_audio_clip;
     var dragged_card = null;
     
     function attr(name) {
@@ -36,25 +35,11 @@ define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, car
 	}
     
     function playAudioClip(clip_name, done_callback) {
-		if (is_first_audio_clip) {
-			audio_player.play(clip_name, done_callback);
-			is_first_audio_clip = false;
-		}
-		else {
-			pauseBetweenInstructions(function() {
-				audio_player.play(clip_name, done_callback);
-			});
-		}
-	}
-	
-	function pauseBetweenInstructions(next_step) {
-		setTimeout(function() { if (is_running) next_step(); }, 
-				   250);
+		audio_player.play(clip_name, done_callback);
 	}
 	
     function runProgram() {
 		is_running = true;
-		is_first_audio_clip = true;
 		viewToRunMode();
 		program.run({activate: activateCard,
 					 deactivate: deactivateCard,

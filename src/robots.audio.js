@@ -1,4 +1,6 @@
 define(["underscore"], function(_) {
+    'use strict';
+    
     function AudioPlayer(timer) {
 		this.timer = timer || window;
 		this.format = "wav";

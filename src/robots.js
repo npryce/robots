@@ -1,4 +1,6 @@
 define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, cards, audio) {
+    'use strict';
+    
     var audio_player = new audio.PausingAudioPlayer(250);
     var program = cards.newProgram();
 	var is_running = false;

@@ -4,9 +4,9 @@ requirejs.config({
     baseUrl: '/base/',
 	
 	paths: {
-		'underscore': '/base/src/underscore',
-		'robots.cards': '/base/src/robots.cards',
-		'chai': '/base/node_modules/chai/lib/chai'
+		'underscore': 'src/underscore',
+		'robots.cards': 'src/robots.cards',
+		'chai': 'node_modules/chai/chai'
 	},
 	
     shim: {
@@ -15,7 +15,10 @@ requirejs.config({
 		},
         d3: {
             exports: 'd3'
-        }
+        },
+		chai: {
+			exports: 'chai'
+		}
     },
     
     // ask Require.js to load these files (all our tests)

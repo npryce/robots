@@ -3,12 +3,10 @@ module.exports = function(config) {
     basePath:'./',
     frameworks: ['mocha','requirejs'],
     files: [
-      {pattern: 'test/**/*-spec.js',   included: false, watched: true,  served: true},
-      {pattern: 'src/**/*.js',         included: false, watched: true,  served: true},
-      {pattern: 'test/test-main.js',   included: true,  watched: true,  served: true}
-    ],
-	exclude: [
-      'src/require.js'
+      {pattern: 'test/test-main.js',         included: true,  watched: true,  served: true},
+      {pattern: 'test/**/*.js',              included: false, watched: true,  served: true},
+      {pattern: 'src/**/*.js',               included: false, watched: true,  served: true},
+	  {pattern: 'node_modules/chai/**/*.js', included: false, watched: true,  served: true}
     ],
     reporters:['dots'],
     browsers:['PhantomJS'],

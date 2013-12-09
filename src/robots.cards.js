@@ -193,5 +193,8 @@ define(["underscore"], function(_) {
 		});
 	};
     
+    cards.ActionCardStack = ActionCardStack;
+    cards.RepeatCardStack = RepeatCardStack;
+
     return cards;
 });

@@ -22,7 +22,7 @@ $(OUTDIR)/robots.manifest: $(BUILT)
 	for f in $(BUILT:$(OUTDIR)/%=%); do echo $$f >> $@; done
 
 check: all
-	./node_modules/karma/bin/karma start --browsers PhantomJS --no-auto-watch --single-run --log-level debug
+	./node_modules/karma/bin/karma start --browsers PhantomJS --no-auto-watch --single-run
 
 clean: 
 	rm -rf built/

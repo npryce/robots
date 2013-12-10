@@ -38,11 +38,27 @@ define(["robots.cards", "underscore", "chai"], function(cards, _, chai) {
     var action_b = new cards.ActionCardStack({action: "b", text:"B"}).newCard();
     var action_c = new cards.ActionCardStack({action: "c", text:"C"}).newCard();
     var action_d = new cards.ActionCardStack({action: "d", text:"D"}).newCard();
+    
+    function program() {
+		var p = cards.newProgram();
+		for (var i = 0; i < arguments.length; i++) {
+			p.append(arguments[i]);
+		}
+		return p;
+	}
+
+    function repeat(n, body) {
+		var r = new cards.RepeatCardStack({repeat:n}).newCard();
+		for (var i = 0; i < body.length; i++) {
+			r.append(body[i]);
+		}
+		return r;
+	}
 	
     describe("interpretation", function() {
         it("calls 'done' callback immediately when empty", function() {
 			var context = new FakeContext();
-            var p = cards.newProgram();
+            var p = program();
 			
 			assert(!context.isDone);
 			p.run(context, function() {context.done();});            
@@ -52,8 +68,7 @@ define(["robots.cards", "underscore", "chai"], function(cards, _, chai) {
         it("runs single action", function() {
 		    var context = new FakeContext();
 			
-			var p = cards.newProgram();
-			p.append(action_a);
+			var p = program(action_a);
 			
             p.run(context, function(){context.done();});
 			
@@ -64,28 +79,25 @@ define(["robots.cards", "underscore", "chai"], function(cards, _, chai) {
         it("runs sequence of actions", function() {
 		    var context = new FakeContext();
 			
-			var p = cards.newProgram();
-			p.append(action_a);
-			p.append(action_b);
-			p.append(action_c);
-			p.append(action_d);
+			var p = program(
+				action_a, 
+				action_b,
+				action_c,
+				action_d);
 			
             p.run(context, function(){context.done();});
 			
 		    assert.deepEqual(context.played, ["actions/a", "actions/b", "actions/c", "actions/d"]);
 		    assert(context.isDone);
 		});
-
+				 
 		describe("repetition", function() {
 		    it("runs repeated actions", function() {
 	           var context = new FakeContext();
-               var p = cards.newProgram();
-			   p.append(action_a);
-			   var repeat = new cards.RepeatCardStack({repeat:2}).newCard();
-			   repeat.append(action_b);
-			   repeat.append(action_c);
-			   p.append(repeat);
-			   p.append(action_d);
+               var p = program(
+				   action_a,
+				   repeat(2, [action_b, action_c]),
+				   action_d);
 			   
 			   p.run(context, function(){context.done();});
 				   
@@ -95,12 +107,11 @@ define(["robots.cards", "underscore", "chai"], function(cards, _, chai) {
 	   
 	        it("allows repeated actions with an empty body", function() {
 		        var context = new FakeContext();
-                var p = cards.newProgram();
-			    p.append(action_a);
-			    var repeat = new cards.RepeatCardStack({repeat:2}).newCard();
-			    p.append(repeat);
-			    p.append(action_d);
-			
+                var p = program(
+					action_a,
+					repeat(2, []),
+					action_d);
+				   
                 p.run(context, function(){context.done();});
 			
 		        assert.deepEqual(context.played, ["actions/a", "actions/d"]);

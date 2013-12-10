@@ -137,7 +137,7 @@ define(["underscore"], function(_) {
     
     function RepeatCardStack(args) {
 		this.repeat = args.repeat;
-		this.text = args.text;
+		this.text = args.repeat.toString();
 	}
     RepeatCardStack.prototype = new CardStack();
     RepeatCardStack.prototype.card = RepeatCard;
@@ -182,8 +182,7 @@ define(["underscore"], function(_) {
     cards.control = {};
     _.forEach([2,3,4,5,6,7,8,9,10], function(i) {
 		cards.control["repeat_"+i] = new RepeatCardStack({
-			repeat: i,
-			text: i.toString()
+			repeat: i
 		});
 	});
 	

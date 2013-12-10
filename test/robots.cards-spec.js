@@ -39,7 +39,7 @@ define(["robots.cards", "underscore", "chai"], function(cards, _, chai) {
     var action_c = new cards.ActionCardStack({action: "c", text:"C"}).newCard();
     var action_d = new cards.ActionCardStack({action: "d", text:"D"}).newCard();
 	
-    describe("robots.cards.CardSequence", function() {
+    describe("interpretation", function() {
         it("calls 'done' callback immediately when empty", function() {
 			var context = new FakeContext();
             var p = cards.newProgram();
@@ -60,6 +60,51 @@ define(["robots.cards", "underscore", "chai"], function(cards, _, chai) {
 		    assert.deepEqual(context.played, ["actions/a"]);
 		    assert(context.isDone);
 		});
+		
+        it("runs sequence of actions", function() {
+		    var context = new FakeContext();
+			
+			var p = cards.newProgram();
+			p.append(action_a);
+			p.append(action_b);
+			p.append(action_c);
+			p.append(action_d);
+			
+            p.run(context, function(){context.done();});
+			
+		    assert.deepEqual(context.played, ["actions/a", "actions/b", "actions/c", "actions/d"]);
+		    assert(context.isDone);
+		});
+
+		it("runs repeated actions", function() {
+		    var context = new FakeContext();
+            var p = cards.newProgram();
+			p.append(action_a);
+			var repeat = new cards.RepeatCardStack({repeat:2}).newCard();
+			repeat.append(action_b);
+			repeat.append(action_c);
+			p.append(repeat);
+			p.append(action_d);
+			
+            p.run(context, function(){context.done();});
+			
+		    assert.deepEqual(context.played, ["actions/a", "actions/b", "actions/c", "actions/b", "actions/c", "actions/d"]);
+		    assert(context.isDone);
+	   });
+
+	   it("allows empty repeated actions", function() {
+		    var context = new FakeContext();
+            var p = cards.newProgram();
+			p.append(action_a);
+			var repeat = new cards.RepeatCardStack({repeat:2}).newCard();
+			p.append(repeat);
+			p.append(action_d);
+			
+            p.run(context, function(){context.done();});
+			
+		    assert.deepEqual(context.played, ["actions/a", "actions/d"]);
+		    assert(context.isDone);
+	   });
     });
 });
 

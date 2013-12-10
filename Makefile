@@ -21,7 +21,7 @@ $(OUTDIR)/robots.manifest: $(BUILT)
 	echo >> $@
 	for f in $(BUILT:$(OUTDIR)/%=%); do echo $$f >> $@; done
 
-check: all
+check: all ./node_modules/karma/bin/karma ./node_modules/phantomjs/package.json
 	./node_modules/karma/bin/karma start --browsers PhantomJS --no-auto-watch --single-run
 
 clean: 
@@ -37,6 +37,5 @@ again: clean all
 
 # Install build tools
 
-node_modules/autoprefixer/bin/autoprefixer:
-	npm install autoprefixer
-
+node_modules/%: package.json
+	npm install

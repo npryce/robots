@@ -1,0 +1,29 @@
+{
+	"name": "Robots!",
+	"version": "0.0.0",
+	"description": "Cooperative robot game",
+	"main": "src/main.js",
+	"scripts": {
+		"test": "karma start"
+	},
+	"repository": "",
+	"author": "Nat Pryce",
+	"license": "Proprietary",
+	"dependencies": {
+	    "requirejs": "2.1.9",
+		"domready": "0.2.13",
+		"lodash": "2.4.1",
+		"d3": "3.3.10"
+	},
+	"devDependencies": {
+		"autoprefixer": "0.8",
+		"karma": "0.10.4",
+		"karma-requirejs": "0.1.0",
+		"karma-mocha": "0.1.1",
+		"karma-phantomjs-launcher": "0.1.0",
+		"mocha": "1.14.0",
+		"phantomjs": "1.9.2-4",
+		"chai": "1.8.1",
+		"http-server": "0.5.5"
+	}
+}

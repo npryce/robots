@@ -10,8 +10,8 @@ module.exports = function(config) {
     ],
     reporters:['dots'],
     browsers:['PhantomJS'],
-    autoWatch: false,
-	singleRun: true,
+    autoWatch: true,
+	singleRun: false,
     colors: true,
     logLevel: config.LOG_INFO
   });

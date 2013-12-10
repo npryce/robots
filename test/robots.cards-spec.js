@@ -76,35 +76,37 @@ define(["robots.cards", "underscore", "chai"], function(cards, _, chai) {
 		    assert(context.isDone);
 		});
 
-		it("runs repeated actions", function() {
-		    var context = new FakeContext();
-            var p = cards.newProgram();
-			p.append(action_a);
-			var repeat = new cards.RepeatCardStack({repeat:2}).newCard();
-			repeat.append(action_b);
-			repeat.append(action_c);
-			p.append(repeat);
-			p.append(action_d);
+		describe("repetition", function() {
+		    it("runs repeated actions", function() {
+	           var context = new FakeContext();
+               var p = cards.newProgram();
+			   p.append(action_a);
+			   var repeat = new cards.RepeatCardStack({repeat:2}).newCard();
+			   repeat.append(action_b);
+			   repeat.append(action_c);
+			   p.append(repeat);
+			   p.append(action_d);
+			   
+			   p.run(context, function(){context.done();});
+				   
+			   assert.deepEqual(context.played, ["actions/a", "actions/b", "actions/c", "actions/b", "actions/c", "actions/d"]);
+			   assert(context.isDone);
+		    });
+	   
+	        it("allows repeated actions with an empty body", function() {
+		        var context = new FakeContext();
+                var p = cards.newProgram();
+			    p.append(action_a);
+			    var repeat = new cards.RepeatCardStack({repeat:2}).newCard();
+			    p.append(repeat);
+			    p.append(action_d);
 			
-            p.run(context, function(){context.done();});
+                p.run(context, function(){context.done();});
 			
-		    assert.deepEqual(context.played, ["actions/a", "actions/b", "actions/c", "actions/b", "actions/c", "actions/d"]);
-		    assert(context.isDone);
-	   });
-
-	   it("allows empty repeated actions", function() {
-		    var context = new FakeContext();
-            var p = cards.newProgram();
-			p.append(action_a);
-			var repeat = new cards.RepeatCardStack({repeat:2}).newCard();
-			p.append(repeat);
-			p.append(action_d);
-			
-            p.run(context, function(){context.done();});
-			
-		    assert.deepEqual(context.played, ["actions/a", "actions/d"]);
-		    assert(context.isDone);
-	   });
+		        assert.deepEqual(context.played, ["actions/a", "actions/d"]);
+		        assert(context.isDone);
+	        });
+        });
     });
 });
 

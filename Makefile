@@ -1,7 +1,7 @@
 
 target?=dev
 
-SRCS=$(wildcard src/*.html src/*.css src/*.js src/*.png src/audio/*.wav src/audio/*/*.wav)
+SRCS:=$(wildcard src/*.html src/*.css src/*.js src/*.png src/audio/*.wav src/audio/*/*.wav)
 OUTDIR=built/$(target)
 
 BUILT=$(SRCS:src/%=$(OUTDIR)/%)
@@ -35,8 +35,22 @@ again: clean all
 .PHONY: all clean distclean again check
 
 
+SCANNED_FILES=$(SRCS)
+continually:
+	@while true; do \
+	  clear; \
+	  if not make all; \
+	  then \
+	      notify-send --icon=error --category=blog --expire-time=250 "Deft build broken"; \
+	  fi; \
+	  date; \
+	  inotifywait -r -qq -e modify -e delete $(SCANNED_FILES); \
+	done
+
+
 # Install build tools
 
 node_modules/%: package.json
 	npm install # npm install for $@
 	touch $@
+

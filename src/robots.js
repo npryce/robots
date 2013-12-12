@@ -1,4 +1,4 @@
-define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, cards, audio) {
+define(["d3", "underscore", "robots.cards", "robots.audio", "robots.drag"], function(d3, _, cards, audio, drag) {
     'use strict';
     
     var audio_player = new audio.PausingAudioPlayer(250);
@@ -72,7 +72,7 @@ define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, car
 	
     function bindProgramToHtml(group) {
 		var cards = group.selectAll(".card").data(program.toArray(), attr("id"));
-		cards.enter().insert("div", "#cursor")
+		cards.enter().insert("div", ".cursor")
 		    .attr("id", attr("id"))
 			.classed("card", true)
 			.classed("action", function(card) { return card.isAtomic; })
@@ -81,34 +81,9 @@ define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, car
 		cards.exit().remove();
 	}
 	
-    function newCardDragStarted(card_type) {
-		var dt = d3.event.dataTransfer;
-		dt.effectAllowed = 'copy';
-		dt.setData("application/x-robot-card", "");
-		
-		dragged_card = card_type;
-	}
-	
-    function newCardDragEnded(card_type) {
-		dragged_card = null;
-	}
-    
-    function newCardDragEnter() {
-		d3.event.preventDefault();
-		return true;
-	}
-	
-    function newCardDragOver() {
-		d3.event.preventDefault();
-		return true;
-	}
-    
-    function newCardDropped() {
-		addNewCard(dragged_card);
-		d3.event.stopPropagation();
-	}
-	
 	function start() {
+        var new_card_gesture = drag.newCard(addNewCard);
+		
 		d3.select("div").on("touchmove", function() {
 		    d3.event.preventDefault();
 		});
@@ -124,8 +99,8 @@ define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, car
 			.classed("card", true)
 			.classed("control", true)
 			.text(attr("text"))
-		    .on("dragstart", newCardDragStarted)
-		    .on("dragend", newCardDragEnded);
+		    .call(new_card_gesture)
+		;
 		
 		d3.selectAll("#stacks #actions").selectAll(".card")
 			.data(_.values(cards.actions))
@@ -135,13 +110,8 @@ define(["d3", "underscore", "robots.cards", "robots.audio"], function(d3, _, car
 			.classed("card", true)
 			.classed("action", true)
 			.text(attr("text"))
-		    .on("dragstart", newCardDragStarted)
-		    .on("dragend", newCardDragEnded);
-
-		d3.select("#cursor")
-		    .on("dragenter", newCardDragEnter)
-		    .on("dragover", newCardDragOver)
-			.on("drop", newCardDropped);
+		    .call(new_card_gesture)
+		;
 		
 		d3.select("body").classed("loading", false);
 		

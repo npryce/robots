@@ -103,7 +103,7 @@ body {
 	background-color: rgba(0,0,0, 0.25);
 }
 
-.card, #cursor {
+.card, .cursor {
 	display: inline-block;
 	flex: initial;
     width: 1.5em;
@@ -133,17 +133,12 @@ body {
 	background-color: #FFFFAA;
 }
 
-.card.input-only {
-	background-color: #CCCCCC;
-	color: black;
-}	
-
 .card.dragging {
     display: block;
 	position: fixed;
 	z-index: 1;
 	opacity: 0.66;
-	transform: rotate(6deg);
+	transform: rotate(-6deg);
 	transform-origin: 50% 50%;
 	pointer-events: none;
 }
@@ -154,6 +149,23 @@ body {
 	animation-duration: 0.15s;
 	animation-iteration-count: infinite;
 	transform-origin: 50% 50%;
+}
+
+#stacks .card {
+	cursor: move;
+}
+
+.cursor {
+	border-style: dotted;
+	background-color: transparent;
+}
+
+.running .editcontrol {
+	display: none;
+}
+
+.editing .runcontrol {
+	display:none;
 }
 
 @keyframes jiggle {
@@ -172,22 +184,4 @@ body {
 	100% {
 		transform: rotate(0deg);
 	}
-}
-
-#stacks .card {
-	cursor: move;
-}
-
-#cursor {
-	border-style: dotted;
-	background-color: transparent;
-	color: rgba(0,0,0,0.5);
-}
-
-.running .editcontrol {
-	display: none;
-}
-
-.editing .runcontrol {
-	display:none;
 }

@@ -139,12 +139,39 @@ body {
 }	
 
 .card.dragging {
+    display: block;
+	position: fixed;
+	z-index: 1;
 	opacity: 0.66;
-	transform: rotate(30);
+	transform: rotate(6deg);
+	transform-origin: 50% 50%;
+	pointer-events: none;
 }
 
 #program .card.active {
-	border-color: red;
+	animation-name: jiggle;
+	animation-direction: normal;
+	animation-duration: 0.15s;
+	animation-iteration-count: infinite;
+	transform-origin: 50% 50%;
+}
+
+@keyframes jiggle {
+	0% {
+		transform: rotate(0deg);
+	}
+	25% {
+		transform: rotate(6deg);
+	}
+	50% {
+		transform: rotate(0deg);
+	}
+	75% {
+		transform: rotate(-6deg);
+	}
+	100% {
+		transform: rotate(0deg);
+	}
 }
 
 #stacks .card {

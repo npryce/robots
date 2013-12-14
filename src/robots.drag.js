@@ -1,8 +1,15 @@
 define(["d3"], function(d3) {
+    function newDragEvent(action) {
+		return new CustomEvent("carddrag", {detail: {action: action, handler: null}});
+	}
+
+    function removeElement(e) {
+		d3.select(e || this).remove();
+	}
+	
     function newCardGesture(new_card_callback) {
-		var isDragging = false;
-		var draggedElement = null;
-		var targetElement = null;
+		var dragged_element = null;
+		var drop_handler = null;
 		
         var drag = d3.behavior.drag();
 		
@@ -15,36 +22,36 @@ define(["d3"], function(d3) {
 			return origin(this);
 		});
 		drag.on("dragstart", function(stack) {
-			isDragging = true;
-			draggedElement = this.cloneNode();
-			draggedElement.classList.add("dragging");
-			document.body.appendChild(draggedElement);
+            drop_handler = null;
+			dragged_element = this.cloneNode();
+			dragged_element.classList.add("dragging");
+			document.body.appendChild(dragged_element);
 		});
 		drag.on("drag", function(stack) {
 			var ev = d3.event;
 			
-			draggedElement.style.left = ev.x + "px";
-			draggedElement.style.top = ev.y + "px";
+			dragged_element.style.left = ev.x + "px";
+			dragged_element.style.top = ev.y + "px";
 			
-			// Todo - make fire namespaced dragover events and move drop action into separate controllers
 			var under = document.elementFromPoint(ev.sourceEvent.pageX, ev.sourceEvent.pageY);
 			if (under != null) {
-				if (d3.select(under).classed("cursor")) {
-					targetElement = under;
-				}
-				else {
-					targetElement = null;
-				}
+				var dragEvent = newDragEvent("new");
+				under.dispatchEvent(dragEvent);
+				drop_handler = dragEvent.detail.handler;
 			}
 		});
 		drag.on("dragend", function(stack) {
-			isDragging = false;
-			document.body.removeChild(draggedElement);
-			draggedElement = null;
-			
-			if (targetElement != null) {
-				new_card_callback(stack);
+			if (drop_handler != null) {
+				removeElement(dragged_element);
+				drop_handler(stack);
 			}
+			else {
+				d3.select(dragged_element)
+					.classed("disappearing", true)
+					.on("transitionend", removeElement);
+			}
+			
+			dragged_element = null;
         });
 		
 		return drag;

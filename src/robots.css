@@ -137,10 +137,17 @@ body {
     display: block;
 	position: fixed;
 	z-index: 1;
-	opacity: 0.66;
+	opacity: 0.9;
 	transform: rotate(-6deg);
 	transform-origin: 50% 50%;
 	pointer-events: none;
+}
+
+.card.dragging.disappearing {
+	transform: rotate(-6deg) scale(1.5);
+	opacity: 0;
+	transition-property: opacity transform;
+	transition-duration: 0.25s;
 }
 
 #program .card.active {

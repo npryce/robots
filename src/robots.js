@@ -6,14 +6,16 @@ define(["d3", "underscore", "robots.cards", "robots.audio", "robots.drag"], func
 	var is_running = false;
     var dragged_card = null;
     
-    function attr(name) {
-		return function(obj) {
-			return obj[name];
-		};
-	}
-    
     cards.preload(audio_player);
-    
+	
+	function cardText(card) {
+		return card.text;
+	}
+
+	function cardId(card) {
+		return card.id;
+	}
+	
     function viewToRunMode() {
 		d3.select("body")
 			.classed("editing", false)
@@ -29,9 +31,11 @@ define(["d3", "underscore", "robots.cards", "robots.audio", "robots.drag"], func
 	}
     
     function activateCard(card_name) {
-		d3.select("#"+card_name).classed("active", true);
+		d3.select("#"+card_name)
+			.classed("active", true)
+			.each(function() {this.scrollIntoView(false);});
 	}
-		   
+	
 	function deactivateCard(card_name) {
 		d3.select("#"+card_name).classed("active", false);
 	}
@@ -63,22 +67,37 @@ define(["d3", "underscore", "robots.cards", "robots.audio", "robots.drag"], func
 		var cardCount =	program.totalCardCount();
 		d3.select("#card-count").text(cardCount);
 		
-		bindProgramToHtml(d3.select("#program"));
+		bindProgramToHtml();
 		
 		d3.select("#run").attr("enabled", cardCount > 0);
 		
 		return card;
 	}
 	
-    function bindProgramToHtml(group) {
-		var cards = group.selectAll(".card").data(program.toArray(), attr("id"));
+	function bindProgramToHtml() {
+		bindSequenceToHtml(d3.select("#program"), program);
+	}
+	
+    function bindSequenceToHtml(container, card_sequence) {
+		var cards = container.selectAll(".card").data(card_sequence.toArray(), cardId);
+		
 		cards.enter().insert("div", ".cursor")
-		    .attr("id", attr("id"))
+			.attr("id", cardId)
 			.classed("card", true)
 			.classed("action", function(card) { return card.isAtomic; })
 			.classed("control", function(card) { return !card.isAtomic; })
-			.text(attr("text"));
+			.text(cardText);
+		
 		cards.exit().remove();
+		
+		if (card_sequence.isEmpty()) {
+			container.append("div")
+				.classed("cursor", "true")
+				.on("carddrag", function() {d3.event.detail.handler = addNewCard;});
+		}
+		else {
+			//container.select(".cursor").remove();
+		}
 	}
 	
 	function start() {
@@ -98,9 +117,8 @@ define(["d3", "underscore", "robots.cards", "robots.audio", "robots.drag"], func
 		    .attr("draggable", true)
 			.classed("card", true)
 			.classed("control", true)
-			.text(attr("text"))
-		    .call(new_card_gesture)
-		;
+			.text(cardText)
+		    .call(new_card_gesture);
 		
 		d3.selectAll("#stacks #actions").selectAll(".card")
 			.data(_.values(cards.actions))
@@ -109,15 +127,12 @@ define(["d3", "underscore", "robots.cards", "robots.audio", "robots.drag"], func
 		    .attr("draggable", true)
 			.classed("card", true)
 			.classed("action", true)
-			.text(attr("text"))
-		    .call(new_card_gesture)
-		;
+			.text(cardText)
+		    .call(new_card_gesture);
 		
 		d3.select("body").classed("loading", false);
 		
-		addNewCard(cards.actions.stepForward);
-		addNewCard(cards.actions.stepBackward);
-		
+		bindProgramToHtml();
 		viewToEditMode();
 	}
 	

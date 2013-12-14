@@ -21,6 +21,9 @@ define(["underscore"], function(_) {
 		
 		runNextStep();
 	};
+	CardSequence.prototype.isEmpty = function() {
+		return this.length() == 0;
+	};
 	CardSequence.prototype.length = function() {
 		return this.steps.length;
 	};

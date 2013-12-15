@@ -60,9 +60,9 @@ define(["d3", "underscore", "robots.cards", "robots.audio", "robots.drag"], func
 		viewToEditMode();
 	}
 	
-	function addNewCard(stack) {
+	function addNewCard(sequence, stack) {
 		var card = stack.newCard();
-		program.append(card);
+		sequence.append(card);
 		
 		var cardCount =	program.totalCardCount();
 		d3.select("#card-count").text(cardCount);
@@ -74,34 +74,42 @@ define(["d3", "underscore", "robots.cards", "robots.audio", "robots.drag"], func
 		return card;
 	}
 	
-	function bindProgramToHtml() {
-		bindSequenceToHtml(d3.select("#program"), program);
-	}
-	
-    function bindSequenceToHtml(container, card_sequence) {
-		var cards = container.selectAll(".card").data(card_sequence.toArray(), cardId);
-		
-		cards.enter().insert("div", ".cursor")
+	function bindCardToHtml(card, i) {
+		var card_div = d3.select(this);
+		card_div
 			.attr("id", cardId)
 			.classed("card", true)
 			.classed("action", function(card) { return card.isAtomic; })
 			.classed("control", function(card) { return !card.isAtomic; })
 			.text(cardText);
+	}
+	
+    function bindSequenceToHtml(container_selection, card_sequence) {
+		var cards = container_selection.selectAll(".card").data(card_sequence.toArray(), cardId);
 		
+		// TODO - will have to be changed when the app supports removing cards
+		if (card_sequence.isEmpty()) {
+			container_selection.append("div")
+				.classed("cursor", "true")
+				.on("carddragin", function() {
+						d3.event.detail.accepted = (d3.event.detail.action == "new");
+					})
+			    .on("carddrop", function() {
+						addNewCard(card_sequence, d3.event.detail.data);
+					});
+		}
+		
+		cards.enter().insert("div",".cursor").each(bindCardToHtml);
 		cards.exit().remove();
 		
-		if (card_sequence.isEmpty()) {
-			container.append("div")
-				.classed("cursor", "true")
-				.on("carddrag", function() {d3.event.detail.handler = addNewCard;});
-		}
-		else {
-			//container.select(".cursor").remove();
-		}
+	}
+	
+	function bindProgramToHtml() {
+		bindSequenceToHtml(d3.select("#program"), program);
 	}
 	
 	function start() {
-        var new_card_gesture = drag.newCard(addNewCard);
+        var new_card_gesture = drag.newCard();
 		
 		d3.select("div").on("touchmove", function() {
 		    d3.event.preventDefault();

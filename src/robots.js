@@ -92,10 +92,10 @@ define(["d3", "underscore", "robots.cards", "robots.audio", "robots.drag"], func
 			container_selection.append("div")
 				.classed("cursor", "true")
 				.on("carddragin", function() {
-						d3.event.detail.accepted = (d3.event.detail.action == "new");
+						drag.accept(d3.event, drag.action(d3.event) == "new");
 					})
 			    .on("carddrop", function() {
-						addNewCard(card_sequence, d3.event.detail.data);
+						addNewCard(card_sequence, drag.data(d3.event));
 					});
 		}
 		
@@ -109,7 +109,7 @@ define(["d3", "underscore", "robots.cards", "robots.audio", "robots.drag"], func
 	}
 	
 	function start() {
-        var new_card_gesture = drag.newCard();
+        var new_card_gesture = drag.gesture("new");
 		
 		d3.select("div").on("touchmove", function() {
 		    d3.event.preventDefault();

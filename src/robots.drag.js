@@ -1,4 +1,4 @@
-define(["d3"], function(d3) {
+define(["d3", "underscore"], function(d3, _) {
     function newDragInEvent(action) {
 		return new CustomEvent("carddragin", {detail: {action: action, accepted: false}});
 	}
@@ -16,9 +16,7 @@ define(["d3"], function(d3) {
 		d3.select(e || this).remove();
 	}
 	
-    function newCardGesture() {
-		var drop_action = "new";
-		
+    function gesture(drop_action) {
         var drag = d3.behavior.drag();
 		var dragged_element = null;
 		var drop_target = null;
@@ -28,16 +26,16 @@ define(["d3"], function(d3) {
 			return {x: bounds.left, y: bounds.top};
 		}
 		
-		drag.origin(function(stack) {
+		drag.origin(function() {
 			return origin(this);
 		});
-		drag.on("dragstart", function(stack) {
+		drag.on("dragstart", function() {
             drop_target = null;
 			dragged_element = this.cloneNode();
 			dragged_element.classList.add("dragging");
 			document.body.appendChild(dragged_element);
 		});
-		drag.on("drag", function(stack) {
+		drag.on("drag", function() {
 			var ev = d3.event;
 			
 			dragged_element.style.left = ev.x + "px";
@@ -64,10 +62,10 @@ define(["d3"], function(d3) {
 				}
 			}
 		});
-		drag.on("dragend", function(stack) {
+		drag.on("dragend", function(data) {
 			if (drop_target != null) {
 				removeElement(dragged_element);
-				drop_target.dispatchEvent(newDropEvent(drop_action, stack));
+				drop_target.dispatchEvent(newDropEvent(drop_action, data));
 			}
 			else {
 				d3.select(dragged_element)
@@ -83,6 +81,18 @@ define(["d3"], function(d3) {
     }
     
 	return {
-		newCard: newCardGesture
+		gesture: gesture,
+		
+		// Because I can't safely add methods or properties to CustomEvent 
+		// but don't want to expose its structure.
+		action: function(event) {
+			return event.detail.action;
+		},
+		data: function(event) {
+			return event.detail.data;
+		},
+		accept: function(event, flag) {
+			event.detail.accepted = flag || _.isUndefined(flag);
+		}
 	};
 });

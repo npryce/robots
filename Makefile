@@ -41,7 +41,7 @@ continually:
 	  clear; \
 	  if not make all; \
 	  then \
-	      notify-send --icon=error --category=blog --expire-time=250 "Deft build broken"; \
+	      notify-send --icon=error --category=blog --expire-time=250 "Robots build broken"; \
 	  fi; \
 	  date; \
 	  inotifywait -r -qq -e modify -e delete $(SCANNED_FILES); \

@@ -87,20 +87,22 @@ body {
 	font-family: inherit;
 }
 
-#program, .cardgroup {
+#program, .cardgroup, .row {
 	flex-flow: row wrap;
 	justify-content: flex-start;
 	align-items: flex-start;
 	align-content: flex-start;
 }
 
-.cardgroup {
-	display: inline-flex;
+.cardgroup, .bodycards, .row {
+	display: inline-block;
 	flex-grow: 1;
 	flex-shrink: 1;
-	
+}
+
+.row {
 	/* for debugging */
-	background-color: rgba(0,0,0, 0.25);
+	background-color: rgba(0,0,0, 0.1);
 }
 
 .card, .cursor {
@@ -121,7 +123,7 @@ body {
 	font-size: inherit;
 }
 
-.running #cursor {
+.running .cursor {
 	display: none;
 }
 

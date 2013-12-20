@@ -6,7 +6,8 @@ requirejs.config({
 	paths: {
 		'underscore': 'src/underscore',
 		'robots.cards': 'src/robots.cards',
-		'chai': 'node_modules/chai/chai'
+		'chai': 'node_modules/chai/chai',
+		'fake-context': 'test/fake-context'
 	},
 	
     shim: {

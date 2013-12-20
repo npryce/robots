@@ -3,50 +3,58 @@ define(["underscore"], function(_) {
 	}
 	
     function CardSequence() {
-		this.steps = [];
+		this.rows = [];
 	}
     CardSequence.prototype.run = function(context, onfinished) {
-		var next = 0;
+		var nextRow = 0;
+		var nextStep = 0;
 		
 		var runNextStep = _.bind(function() {
-			if (next < this.steps.length) {
-				var step = this.steps[next];
-				next++;
-				step.run(context, runNextStep);
+			if (nextRow >= this.rows.length) {
+				onfinished();
+				return;
+			}
+			
+			var row = this.rows[nextRow];
+			if (nextStep >= row.length) {
+				nextRow++;
+				nextStep = 0;
+				runNextStep();
 			}
 			else {
-			    onfinished();
+				var step = row[nextStep];
+				nextStep++;
+				step.run(context, runNextStep);
 			}
 		}, this);
 		
 		runNextStep();
 	};
 	CardSequence.prototype.isEmpty = function() {
-		return this.length() == 0;
+		return this.rowcount() == 0;
 	};
-	CardSequence.prototype.length = function() {
-		return this.steps.length;
+	CardSequence.prototype.rowcount = function() {
+		return this.rows.length;
 	};
-	CardSequence.prototype.step = function(i) {
-		return this.steps[i];
+	CardSequence.prototype.row = function(i) {
+		return this.rows[i];
 	};
     CardSequence.prototype.toArray = function() {
-		return _.toArray(this.steps);
+		return _.toArray(this.rows);
 	};
 	CardSequence.prototype.append = function(step) {
-	    this.steps.push(step);	
-	};
-    CardSequence.prototype.remove = function(i) {
-		this.steps.splice(i, 1);
-	};
-    CardSequence.prototype.insert = function(i, step) {
-		this.steps.splice(i, 0, step);
+		if (this.rows.length == 0 || !_.last(_.last(this.rows)).isAtomic) {
+			var new_row = [];
+			new_row.sequence = this;
+			this.rows.push(new_row);
+		}
+		_.last(this.rows).push(step);
 	};
     CardSequence.prototype.totalCardCount = function() {
-		return _(this.steps).map(function(s){return s.totalCardCount();}).reduce(function(a,b){return a+b;}, 0);
+		return _(this.rows).flatten().map(function(s){return s.totalCardCount();}).reduce(function(a,b){return a+b;}, 0);
 	};
-    
-    
+
+
     function Card() {
 	    this.id = _.uniqueId("card-");	
 	}
@@ -197,6 +205,7 @@ define(["underscore"], function(_) {
     
     cards.ActionCardStack = ActionCardStack;
     cards.RepeatCardStack = RepeatCardStack;
+    cards.CardSequence = CardSequence;
 
     return cards;
 });

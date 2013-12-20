@@ -11,7 +11,7 @@ define(["d3", "underscore", "robots.cards", "robots.audio", "robots.drag"], func
 	function cardText(card) {
 		return card.text;
 	}
-
+	
 	function cardId(card) {
 		return card.id;
 	}
@@ -74,38 +74,69 @@ define(["d3", "underscore", "robots.cards", "robots.audio", "robots.drag"], func
 		return card;
 	}
 	
-	function bindCardToHtml(card, i) {
-		var card_div = d3.select(this);
-		card_div
+	function bindCardToHtml(step_div, card) {
+		step_div
 			.attr("id", cardId)
-			.classed("card", true)
-			.classed("action", function(card) { return card.isAtomic; })
-			.classed("control", function(card) { return !card.isAtomic; })
-			.text(cardText);
-	}
-	
-    function bindSequenceToHtml(container_selection, card_sequence) {
-		var cards = container_selection.selectAll(".card").data(card_sequence.toArray(), cardId);
+			.classed("step", true);
 		
-		// TODO - will have to be changed when the app supports removing cards
-		if (card_sequence.isEmpty()) {
-			container_selection.append("div")
+		if (card.isAtomic) {
+			step_div
+				.classed("card", true)
+				.classed("action",  true)
+				.text(cardText);
+		} else {
+			step_div
+				.classed("cardgroup", true);
+			
+			step_div.append("div")
+				.classed("card", true)
+				.classed("control", true)
+				.text(cardText);
+			
+			var body_selection = step_div.append("div")
+				.classed("bodycards", true);
+			
+			bindSequenceToHtml(body_selection, card.body);
+		}
+	}
+
+    function updateRowHtml(row) {
+		var steps = row_sel.selectAll(".step").data(row, cardId);
+		
+		// FUTURE - will have to be changed when the app supports removing cards
+		
+		if (row.closed) {
+			row_sel.select(".cursor").remove();
+		} else if (row_sel.select(".cursor").size() == 0) {
+			row_sel
+				.append("div")
 				.classed("cursor", "true")
 				.on("carddragin", function() {
 						drag.accept(d3.event, drag.action(d3.event) == "new");
 					})
-			    .on("carddrop", function() {
-						addNewCard(card_sequence, drag.data(d3.event));
+				.on("carddrop", function() {
+						addNewCard(sequence, drag.data(d3.event));
 					});
 		}
 		
-		cards.enter().insert("div",".cursor").each(bindCardToHtml);
-		cards.exit().remove();
-		
+		steps.enter()
+			.insert("div",".cursor")
+			.each(function(card) { 
+					  bindCardToHtml(d3.select(this), card); 
+				  });
+		steps.exit().remove();
+	}
+	
+	function updateSequenceHtml(sequence) {
+		var rows = container.selectAll(".row").data(sequence.rows());
+		rows.enter()
+			.append("div").classed("row", true);
+		rows.each(updateRowHtml);
+		rows.exit().remove();
 	}
 	
 	function bindProgramToHtml() {
-		bindSequenceToHtml(d3.select("#program"), program);
+		updateSequenceHtml.call(document.getElementById("program"), program);
 	}
 	
 	function start() {
@@ -145,6 +176,9 @@ define(["d3", "underscore", "robots.cards", "robots.audio", "robots.drag"], func
 	}
 	
     return {
-		start: start
+		start: start,
+		internal: {
+			toRows: toRows
+		}
 	};
 });

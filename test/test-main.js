@@ -4,7 +4,7 @@ requirejs.config({
     baseUrl: '/base/',
 	
 	paths: {
-		'underscore': 'src/underscore',
+		'underscore': 'src/underscore-1.5.2',
 		'robots.cards': 'src/robots.cards',
 		'chai': 'node_modules/chai/chai',
 		'fake-context': 'test/fake-context'

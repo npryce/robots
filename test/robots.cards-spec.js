@@ -130,9 +130,12 @@ define(["robots.cards", "underscore", "chai", "fake-context"], function(cards, _
     });
 
     describe("a CardSequence", function() {
-		it("initially has no rows", function() {
+		it("initially has one empty row", function() {
 			var s = new cards.CardSequence();
-			assert.equal(s.rowcount(), 0);
+			   
+			assert.equal(s.rowcount(), 1);
+			assertElementsEqual(s.row(0), [], "first row should be empty");
+			assertElementsEqual(s.toArray(), [[]], "s.toArray");
         });
         
         it("creates the first row when the first card is added", function() {
@@ -172,6 +175,20 @@ define(["robots.cards", "underscore", "chai", "fake-context"], function(cards, _
             assert.equal(s.rowcount(), 2, "rowcount");
 		    assertElementsEqual(s.row(0), [a, r]);
 			assertElementsEqual(s.row(1), [c]);
+		});
+
+		it("marks a row as closed if the last card if the row is a control card", function() {
+			var s = new cards.CardSequence();
+			
+			s.append(action("a"));
+            assert(!s.row(0).closed, "row should not be closed with one action");
+
+            s.append(action("b"));
+			assert(!s.row(0).closed, "row should not not be closed with two actions");
+
+            s.append(repeat(2, [action("c")]));
+            assert(s.row(0).closed, "row should be closed with control card at end");
+   
 		});
 		
         it("relates rows to the sequence they are part of", function() {

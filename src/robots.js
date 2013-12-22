@@ -1,13 +1,78 @@
-define(["d3", "underscore", "robots.cards", "robots.audio", "robots.drag"], function(d3, _, cards, audio, drag) {
+define(["d3", "underscore", "react", "robots.cards", "robots.audio", "robots.drag"], function(d3, _, React, cards, audio, drag) {
     'use strict';
-    
-    var audio_player = new audio.PausingAudioPlayer(250);
-    var program = cards.newProgram();
-	var is_running = false;
-    var dragged_card = null;
-    
-    cards.preload(audio_player);
 	
+    var dom = React.DOM;
+    var audio_player;
+    var program;
+	var is_running;
+	var card_layout;
+
+	
+	
+	var CardLayout = React.createClass({
+		displayName: "robots.CardLayout",
+		
+		getInitialState: function() {
+			return {program: program};
+		},
+		render: function() {
+			return this.renderSequence(this.state.program);
+		},
+		renderCard: function(c, extra_attrs) {
+			var attrs = {};
+			attrs.className = "card " + (c.isAtomic ? "action" : "control"); // React doesn't support classList :-(
+			attrs.key = c.id;
+			_.extend(attrs, extra_attrs);
+			return dom.div(attrs, c.text);
+		},
+		renderRowElement: function(c) {
+			if (c.isAtomic) {
+				return this.renderCard(c, {id: c.id});
+			}
+			else {
+				return dom.div({className:"cardgroup", id: c.id},
+					this.renderCard(c),
+					this.renderSequence(c.body));
+			}
+		},
+		renderRow: function(r) {
+			return dom.div({className:"cardrow"},
+				_.map(r, this.renderRowElement),
+				(r.closed ? [] : DropTarget({
+					action: "new",
+					key: 'addNewCard',
+					onCardDropped: function(stack) {
+						addNewCard(r, stack);
+					}
+				})));
+		},
+		renderSequence: function(s) {
+			return dom.div({className:"cardsequence"},
+				_.map(s.rows, this.renderRow));
+		}
+	});
+	
+    var DropTarget = React.createClass({
+		displayName: "robots.DropTarget",
+		
+        componentDidMount: function() {
+			var n = this.getDOMNode();
+			n.addEventListener("carddragin", this.cardDragIn);
+			n.addEventListener("carddrop", this.cardDrop);
+		},
+		render: function() {
+			return dom.div({className:"cursor"});
+		},
+		cardDragIn: function(ev) {
+			drag.accept(ev, drag.action(ev) == this.props.action);
+		},
+		cardDrop: function(ev) {
+			this.props.onCardDropped(drag.data(ev));
+		}
+	});
+
+    
+
 	function cardText(card) {
 		return card.text;
 	}
@@ -60,86 +125,28 @@ define(["d3", "underscore", "robots.cards", "robots.audio", "robots.drag"], func
 		viewToEditMode();
 	}
 	
-	function addNewCard(sequence, stack) {
+	function addNewCard(row, stack) {
 		var card = stack.newCard();
-		sequence.append(card);
+		row.sequence.append(card);
 		
 		var cardCount =	program.totalCardCount();
 		d3.select("#card-count").text(cardCount);
 		
-		bindProgramToHtml();
+		card_layout.setState(program);
 		
 		d3.select("#run").attr("enabled", cardCount > 0);
 		
 		return card;
 	}
 	
-	function bindCardToHtml(step_div, card) {
-		step_div
-			.attr("id", cardId)
-			.classed("step", true);
-		
-		if (card.isAtomic) {
-			step_div
-				.classed("card", true)
-				.classed("action",  true)
-				.text(cardText);
-		} else {
-			step_div
-				.classed("cardgroup", true);
-			
-			step_div.append("div")
-				.classed("card", true)
-				.classed("control", true)
-				.text(cardText);
-			
-			var body_selection = step_div.append("div")
-				.classed("bodycards", true);
-			
-			bindSequenceToHtml(body_selection, card.body);
-		}
-	}
-
-    function updateRowHtml(row) {
-		var steps = row_sel.selectAll(".step").data(row, cardId);
-		
-		// FUTURE - will have to be changed when the app supports removing cards
-		
-		if (row.closed) {
-			row_sel.select(".cursor").remove();
-		} else if (row_sel.select(".cursor").size() == 0) {
-			row_sel
-				.append("div")
-				.classed("cursor", "true")
-				.on("carddragin", function() {
-						drag.accept(d3.event, drag.action(d3.event) == "new");
-					})
-				.on("carddrop", function() {
-						addNewCard(sequence, drag.data(d3.event));
-					});
-		}
-		
-		steps.enter()
-			.insert("div",".cursor")
-			.each(function(card) { 
-					  bindCardToHtml(d3.select(this), card); 
-				  });
-		steps.exit().remove();
-	}
-	
-	function updateSequenceHtml(sequence) {
-		var rows = container.selectAll(".row").data(sequence.rows());
-		rows.enter()
-			.append("div").classed("row", true);
-		rows.each(updateRowHtml);
-		rows.exit().remove();
-	}
-	
-	function bindProgramToHtml() {
-		updateSequenceHtml.call(document.getElementById("program"), program);
-	}
-	
 	function start() {
+		audio_player = new audio.PausingAudioPlayer(250);
+		program = cards.newProgram();
+		is_running = false;
+		card_layout = CardLayout({});
+		
+		cards.preload(audio_player);
+		
         var new_card_gesture = drag.gesture("new");
 		
 		d3.select("div").on("touchmove", function() {
@@ -171,14 +178,12 @@ define(["d3", "underscore", "robots.cards", "robots.audio", "robots.drag"], func
 		
 		d3.select("body").classed("loading", false);
 		
-		bindProgramToHtml();
+		React.renderComponent(card_layout, document.getElementById("program"));
+		
 		viewToEditMode();
 	}
 	
     return {
-		start: start,
-		internal: {
-			toRows: toRows
-		}
+		start: start
 	};
 });

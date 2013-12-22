@@ -2,9 +2,37 @@ define(["underscore"], function(_) {
     function noop() {
 	}
 	
+    function addNewRowTo(seq) {
+		var new_row = [];
+		new_row.sequence = seq;
+		new_row.closed = false;
+		seq.rows.push(new_row);
+	}
+    
     function CardSequence() {
 		this.rows = [];
-	}
+		addNewRowTo(this);
+	}    
+	CardSequence.prototype.rowcount = function() {
+		return this.rows.length;
+	};
+	CardSequence.prototype.row = function(i) {
+		return this.rows[i];
+	};
+    CardSequence.prototype.toArray = function() {
+		return _.toArray(this.rows);
+	};
+	CardSequence.prototype.append = function(step) {
+		if (this.rows.length == 0 || _.last(this.rows).closed) {
+			addNewRowTo(this);
+		}
+		
+		var row = _.last(this.rows);
+		row.push(step);
+		if (!step.isAtomic) {
+			row.closed = true;
+		}
+	};
     CardSequence.prototype.run = function(context, onfinished) {
 		var nextRow = 0;
 		var nextStep = 0;
@@ -29,26 +57,6 @@ define(["underscore"], function(_) {
 		}, this);
 		
 		runNextStep();
-	};
-	CardSequence.prototype.isEmpty = function() {
-		return this.rowcount() == 0;
-	};
-	CardSequence.prototype.rowcount = function() {
-		return this.rows.length;
-	};
-	CardSequence.prototype.row = function(i) {
-		return this.rows[i];
-	};
-    CardSequence.prototype.toArray = function() {
-		return _.toArray(this.rows);
-	};
-	CardSequence.prototype.append = function(step) {
-		if (this.rows.length == 0 || !_.last(_.last(this.rows)).isAtomic) {
-			var new_row = [];
-			new_row.sequence = this;
-			this.rows.push(new_row);
-		}
-		_.last(this.rows).push(step);
 	};
     CardSequence.prototype.totalCardCount = function() {
 		return _(this.rows).flatten().map(function(s){return s.totalCardCount();}).reduce(function(a,b){return a+b;}, 0);

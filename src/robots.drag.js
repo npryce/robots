@@ -45,8 +45,9 @@ define(["d3", "lodash"], function(d3, _) {
 			if (under !== drop_target) {
 				if (drop_target !== null) {
 					drop_target.dispatchEvent(newDragOutEvent(drop_action));
+					drop_target = null;
 				}
-				if (under != null) {
+				if (under !== null) {
 					var drag_in_event = newDragInEvent(drop_action);
 					under.dispatchEvent(drag_in_event);
 					if (drag_in_event.detail.accepted) {

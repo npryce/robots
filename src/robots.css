@@ -96,15 +96,17 @@ body {
 	flex-shrink: 1;
 }
 
-.cardgroup, .cardsequence {
-	display: inline-block;
+.card-sequence, .cardrow {
+	display: flex;
 }
 
+.cardgroup {
+	display: inline-flex;
+}
+
+/* for debugging */
 .cardrow {
-	display: block;
-	
-	/* for debugging */
-	background-color: rgba(0,0,0, 0.1);
+	/* background-color: rgba(0,0,0, 0.1); */
 }
 
 .card, .cursor {

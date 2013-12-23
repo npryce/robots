@@ -1,7 +1,4 @@
 define(["lodash"], function(_) {
-    function noop() {
-	}
-	
     function addNewRowTo(seq) {
 		var new_row = [];
 		new_row.sequence = seq;
@@ -163,7 +160,7 @@ define(["lodash"], function(_) {
 	}
     RepeatCardStack.prototype = new CardStack();
     RepeatCardStack.prototype.card = RepeatCard;
-	RepeatCardStack.prototype.preload = noop;
+	RepeatCardStack.prototype.preload = _.noop;
     
 	
     

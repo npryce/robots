@@ -1,12 +1,9 @@
 requirejs.config({
     paths: {
 		'react': 'react-0.8.0',
-		'underscore': 'underscore-1.5.2'
+		'lodash': 'lodash-2.4.1'
 	},
     shim: {
-		'underscore': {
-			exports: '_'
-		},
         'd3': {
             exports: 'd3'
         }

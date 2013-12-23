@@ -1,4 +1,4 @@
-define(["underscore", "chai"], function(_, chai) {
+define(["lodash", "chai"], function(_, chai) {
 	'use strict';
     
 	var assert = chai.assert;

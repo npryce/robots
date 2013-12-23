@@ -4,16 +4,13 @@ requirejs.config({
     baseUrl: '/base/',
 	
 	paths: {
-		'underscore': 'src/underscore-1.5.2',
+		'lodash': 'test/lodash-2.4.1',
 		'robots.cards': 'src/robots.cards',
 		'chai': 'node_modules/chai/chai',
 		'fake-context': 'test/fake-context'
 	},
 	
     shim: {
-		underscore: {
-			exports: '_'
-		},
         d3: {
             exports: 'd3'
         },

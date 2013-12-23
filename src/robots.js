@@ -1,4 +1,4 @@
-define(["d3", "underscore", "react", "robots.cards", "robots.audio", "robots.drag"], function(d3, _, React, cards, audio, drag) {
+define(["d3", "lodash", "react", "robots.cards", "robots.audio", "robots.drag"], function(d3, _, React, cards, audio, drag) {
     'use strict';
 	
     var dom = React.DOM;

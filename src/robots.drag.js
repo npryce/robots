@@ -1,4 +1,4 @@
-define(["d3", "underscore"], function(d3, _) {
+define(["d3", "lodash"], function(d3, _) {
     function newDragInEvent(action) {
 		return new CustomEvent("carddragin", {detail: {action: action, accepted: false}});
 	}

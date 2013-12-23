@@ -1,10 +1,10 @@
 
 target?=dev
 
-SRCS:=$(wildcard src/*.html src/*.css src/*.js src/*.png src/audio/*.wav src/audio/*/*.wav)
+SRCS=$(wildcard src/*.html src/*.css src/*.js src/*.png src/audio/*.wav src/audio/*/*.wav)
 OUTDIR=built/$(target)
 
-BUILT=$(SRCS:src/%=$(OUTDIR)/%)
+BUILT:=$(SRCS:src/%=$(OUTDIR)/%)
 
 all: $(OUTDIR)/robots.manifest
 

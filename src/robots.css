@@ -87,20 +87,22 @@ body {
 	font-family: inherit;
 }
 
-#program, .cardgroup, .row {
+.cardsequence, .cardrow, .cardgroup {
 	flex-flow: row wrap;
 	justify-content: flex-start;
 	align-items: flex-start;
 	align-content: flex-start;
-}
-
-.cardgroup, .cardsequence, .cardrow {
-	display: inline-block;
 	flex-grow: 1;
 	flex-shrink: 1;
 }
 
-.row {
+.cardgroup, .cardsequence {
+	display: inline-block;
+}
+
+.cardrow {
+	display: block;
+	
 	/* for debugging */
 	background-color: rgba(0,0,0, 0.1);
 }

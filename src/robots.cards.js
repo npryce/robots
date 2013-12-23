@@ -22,12 +22,15 @@ define(["underscore"], function(_) {
     CardSequence.prototype.toArray = function() {
 		return _.toArray(this.rows);
 	};
+	CardSequence.prototype.lastRow = function() {
+		return _.last(this.rows);
+	};
 	CardSequence.prototype.append = function(step) {
-		if (this.rows.length == 0 || _.last(this.rows).closed) {
+		if (this.rows.length == 0 || this.lastRow().closed) {
 			addNewRowTo(this);
 		}
 		
-		var row = _.last(this.rows);
+		var row = this.lastRow();
 		row.push(step);
 		if (!step.isAtomic) {
 			row.closed = true;

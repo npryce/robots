@@ -38,30 +38,34 @@ define(["d3", "underscore", "react", "robots.cards", "robots.audio", "robots.dra
 		renderRow: function(r) {
 			return dom.div({className:"cardrow"},
 				_.map(r, this.renderRowElement),
-				(r.closed ? [] : DropTarget({
-					action: "new",
-					key: 'addNewCard',
-					onCardDropped: function(stack) {
-						addNewCard(r, stack);
-					}
-				})));
+				(r.closed ? [] : [this.renderNewCardDropTarget(r.sequence)]));
 		},
 		renderSequence: function(s) {
 			return dom.div({className:"cardsequence"},
-				_.map(s.rows, this.renderRow));
+				_.map(s.rows, this.renderRow),
+				(s.lastRow().closed ? [dom.div({className:"cardrow"}, this.renderNewCardDropTarget(s))] : []));
+		},
+		renderNewCardDropTarget: function(sequence) {
+			return DropTarget({
+				action: "new",
+				key: 'append',
+				onCardDropped: function(stack) {
+					addNewCard(sequence, stack);
+				}
+			});
 		}
 	});
 	
     var DropTarget = React.createClass({
 		displayName: "robots.DropTarget",
 		
+		render: function() {
+			return dom.div({className:"cursor"});
+		},
         componentDidMount: function() {
 			var n = this.getDOMNode();
 			n.addEventListener("carddragin", this.cardDragIn);
 			n.addEventListener("carddrop", this.cardDrop);
-		},
-		render: function() {
-			return dom.div({className:"cursor"});
 		},
 		cardDragIn: function(ev) {
 			drag.accept(ev, drag.action(ev) == this.props.action);
@@ -125,9 +129,9 @@ define(["d3", "underscore", "react", "robots.cards", "robots.audio", "robots.dra
 		viewToEditMode();
 	}
 	
-	function addNewCard(row, stack) {
+	function addNewCard(sequence, stack) {
 		var card = stack.newCard();
-		row.sequence.append(card);
+		sequence.append(card);
 		
 		var cardCount =	program.totalCardCount();
 		d3.select("#card-count").text(cardCount);

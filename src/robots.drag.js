@@ -31,7 +31,7 @@ define(["d3", "lodash"], function(d3, _) {
 		});
 		drag.on("dragstart", function() {
             drop_target = null;
-			dragged_element = this.cloneNode();
+			dragged_element = this.cloneNode(true);
 			dragged_element.classList.add("dragging");
 			document.body.appendChild(dragged_element);
 		});

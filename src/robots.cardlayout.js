@@ -28,21 +28,26 @@ define(["lodash", "react", "robots.drag"], function(_, React, drag) {
 			}
 		},
 		renderRow: function(r) {
+			var card_required = r.length == 0;
+			
 			return dom.div({className:"cardrow"},
 				_.map(r, this.renderRowElement),
-				(r.closed ? [] : [this.renderNewCardDropTarget(r.sequence)]));
+				(r.closed ? [] : [this.renderNewCardDropTarget(r.sequence, card_required)]));
 		},
 		renderSequence: function(s) {
+			var card_required = s.rowcount() == 1 && s.lastRow().length == 0;
+			
 			return dom.div({className:"cardsequence"},
 				_.map(s.rows, this.renderRow),
-				(s.lastRow().closed ? [dom.div({className:"cardrow"}, this.renderNewCardDropTarget(s))] : []));
+				(s.lastRow().closed ? [dom.div({className:"cardrow"}, this.renderNewCardDropTarget(s, card_required))] : []));
 		},
-		renderNewCardDropTarget: function(sequence) {
+		renderNewCardDropTarget: function(sequence, required) {
 			var onNewCardDropped = this.props.onNewCardDropped;
 			
 			return DropTarget({
 				action: "new",
 				key: 'append',
+				required: required,
 				onCardDropped: function(stack) {
 					onNewCardDropped(sequence, stack);
 				}
@@ -54,7 +59,7 @@ define(["lodash", "react", "robots.drag"], function(_, React, drag) {
 		displayName: "robots.DropTarget",
 		
 		render: function() {
-			return dom.div({className:"cursor"});
+			return dom.div({className: "cursor" + (this.props.required ? " required" : "")});
 		},
         componentDidMount: function() {
 			var n = this.getDOMNode();

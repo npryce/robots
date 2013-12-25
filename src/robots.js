@@ -1,81 +1,12 @@
-define(["d3", "lodash", "react", "robots.cards", "robots.audio", "robots.drag"], function(d3, _, React, cards, audio, drag) {
+define(["d3", "lodash", "react", "robots.cards", "robots.audio", "robots.drag", "robots.cardlayout"], 
+	function(d3, _, React, cards, audio, drag, layout) 
+{
     'use strict';
 	
-    var dom = React.DOM;
     var audio_player;
     var program;
 	var is_running;
 	var card_layout;
-
-	
-	
-	var CardLayout = React.createClass({
-		displayName: "robots.CardLayout",
-		
-		getInitialState: function() {
-			return {program: program};
-		},
-		render: function() {
-			return this.renderSequence(this.state.program);
-		},
-		renderCard: function(c, extra_attrs) {
-			var attrs = {};
-			attrs.className = "card " + (c.isAtomic ? "action" : "control"); // React doesn't support classList :-(
-			attrs.key = c.id;
-			_.extend(attrs, extra_attrs);
-			return dom.div(attrs, c.text);
-		},
-		renderRowElement: function(c) {
-			if (c.isAtomic) {
-				return this.renderCard(c, {id: c.id});
-			}
-			else {
-				return dom.div({className:"cardgroup", id: c.id},
-					this.renderCard(c),
-					this.renderSequence(c.body));
-			}
-		},
-		renderRow: function(r) {
-			return dom.div({className:"cardrow"},
-				_.map(r, this.renderRowElement),
-				(r.closed ? [] : [this.renderNewCardDropTarget(r.sequence)]));
-		},
-		renderSequence: function(s) {
-			return dom.div({className:"cardsequence"},
-				_.map(s.rows, this.renderRow),
-				(s.lastRow().closed ? [dom.div({className:"cardrow"}, this.renderNewCardDropTarget(s))] : []));
-		},
-		renderNewCardDropTarget: function(sequence) {
-			return DropTarget({
-				action: "new",
-				key: 'append',
-				onCardDropped: function(stack) {
-					addNewCard(sequence, stack);
-				}
-			});
-		}
-	});
-	
-    var DropTarget = React.createClass({
-		displayName: "robots.DropTarget",
-		
-		render: function() {
-			return dom.div({className:"cursor"});
-		},
-        componentDidMount: function() {
-			var n = this.getDOMNode();
-			n.addEventListener("carddragin", this.cardDragIn);
-			n.addEventListener("carddrop", this.cardDrop);
-		},
-		cardDragIn: function(ev) {
-			drag.accept(ev, drag.action(ev) == this.props.action);
-		},
-		cardDrop: function(ev) {
-			this.props.onCardDropped(drag.data(ev));
-		}
-	});
-
-    
 
 	function cardText(card) {
 		return card.text;
@@ -145,11 +76,12 @@ define(["d3", "lodash", "react", "robots.cards", "robots.audio", "robots.drag"],
 	
 	function start() {
 		audio_player = new audio.PausingAudioPlayer(250);
+		cards.preload(audio_player);
+		
 		program = cards.newProgram();
 		is_running = false;
-		card_layout = CardLayout({});
+		card_layout = layout.CardLayout({program: program, onNewCardDropped: addNewCard});
 		
-		cards.preload(audio_player);
 		
         var new_card_gesture = drag.gesture("new");
 		

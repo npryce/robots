@@ -55,7 +55,9 @@ define(["d3", "lodash"], function(d3, _) {
 					}
 				}
 			}
-			else {
+			else if (under !== null) { 
+				// under will be null while dragging outside the browser window
+				
 				var drag_event = newDragEvent(drop_action);
 				under.dispatchEvent(drag_event);
 				if (!drag_event.detail.accepted) {

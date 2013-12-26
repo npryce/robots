@@ -27,26 +27,26 @@ define(["lodash", "react", "robots.drag"], function(_, React, drag) {
 					this.renderSequence(c.body));
 			}
 		},
-		renderRow: function(r) {
+		renderRow: function(r, i) {
 			var card_required = r.length == 0;
 			
-			return dom.div({className:"cardrow"},
+			return dom.div({className:"cardrow", key: i},
 				_.map(r, this.renderRowElement),
 				(r.closed ? [] : [this.renderNewCardDropTarget(r.sequence, card_required)]));
 		},
-		renderSequence: function(s) {
+		renderSequence: function(s, key) {
 			var card_required = s.rowcount() == 1 && s.lastRow().length == 0;
 			
-			return dom.div({className:"cardsequence"},
+			return dom.div({className:"cardsequence", key: key},
 				_.map(s.rows, this.renderRow),
-				(s.lastRow().closed ? [dom.div({className:"cardrow"}, this.renderNewCardDropTarget(s, card_required))] : []));
+				(s.lastRow().closed ? [dom.div({className:"cardrow", key: "appendrow"}, this.renderNewCardDropTarget(s, card_required))] : []));
 		},
 		renderNewCardDropTarget: function(sequence, required) {
 			var onNewCardDropped = this.props.onNewCardDropped;
 			
 			return DropTarget({
 				action: "new",
-				key: 'append',
+				key: "append",
 				required: required,
 				onCardDropped: function(stack) {
 					onNewCardDropped(sequence, stack);

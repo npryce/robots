@@ -1,7 +1,8 @@
 requirejs.config({
     paths: {
 		'react': 'react-0.8.0',
-		'lodash': 'lodash-2.4.1'
+		'lodash': 'lodash-2.4.1',
+		'howler': 'howler-1.1.14'
 	},
     shim: {
         'd3': {

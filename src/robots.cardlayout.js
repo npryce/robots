@@ -2,7 +2,7 @@ define(["lodash", "react", "robots.drag"], function(_, React, drag) {
     var dom = React.DOM;
 	
 	var CardLayout = React.createClass({
-		displayName: "robots.CardLayout",
+		displayName: "robots.cardlayout.CardLayout",
 		
 		getInitialState: function() {
 			return {program: this.props.program};
@@ -22,9 +22,9 @@ define(["lodash", "react", "robots.drag"], function(_, React, drag) {
 				return this.renderCard(c, {id: c.id});
 			}
 			else {
-				return dom.div({className:"cardgroup", id: c.id},
+				return dom.div({className:"cardgroup", id: c.id, key: c.id},
 					this.renderCard(c),
-					this.renderSequence(c.body));
+					this.renderSequence(c.body, "body"));
 			}
 		},
 		renderRow: function(r, i) {
@@ -56,7 +56,7 @@ define(["lodash", "react", "robots.drag"], function(_, React, drag) {
 	});
 	
     var DropTarget = React.createClass({
-		displayName: "robots.DropTarget",
+		displayName: "robots.cardlayout.DropTarget",
 		
 		render: function() {
 			return dom.div({className: "cursor" + (this.props.required ? " required" : "")});
@@ -74,7 +74,46 @@ define(["lodash", "react", "robots.drag"], function(_, React, drag) {
 		}
 	});
 	
+	
+	var new_card_gesture = drag.gesture("new");
+		   
+	var CardStack = React.createClass({
+		displayName: "robots.cardlayout.CardStack",
+		
+		render: function() {
+			return dom.div({className: "card " + this.props.category},
+						   this.props.stack.text);
+		},
+		componentDidMount: function() {
+			d3.select(this.getDOMNode()).data([this.props.stack]).call(new_card_gesture);
+		}
+	});
+	
+	var CardStackRow = React.createClass({
+		displayName: "robots.cardlayout.CardStackRow",
+		
+		render: function() {
+			var category = this.props.category;
+			
+			return dom.div({id: category},
+					 _.map(this.props.stacks, function(stack, id) {
+							   return CardStack({category: category, stack: stack, key: id});
+						   }));
+		}
+	});
+	
+	var CardStacks = React.createClass({
+		displayName: "robots.cardlayout.CardStacks",
+		
+		render: function() {
+			return dom.div({},
+				CardStackRow({category: "control", stacks: this.props.cards.control}),
+				CardStackRow({category: "action", stacks: this.props.cards.action}));
+		}
+	});
+	
     return {
-		CardLayout: CardLayout
+		CardLayout: CardLayout,
+		CardStacks: CardStacks
 	};
 });

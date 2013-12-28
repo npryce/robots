@@ -4,7 +4,7 @@ requirejs.config({
     baseUrl: '/base/',
 	
 	paths: {
-		'lodash': 'test/lodash-2.4.1',
+		'lodash': 'src/lodash-2.4.1',
 		'robots.cards': 'src/robots.cards',
 		'chai': 'node_modules/chai/chai',
 		'fake-context': 'test/fake-context'

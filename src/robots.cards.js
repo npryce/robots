@@ -166,7 +166,7 @@ define(["lodash"], function(_) {
     
     var cards = {
 		newProgram: function() { return new CardSequence(); },
-		actions: {
+		action: {
 			stepForward: new ActionCardStack({
 				action: "step-forward",
 				text: "\u21E7"
@@ -206,7 +206,7 @@ define(["lodash"], function(_) {
 	});
 	
     cards.preload = function(audio_player) {
-		_.values(this.actions).forEach(function (card_type) {
+		_.values(this.action).forEach(function (card_type) {
 		    card_type.preload(audio_player);
 		});
 	};

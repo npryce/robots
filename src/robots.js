@@ -80,10 +80,8 @@ define(["d3", "lodash", "react", "robots.cards", "robots.audio", "robots.drag", 
 		
 		program = cards.newProgram();
 		is_running = false;
+		
 		card_layout = layout.CardLayout({program: program, onNewCardDropped: addNewCard});
-		
-		
-        var new_card_gesture = drag.gesture("new");
 		
 		d3.select("div").on("touchmove", function() {
 		    d3.event.preventDefault();
@@ -92,27 +90,10 @@ define(["d3", "lodash", "react", "robots.cards", "robots.audio", "robots.drag", 
 		d3.select("#run").on("click", runProgram);
 		d3.select("#stop").on("click", stopProgram);
 		
-		d3.selectAll("#stacks #control").selectAll(".card")
-			.data(_.values(cards.control))
-			.enter()
-		    .append("div")
-			.classed("card", true)
-			.classed("control", true)
-			.text(cardText)
-		    .call(new_card_gesture);
-		
-		d3.selectAll("#stacks #actions").selectAll(".card")
-			.data(_.values(cards.actions))
-			.enter()
-		    .append("div")
-			.classed("card", true)
-			.classed("action", true)
-			.text(cardText)
-		    .call(new_card_gesture);
+		React.renderComponent(card_layout, document.getElementById("program"));
+		React.renderComponent(layout.CardStacks({cards: cards}), document.getElementById("stacks"));
 		
 		d3.select("body").classed("loading", false);
-		
-		React.renderComponent(card_layout, document.getElementById("program"));
 		
 		viewToEditMode();
 	}

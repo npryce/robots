@@ -1,44 +1,45 @@
-define(["lodash"], function(_) {
+define(["lodash", "howler"], function(_, howler) {
     'use strict';
     
-    function AudioPlayer(timer) {
-		this.timer = timer || window;
+    function AudioPlayer() {
 		this.format = "wav";
 		this.samples = {};
-		this.is_playing = false;
-		this.current = new Audio();
-		this.current.pause();
-		this.timeout = null;
+		this.current = null;
+		this.completion_callback = _.noop;
     }
-	
+
 	AudioPlayer.prototype.load = function(sample_name) {
 		var resource_name = "audio/" + sample_name + "." + this.format;
-		var sample = new Audio(resource_name);
+		var sample = new howler.Howl({
+			urls: [resource_name],
+			buffer: true,
+			onend: _.bind(this._sampleFinished, this)
+		});
 		this.samples[sample_name] = sample;
 	};
     AudioPlayer.prototype.isPlaying = function() {
-		return this.timeout != null;
+		return this.current != null;
 	};
     AudioPlayer.prototype.play = function(sample_name, completion_callback) {
-		function ended() {
-			this.timeout = null;
-			completion_callback();
-		}
-		
-        var sample = this.samples[sample_name];
-		
-		console.log("playing " + sample.src);
-		
-		this.current.src = sample.src;
+		this.completion_callback = completion_callback;
+		this.current = this.samples[sample_name];
+		console.log("playing " + this.current.urls()[0]);
 		this.current.play();
-		this.timeout = this.timer.setTimeout(_.bind(ended,this), sample.duration*1000);
+	};
+	AudioPlayer.prototype._sampleFinished = function() {
+		var completion_callback = this.completion_callback;
+		this._clearPlayback();
+		completion_callback();
 	};
 	AudioPlayer.prototype.stop = function() {
 		if (this.isPlaying()) {
-			this.current.pause();
-			this.timer.clearTimeout(this.timeout);
-			this.timeout = null;
+			this.current.stop();
+			this._clearPlayback();
 		}
+	};
+	AudioPlayer.prototype._clearPlayback = function() {
+		this.completion_callback = _.noop;
+		this.current = null;
 	};
 	
 	function PausingAudioPlayer(pause_between_clips, timer, audio_player) {
@@ -76,11 +77,8 @@ define(["lodash"], function(_) {
 		this.is_first_clip = true;
 	};
     
-        
-    
 	return {
 		AudioPlayer: AudioPlayer,
 		PausingAudioPlayer: PausingAudioPlayer
 	};
-    
 });

@@ -1,15 +1,19 @@
 
 target?=dev
 
-SRCS=$(wildcard src/*.html src/*.css src/*.js src/*.png src/audio/*.wav src/audio/*/*.wav)
+WAVS=$(wildcard src/audio/*.wav src/audio/*/*.wav)
+SRCS=$(wildcard src/*.html src/*.css src/*.js src/*.png) $(WAVS)
 OUTDIR=built/$(target)
 
-BUILT:=$(SRCS:src/%=$(OUTDIR)/%)
+BUILT:=$(SRCS:src/%=$(OUTDIR)/%) $(WAVS:src/%.wav=$(OUTDIR)/%.mp3)
 
 all: $(OUTDIR)/robots.manifest
 
 $(OUTDIR)/%.css: src/%.css node_modules/autoprefixer/bin/autoprefixer
 	node_modules/autoprefixer/bin/autoprefixer -o $@ $<
+
+$(OUTDIR)/%.mp3: src/%.wav
+	lame -h -b 192 $< $@
 
 $(OUTDIR)/%: src/%
 	@mkdir -p $(dir $@)
@@ -28,7 +32,7 @@ clean:
 	rm -rf built/
 
 distclean: clean
-	rm -rf node_modules
+	rm -rf node_modules/
 
 again: clean all
 
@@ -47,6 +51,9 @@ continually:
 	  inotifywait -r -qq -e modify -e delete $(SCANNED_FILES); \
 	done
 
+
+served: all
+	./node_modules/.bin/http-server $(OUTDIR) -p 8765 -c-1
 
 # Install build tools
 

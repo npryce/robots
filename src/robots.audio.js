@@ -2,20 +2,19 @@ define(["lodash", "howler"], function(_, howler) {
     'use strict';
     
     function AudioPlayer() {
-		this.format = "wav";
+		this.formats = ["mp3", "wav"];
 		this.samples = {};
 		this.current = null;
 		this.completion_callback = _.noop;
     }
-
+	
 	AudioPlayer.prototype.load = function(sample_name) {
-		var resource_name = "audio/" + sample_name + "." + this.format;
 		var sample = new howler.Howl({
-			urls: [resource_name],
-			buffer: true,
+			urls: _.map(this.formats, function(f) {return "audio/" + sample_name + "." + f;}),
 			onend: _.bind(this._sampleFinished, this)
 		});
 		this.samples[sample_name] = sample;
+		sample.load();
 	};
     AudioPlayer.prototype.isPlaying = function() {
 		return this.current != null;

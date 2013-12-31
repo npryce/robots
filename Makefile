@@ -28,6 +28,9 @@ $(OUTDIR)/robots.manifest: $(BUILT)
 check: all node_modules/karma/bin/karma node_modules/phantomjs/package.json
 	./node_modules/karma/bin/karma start --browsers PhantomJS --no-auto-watch --single-run
 
+check-continually: all node_modules/karma/bin/karma node_modules/phantomjs/package.json
+	./node_modules/karma/bin/karma start --browsers PhantomJS --auto-watch
+
 clean: 
 	rm -rf built/
 

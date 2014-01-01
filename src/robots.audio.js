@@ -37,8 +37,8 @@ define(["lodash", "howler"], function(_, howler) {
 		}
 	};
 	AudioPlayer.prototype._clearPlayback = function() {
-		this.completion_callback = _.noop;
 		this.current = null;
+		this.completion_callback = _.noop;
 	};
 	
 	function PausingAudioPlayer(pause_between_clips, timer, audio_player) {

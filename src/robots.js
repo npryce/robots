@@ -83,10 +83,6 @@ define(["d3", "lodash", "react", "robots.cards", "robots.audio", "robots.drag", 
 		
 		card_layout = layout.CardLayout({program: program, onNewCardDropped: addNewCard});
 		
-		d3.select("div").on("touchmove", function() {
-		    d3.event.preventDefault();
-		});
-		
 		d3.select("#run").on("click", runProgram);
 		d3.select("#stop").on("click", stopProgram);
 		

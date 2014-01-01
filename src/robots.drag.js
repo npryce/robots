@@ -20,7 +20,7 @@ define(["d3", "lodash"], function(d3, _) {
         var drag = d3.behavior.drag();
 		var dragged_element = null;
 		var drop_target = null;
-
+		
 		function origin(e) {
 			var bounds = e.getBoundingClientRect();
 			return {x: bounds.left, y: bounds.top};
@@ -31,6 +31,10 @@ define(["d3", "lodash"], function(d3, _) {
 		});
 		drag.on("dragstart", function() {
             drop_target = null;
+			if (dragged_element != null) {
+				removeElement(dragged_element);
+			}
+			
 			dragged_element = this.cloneNode(true);
 			dragged_element.classList.add("dragging");
 			document.body.appendChild(dragged_element);

@@ -22,6 +22,8 @@ $(OUTDIR)/%: src/%
 $(OUTDIR)/robots.manifest: $(BUILT)
 	@mkdir -p $(dir $@)
 	echo CACHE MANIFEST > $@
+	echo -n "# " >> $@
+	cat $^ | md5sum -b | cut -d " " -f 1 >> $@
 	echo >> $@
 	for f in $(BUILT:$(OUTDIR)/%=%); do echo $$f >> $@; done
 

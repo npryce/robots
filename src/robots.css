@@ -1,9 +1,25 @@
-/*
-@import url(http://fonts.googleapis.com/css?family=Slackey);
-*/
+@font-face {
+  font-family: 'Slackey';
+  font-style: normal;
+  font-weight: 400;
+  src: url(slackey.woff) format('woff');
+}
+
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+	body {
+		font-size: 16px;
+	}
+}
+
+@media only screen and (min-device-width : 1024px) {
+	body {
+		font-size: 40px;
+	}
+}
 
 * {
-    user-select: none;
+	user-select: none;
+	-webkit-touch-callout: none;
 }
 
 html, body {
@@ -18,12 +34,10 @@ html, body {
 body {
 	position: static;
 	display: flex;
-	display: -webkit-flex;
 	flex-direction: column;
 	justify-content: flex-start;
 	align-items: stretch;
 	font-family: Slackey, sans-serif;
-	font-size: 40px;
 }
 
 #content {
@@ -42,6 +56,7 @@ body {
 	padding: 0.125em;
 	margin: 0;
 	overflow-y: scroll;
+	-webkit-overflow-scrolling: touch;
 }
 
 #header:after {
@@ -57,7 +72,6 @@ body {
 
 #header {
 	display: flex;
-	display: -webkit-flex;
 	flex-direction: row;
 	justify-content: flex-start;
 	align-items: center;

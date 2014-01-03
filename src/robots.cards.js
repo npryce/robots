@@ -7,8 +7,7 @@ define(["lodash"], function(_) {
 	}
     
     function CardSequence() {
-		this.rows = [];
-		addNewRowTo(this);
+		this.clear();
 	}    
 	CardSequence.prototype.rowcount = function() {
 		return this.rows.length;
@@ -28,10 +27,15 @@ define(["lodash"], function(_) {
 		}
 		
 		var row = this.lastRow();
+		step.row = row;
 		row.push(step);
 		if (!step.isAtomic) {
 			row.closed = true;
 		}
+	};
+	CardSequence.prototype.clear = function() {
+		this.rows = [];
+		addNewRowTo(this);
 	};
     CardSequence.prototype.run = function(context, onfinished) {
 		var nextRow = 0;

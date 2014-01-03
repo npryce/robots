@@ -29,6 +29,11 @@ define(["d3", "lodash", "react", "robots.cards", "robots.audio", "robots.drag", 
 		d3.selectAll("#program .active")
 			.classed("active",false);
 	}
+
+	function clearProgram() {
+		program.clear();
+		card_layout.setState(program);
+	}
     
     function activateCard(card_name) {
 		d3.select("#"+card_name)
@@ -83,6 +88,7 @@ define(["d3", "lodash", "react", "robots.cards", "robots.audio", "robots.drag", 
 		
 		card_layout = layout.CardLayout({program: program, onNewCardDropped: addNewCard});
 		
+		d3.select("#clear").on("click", clearProgram);
 		d3.select("#run").on("click", runProgram);
 		d3.select("#stop").on("click", stopProgram);
 		

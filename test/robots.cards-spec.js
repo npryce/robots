@@ -129,19 +129,21 @@ define(["robots.cards", "lodash", "chai", "fake-context"], function(cards, _, ch
         });
     });
 
+	function assertSequenceEmpty(s) {
+		assert.equal(s.rowcount(), 1);
+		assertElementsEqual(s.row(0), [], "first row should be empty");
+		assertElementsEqual(s.toArray(), [[]], "s.toArray");
+	}
+	
     describe("a CardSequence", function() {
 		it("initially has one empty row", function() {
-			var s = new cards.CardSequence();
-			   
-			assert.equal(s.rowcount(), 1);
-			assertElementsEqual(s.row(0), [], "first row should be empty");
-			assertElementsEqual(s.toArray(), [[]], "s.toArray");
+			assertSequenceEmpty(new cards.CardSequence());
         });
         
         it("creates the first row when the first card is added", function() {
 			var s = new cards.CardSequence();
 			var a = action("a");
-
+			
             s.append(a);
 			
             assert.equal(s.rowcount(), 1, "rowcount");
@@ -201,6 +203,17 @@ define(["robots.cards", "lodash", "chai", "fake-context"], function(cards, _, ch
 				assert.equal(row.sequence, s);
             });
 		});
+		
+		it("can be cleared", function() {
+			var s = new cards.CardSequence();
+            s.append(action("a"));
+			s.append(action("b"));
+            s.append(action("c"));
+
+			s.clear();
+			
+			assertSequenceEmpty(s);
+		});
     });
     
     describe("Total Card Count Calculation", function() {
@@ -214,6 +227,23 @@ define(["robots.cards", "lodash", "chai", "fake-context"], function(cards, _, ch
 			var p = program(action("a"), repeat(2, [action("b"), action("c")]), action("d"));
 			assert.equal(p.totalCardCount(), 5);
         });
+		it("counts total cards in empty program", function() {
+			assert.equal(program().totalCardCount(), 0);
+		});
+		it("counts total cards in empty repeat statement", function() {
+			assert.equal(repeat(2,[]).totalCardCount(), 1);
+		});
     });
+	
+	describe("Parentage", function() {
+		it("maintains parent/child links for cards in a sequence", function() {
+			var a = action("a");
+			assert.isUndefined(a.parent);
+			
+			var p = program(a);
+			assert.equal(a.row, p.row(0));
+			assert.equal(a.row.sequence, p);
+		});
+	});
 });
 

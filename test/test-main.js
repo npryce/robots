@@ -6,8 +6,10 @@ requirejs.config({
 	paths: {
 		'lodash': 'src/lodash-2.4.1',
 		'robots.cards': 'src/robots.cards',
+		'robots.cards2': 'src/robots.cards2',
 		'chai': 'node_modules/chai/chai',
-		'fake-context': 'test/fake-context'
+		'fake-context': 'test/fake-context',
+		'js-tree-cursor': 'src/js-tree-cursor'
 	},
 	
     shim: {
@@ -16,6 +18,9 @@ requirejs.config({
         },
 		chai: {
 			exports: 'chai'
+		},
+		'js-tree-cursor': {
+			exports: 'TreeCursor'
 		}
     },
     

@@ -1,4 +1,6 @@
-define(["lodash"], function(_){
+define(["lodash", "js-tree-cursor"], function(_, treecursor){
+	'use strict';
+	
 	function evalCard(card, context, onfinished) {
 		context.activate(card.id);
 		card.eval(card, context, function() {
@@ -59,11 +61,7 @@ define(["lodash"], function(_){
 	}
 	
 	function cardSize(card) {
-		function branch(b) {
-			return card[b];
-		}
-		
-		return _(card.branches).map(branch).flatten().map(programSize).reduce(sum, 1);
+		return 1 + _(card).at(card.branches).flatten().map(programSize).reduce(sum, 0);
 	}
 	
 	function programSize(seq) {
@@ -74,9 +72,40 @@ define(["lodash"], function(_){
 		return (i > 1) ? s + "s" : s;
 	}
 	
+	function cursorOpenF(x) {
+		if (_.isArray(x)) {
+			return x;
+		}
+		else {
+			return _.at(x, x.branches);
+		}
+	}
+	
+	function cursorCloseF(x, children) {
+		if (_.isArray(x)) {
+			return children;
+		}
+		else {
+			return _.defaults(_.create(Object.getPrototypeOf(x)), _.zipObject(x.branches, children), x);
+		}
+	}
+	
+	function cursorAtomicF(x) {
+		return !_.isArray(x) && (_.isUndefined(x.branches) || x.branches.length == 0);
+	}
+	
+	function cursor(x) {
+        return TreeCursor.adaptTreeCursor(x,
+                                          cursorOpenF,
+                                          cursorCloseF,
+                                          cursorAtomicF);
+	}
+	
 	var cards = {
 		newProgram: newProgram,
 		newCard: newCard,
+		programSize: programSize,
+		cursor: cursor,
 		
 		action: [
 			{
@@ -136,9 +165,7 @@ define(["lodash"], function(_){
 			sequence: evalSequence,
 			action: evalAction,
 			repeat: evalRepeat
-		},
-		
-		programSize: programSize
+		}
 	};
 	
 	return cards;

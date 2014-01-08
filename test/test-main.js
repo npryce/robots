@@ -4,9 +4,11 @@ requirejs.config({
     baseUrl: '/base/',
 	
 	paths: {
+		'd3': 'src/d3-3.3.9',
 		'lodash': 'src/lodash-2.4.1',
 		'robots.cards': 'src/robots.cards',
 		'robots.cards2': 'src/robots.cards2',
+		'robots.undo': 'src/robots.undo',
 		'chai': 'node_modules/chai/chai',
 		'fake-context': 'test/fake-context',
 		'js-tree-cursor': 'src/js-tree-cursor'

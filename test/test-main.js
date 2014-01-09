@@ -6,6 +6,7 @@ requirejs.config({
 	paths: {
 		'd3': 'src/d3-3.3.9',
 		'lodash': 'src/lodash-2.4.1',
+		'modash': 'src/modash',
 		'robots.cards': 'src/robots.cards',
 		'robots.cards2': 'src/robots.cards2',
 		'robots.undo': 'src/robots.undo',

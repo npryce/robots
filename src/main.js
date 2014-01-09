@@ -12,6 +12,7 @@ requirejs.config({
     }
 });
 
+
 require(["robots", "domReady"], function(robots, onDomReady) {
 	onDomReady(robots.start);
 });

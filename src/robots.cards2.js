@@ -1,4 +1,4 @@
-define(["lodash", "js-tree-cursor"], function(_, treecursor){
+define(["modash", "js-tree-cursor"], function(_, treecursor){
 	'use strict';
 	
 	function evalCard(card, context, onfinished) {
@@ -72,7 +72,7 @@ define(["lodash", "js-tree-cursor"], function(_, treecursor){
 		return (i > 1) ? s + "s" : s;
 	}
 	
-	function cursorOpenF(x) {
+	function cursorOpen(x) {
 		if (_.isArray(x)) {
 			return x;
 		}
@@ -81,7 +81,7 @@ define(["lodash", "js-tree-cursor"], function(_, treecursor){
 		}
 	}
 	
-	function cursorCloseF(x, children) {
+	function cursorClose(x, children) {
 		if (_.isArray(x)) {
 			return children;
 		}
@@ -90,15 +90,20 @@ define(["lodash", "js-tree-cursor"], function(_, treecursor){
 		}
 	}
 	
-	function cursorAtomicF(x) {
-		return !_.isArray(x) && (_.isUndefined(x.branches) || x.branches.length == 0);
+	function isControlCard(c) {
+		return !isAtomicCard(c);
+	}
+
+	function isAtomicCard(c) {
+		return _.isEmpty(c.branches);
+	}
+	
+	function isAtomic(x) {
+		return !_.isArray(x) && isAtomicCard(x);
 	}
 	
 	function cursor(x) {
-        return TreeCursor.adaptTreeCursor(x,
-                                          cursorOpenF,
-                                          cursorCloseF,
-                                          cursorAtomicF);
+        return TreeCursor.adaptTreeCursor(x, cursorOpen, cursorClose, isAtomic);
 	}
 	
 	var cards = {
@@ -106,6 +111,7 @@ define(["lodash", "js-tree-cursor"], function(_, treecursor){
 		newCard: newCard,
 		programSize: programSize,
 		cursor: cursor,
+		isAtomicCard: isAtomicCard,
 		
 		action: [
 			{

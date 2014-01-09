@@ -1,28 +1,41 @@
-define(["d3", "lodash"], function(d3, _) {
+define(["d3", "lodash", "js-tree-cursor"], function(d3, _, treecursor) {
 	"use strict";
-
-	function UndoStack(initial_state) {
-		this._history = [initial_state];
-		this._current = 0;
+	
+	function clearRight(cursor) {
+		return new TreeCursor(
+			cursor.parent,
+			cursor.node,
+			cursor.prevs,
+			[],
+			cursor.openF,
+			cursor.closeF,
+			cursor.atomicF);
 	}
-	UndoStack.prototype.push = function(new_state) {
-		this._history.push(new_state);
-		this._current++;
-	};
+	
+	function UndoStack(cursor) {
+		this._cursor = cursor;
+	}
 	UndoStack.prototype.current = function() {
-		return this._history[this._current];
+		return this._cursor.node;
+	};
+	UndoStack.prototype.push = function(new_state) {
+		return new UndoStack(clearRight(this._cursor).insertRight(new_state));
 	};
 	UndoStack.prototype.canUndo = function() {
-		return this._current > 0;
+		return this._cursor.canLeft();
 	};
 	UndoStack.prototype.undo = function() {
-		this._current--;
+		return new UndoStack(this._cursor.left());
 	};
 	UndoStack.prototype.canRedo = function() {
-		return this._current < (this._history.length-1);
+		return this._cursor.canRight();
 	};
 	UndoStack.prototype.redo = function() {
-		this._current++;
+		return new UndoStack(this._cursor.right());
+	};
+	
+	UndoStack.startingWith = function(initial_state) {
+		return new UndoStack(treecursor.arrayToCursor([initial_state]));
 	};
 	
 	return UndoStack;

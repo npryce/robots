@@ -10,6 +10,7 @@ requirejs.config({
 		'robots.cards': 'src/robots.cards',
 		'robots.cards2': 'src/robots.cards2',
 		'robots.undo': 'src/robots.undo',
+		'robots.edit': 'src/robots.edit',
 		'chai': 'node_modules/chai/chai',
 		'fake-context': 'test/fake-context',
 		'js-tree-cursor': 'src/js-tree-cursor'

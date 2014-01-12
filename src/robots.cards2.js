@@ -45,15 +45,19 @@ define(["modash", "js-tree-cursor"], function(_, treecursor){
 		runNextIteration();
 	}
 	
-	function newCard(card_type) {
+	function newProgram() {
+		return [];
+	}
+
+	function newCard(card_type, card_id) {
 		var card = _.create(card_type);
-		card.id = _.uniqueId("card");
+		card.id = card_id;
 		_.each(card.branches, function(b) {card[b] = [];});
 		return card;
 	}
-
-	function newProgram() {
-		return [];
+	
+	function setPropertyOf(card, property_name, new_value) {
+		return _.defaults(_.create(Object.getPrototypeOf(card), _.zipObject([[property_name, new_value]])), card);
 	}
 
 	function sum(a, b) {
@@ -72,46 +76,22 @@ define(["modash", "js-tree-cursor"], function(_, treecursor){
 		return (i > 1) ? s + "s" : s;
 	}
 	
-	function cursorOpen(x) {
-		if (_.isArray(x)) {
-			return x;
-		}
-		else {
-			return _.at(x, x.branches);
-		}
-	}
-	
-	function cursorClose(x, children) {
-		if (_.isArray(x)) {
-			return children;
-		}
-		else {
-			return _.defaults(_.create(Object.getPrototypeOf(x)), _.zipObject(x.branches, children), x);
-		}
-	}
-	
 	function isControlCard(c) {
 		return !isAtomicCard(c);
 	}
-
+	
 	function isAtomicCard(c) {
 		return _.isEmpty(c.branches);
-	}
-	
-	function isAtomic(x) {
-		return !_.isArray(x) && isAtomicCard(x);
-	}
-	
-	function cursor(x) {
-        return TreeCursor.adaptTreeCursor(x, cursorOpen, cursorClose, isAtomic);
 	}
 	
 	var cards = {
 		newProgram: newProgram,
 		newCard: newCard,
+		setPropertyOf: setPropertyOf,
 		programSize: programSize,
-		cursor: cursor,
+		cardSize: cardSize,
 		isAtomicCard: isAtomicCard,
+		isControlCard: isControlCard,
 		
 		action: [
 			{

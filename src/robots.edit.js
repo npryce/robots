@@ -1,18 +1,5 @@
-define(["modash"], function(_) {
+define(["modash", "robots.cards2"], function(_, cards) {
 	'use strict';
-	
-	function cloneReplacing(o, property_name, new_value) {
-		var clone = _.create(Object.getPrototypeOf(o));
-		
-		var replacement = {};
-		replacement[property_name] = new_value;
-		
-		return _.defaults(clone, replacement, o);
-	}
-
-	function splice(sequence, index1, index2, newValue) {
-		return sequence.slice(0,index1).concat([newValue], sequence.slice(index2));
-	}
 	
 	
 	function EditPoint(sequence, index, parent_edit_point, sequence_name) {
@@ -22,37 +9,49 @@ define(["modash"], function(_) {
 		this.sequence_name = sequence_name;
 	}
 	EditPoint.prototype.node = function() {
-		return this.sequence[index];
+		return this.sequence[this.index];
 	};
-	EditPoint.prototype.insertBefore = function(newNode) {
-		return this._newTree(splice(this.sequence, this.index, this.index, newNode));
+	EditPoint.prototype.insertBefore = function(new_node) {
+		return spliceIntoParent(this, this.index, this.index, new_node);
 	};
-	EditPoint.prototype.insertAfter = function(newNode) {
-		return this._newTree(splice(this.sequence, this.index+1, this.index+1, newNode));
+	EditPoint.prototype.insertAfter = function(new_node) {
+		return spliceIntoParent(this, this.index+1, this.index+1, new_node);
 	};
-	EditPoint.prototype.replaceWith = function(newNode) {
-		return this._newTree(splice(this.sequence, this.index, this.index+1, newNode));
+	EditPoint.prototype.replaceWith = function(new_node) {
+		return spliceIntoParent(this, this.index, this.index+1, new_node);
 	};
-	EditPoint.prototype._newTree = function(new_sequence) {
-		var parent = this.parent;
-		if (_.isUndefined(parent)) {
-			return new_sequence;
+	EditPoint.prototype.editorsForBranch = function(branch_name) {
+		return editorsFor(this.node()[branch_name], this, branch_name);
+	};
+	EditPoint.prototype.appenderForBranch = function(branch_name) {
+		return appenderFor(this.node()[branch_name], this, branch_name);
+	};
+	
+	// TODO - make iterative because JavaScript does not have TCO
+	function spliceIntoParent(edit_point, index1, index2, new_node) {
+		var new_sequence = edit_point.sequence.slice(0,index1).concat([new_node], edit_point.sequence.slice(index2));
+		var parent = edit_point.parent;
+		
+		if (!_.isUndefined(parent)) {
+			return parent.replaceWith(cards.setPropertyOf(parent.node(), edit_point.sequence_name, new_sequence));
 		}
 		else {
-			var new_parent = cloneReplacing(parent.node(), this.sequence_name, new_sequence);
-			// TODO
-			return null;
+			return new_sequence;
 		}
-	};
-	
+	}
 	
 	function editorsFor(sequence, parent_edit_point, sequence_name) {
-		return _.map(_.range(sequence.length+1), function(i) {
+		return _.map(_.range(sequence.length), function(i) {
 			return new EditPoint(sequence, i, parent_edit_point, sequence_name);
 		});
 	}
 	
+	function appenderFor(sequence, parent_edit_point, sequence_name) {
+		return new EditPoint(sequence, sequence.length, parent_edit_point, sequence_name);
+	}
+	
 	return {
-		editorsFor: editorsFor
+		editorsFor: editorsFor,
+		appenderFor: appenderFor
 	};
 });

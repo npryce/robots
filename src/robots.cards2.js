@@ -1,4 +1,4 @@
-define(["modash", "js-tree-cursor"], function(_, treecursor){
+define(["modash"], function(_){
 	'use strict';
 	
 	function evalCard(card, context, onfinished) {

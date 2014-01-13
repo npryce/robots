@@ -1,4 +1,4 @@
-define(["d3", "lodash", "js-tree-cursor"], function(d3, _, treecursor) {
+define(["d3", "lodash"], function(d3, _, treecursor) {
 	"use strict";
 	
 	function UndoStack(prevs, current, nexts) {

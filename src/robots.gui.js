@@ -1,4 +1,4 @@
-define(["modash", "react", "robots.cards2", "robots.drag", "robots.edit"], function(_, React, cards, drag, edit) {
+define(["modash", "react", "robots.cards", "robots.drag", "robots.edit"], function(_, React, cards, drag, edit) {
     var dom = React.DOM;
 	
 	function uniqueCardId() {

@@ -7,7 +7,7 @@ requirejs.config({
 		'd3': 'src/d3-3.3.9',
 		'lodash': 'src/lodash-2.4.1',
 		'modash': 'src/modash',
-		'robots.cards2': 'src/robots.cards2',
+		'robots.cards': 'src/robots.cards',
 		'robots.undo': 'src/robots.undo',
 		'robots.edit': 'src/robots.edit',
 		'chai': 'node_modules/chai/chai',

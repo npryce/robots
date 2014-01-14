@@ -1,4 +1,4 @@
-define(["lodash", "robots.cards2"], function(_, cards) {
+define(["lodash", "robots.cards"], function(_, cards) {
 	'use strict';
 	
 	function EditPoint(sequence, index, parent_edit_point, sequence_name) {

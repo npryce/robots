@@ -1,4 +1,4 @@
-define(["d3", "lodash", "react", "robots.cards2", "robots.audio", "robots.edit", "robots.gui"], 
+define(["d3", "lodash", "react", "robots.cards", "robots.audio", "robots.edit", "robots.gui"], 
 	function(d3, _, React, cards, audio, edit, gui)
 {
     'use strict';

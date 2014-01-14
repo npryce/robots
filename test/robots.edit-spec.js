@@ -1,4 +1,4 @@
-define(["lodash", "chai", "robots.cards2", "robots.edit"], function(_, chai, cards, edit) {
+define(["lodash", "chai", "robots.cards", "robots.edit"], function(_, chai, cards, edit) {
 	'use strict';
     
 	var assert = chai.assert;

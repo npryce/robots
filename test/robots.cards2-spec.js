@@ -1,4 +1,4 @@
-define(["robots.cards2", "lodash", "chai", "fake-context"], function(cards, _, chai, FakeContext) {
+define(["robots.cards", "lodash", "chai", "fake-context"], function(cards, _, chai, FakeContext) {
 	'use strict';
     
 	var assert = chai.assert;

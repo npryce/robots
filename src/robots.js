@@ -24,10 +24,6 @@ define(["d3", "lodash", "react", "robots.cards", "robots.audio", "robots.edit", 
 			.classed("active",false);
 	}
 
-	function clearProgram() {
-		onEdit([]);
-	}
-	
     function activateCard(card_name) {
 		d3.select("#"+card_name)
 			.classed("active", true)
@@ -60,32 +56,57 @@ define(["d3", "lodash", "react", "robots.cards", "robots.audio", "robots.edit", 
 	}
 	
 	function onEdit(new_program) {
-		history = history.push(new_program);
-		card_layout.programChanged(new_program);
+		updateHistory(history.push(new_program));
+	}
+	
+	function clearProgram() {
+		onEdit([]);
+	}
+	
+	function updateHistory(new_history) {
+		history = new_history;
 		
-		var cardCount =	cards.programSize(new_program);
-		d3.select("#card-count").text(cardCount);
-		d3.select("#run").attr("enabled", cardCount > 0);
+		card_layout.programChanged(history.current());
+		
+		var cardCount =	cards.programSize(history.current());
+		
+		document.getElementById("card-count").text = cardCount;
+		document.getElementById("undo").disabled = !history.canUndo();
+		document.getElementById("redo").disabled = !history.canRedo();
+		document.getElementById("run").disabled = (cardCount == 0);
+		document.getElementById("clear").disabled = (cardCount == 0);
+	}
+	
+	function undo() {
+		updateHistory(history.undo());
+	}
+	
+	function redo() {
+		updateHistory(history.redo());
 	}
 	
 	function start() {
 		audio_player = new audio.PausingAudioPlayer(250);
 		cards.preload(audio_player);
 		
-		history = edit.undoStartingWith(cards.newProgram());
-		is_running = false;
+		var initial_program = cards.newProgram();
 		
-		card_layout = gui.CardLayout({program: history.current(), onEdit: onEdit});
+		card_layout = gui.CardLayout({program: initial_program, onEdit: onEdit});
 		
 		d3.select("#clear").on("click", clearProgram);
 		d3.select("#run").on("click", runProgram);
 		d3.select("#stop").on("click", stopProgram);
+		d3.select("#undo").on("click", undo);
+		d3.select("#redo").on("click", redo);
 		
 		React.renderComponent(card_layout, document.getElementById("program"));
 		React.renderComponent(gui.CardStacks({cards: cards}), document.getElementById("stacks"));
 		
+		updateHistory(edit.undoStartingWith(initial_program));
+		
 		d3.select("body").classed("loading", false);
 		
+		is_running = false;
 		viewToEditMode();
 	}
 	

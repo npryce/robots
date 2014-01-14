@@ -22,7 +22,7 @@ define(["modash", "react", "robots.cards2", "robots.drag", "robots.edit"], funct
 	}
 	
 	var CardLayout = React.createClass({
-		displayName: "robots.cardlayout.CardLayout",
+		displayName: "robots.gui.CardLayout",
 		
 		getInitialState: function() {
 			return {program: this.props.program};
@@ -81,7 +81,7 @@ define(["modash", "react", "robots.cards2", "robots.drag", "robots.edit"], funct
 	});
 	
     var DropTarget = React.createClass({
-		displayName: "robots.cardlayout.DropTarget",
+		displayName: "robots.gui.DropTarget",
 		
 		render: function() {
 			return dom.div({className: "cursor" + (this.props.required ? " required" : "")});
@@ -103,7 +103,7 @@ define(["modash", "react", "robots.cards2", "robots.drag", "robots.edit"], funct
 	var new_card_gesture = drag.gesture("new");
 		   
 	var CardStack = React.createClass({
-		displayName: "robots.cardlayout.CardStack",
+		displayName: "robots.gui.CardStack",
 		
 		render: function() {
 			return dom.div({className: "card " + this.props.category},
@@ -115,7 +115,7 @@ define(["modash", "react", "robots.cards2", "robots.drag", "robots.edit"], funct
 	});
 	
 	var CardStackRow = React.createClass({
-		displayName: "robots.cardlayout.CardStackRow",
+		displayName: "robots.gui.CardStackRow",
 		
 		render: function() {
 			var category = this.props.category;
@@ -128,7 +128,7 @@ define(["modash", "react", "robots.cards2", "robots.drag", "robots.edit"], funct
 	});
 	
 	var CardStacks = React.createClass({
-		displayName: "robots.cardlayout.CardStacks",
+		displayName: "robots.gui.CardStacks",
 		
 		render: function() {
 			return dom.div({},

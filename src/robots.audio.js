@@ -2,7 +2,7 @@ define(["lodash", "howler"], function(_, howler) {
     'use strict';
     
     function AudioPlayer() {
-		this.formats = ["mp3", "wav"];
+		this.formats = ["wav"];
 		this.samples = {};
 		this.current = null;
 		this.completion_callback = _.noop;
@@ -11,6 +11,7 @@ define(["lodash", "howler"], function(_, howler) {
 	AudioPlayer.prototype.load = function(sample_name) {
 		var sample = new howler.Howl({
 			urls: _.map(this.formats, function(f) {return "audio/" + sample_name + "." + f;}),
+			buffer: true,
 			onend: _.bind(this._sampleFinished, this)
 		});
 		this.samples[sample_name] = sample;

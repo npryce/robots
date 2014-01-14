@@ -1,4 +1,4 @@
-define(["modash"], function(_){
+define(["lodash"], function(_){
 	'use strict';
 	
 	function evalCard(card, context, onfinished) {
@@ -84,6 +84,13 @@ define(["modash"], function(_){
 		return _.isEmpty(c.branches);
 	}
 	
+    function preload(audio_player) {
+		_.values(cards.action).forEach(function (card_type) {
+			audio_player.load("actions/" + card_type.action);
+		});
+	};
+
+
 	var cards = {
 		newProgram: newProgram,
 		newCard: newCard,
@@ -92,6 +99,8 @@ define(["modash"], function(_){
 		cardSize: cardSize,
 		isAtomicCard: isAtomicCard,
 		isControlCard: isControlCard,
+		preload: preload,
+		run: evalSequence,
 		
 		action: [
 			{
@@ -142,13 +151,12 @@ define(["modash"], function(_){
 				repeat: i,
 				branches: ["body"],
 				title: "Repeat " + i + " " + pluralise("Time", i),
-				text: String.valueOf(i),
+				text: String(i),
 				eval: evalRepeat
 			};
 		}),
 		
 		eval: {
-			sequence: evalSequence,
 			action: evalAction,
 			repeat: evalRepeat
 		}

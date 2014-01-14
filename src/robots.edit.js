@@ -1,6 +1,5 @@
-define(["modash", "robots.cards2"], function(_, cards) {
+define(["lodash", "robots.cards2"], function(_, cards) {
 	'use strict';
-	
 	
 	function EditPoint(sequence, index, parent_edit_point, sequence_name) {
 		this.sequence = sequence;
@@ -85,5 +84,4 @@ define(["modash", "robots.cards2"], function(_, cards) {
 		appenderFor: appenderFor,
 		undoStartingWith: undoStartingWith
 	};
-
 });

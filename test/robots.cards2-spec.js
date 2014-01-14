@@ -17,8 +17,8 @@ define(["robots.cards2", "lodash", "chai", "fake-context"], function(cards, _, c
 		return card;
 	}
 	
-    function run(sequence, context) {
-        cards.eval.sequence(sequence, context, function(){context.done();});
+    function run(program, context) {
+        cards.run(program, context, function(){context.done();});
 	}
 	
 	describe("Interpretation", function() {

@@ -1,21 +1,15 @@
-define(["d3", "lodash", "react", "robots.cards", "robots.audio", "robots.drag", "robots.cardlayout"], 
-	function(d3, _, React, cards, audio, drag, layout) 
+define(["d3", "lodash", "react", "robots.cards2", "robots.audio", "robots.edit", "robots.gui"], 
+	function(d3, _, React, cards, audio, edit, gui)
 {
     'use strict';
 	
     var audio_player;
-    var program;
+	var history;
 	var is_running;
 	var card_layout;
+	
 
-	function cardText(card) {
-		return card.text;
-	}
-	
-	function cardId(card) {
-		return card.id;
-	}
-	
+
     function viewToRunMode() {
 		d3.select("body")
 			.classed("editing", false)
@@ -31,10 +25,9 @@ define(["d3", "lodash", "react", "robots.cards", "robots.audio", "robots.drag", 
 	}
 
 	function clearProgram() {
-		program.clear();
-		card_layout.setState(program);
+		onEdit([]);
 	}
-    
+	
     function activateCard(card_name) {
 		d3.select("#"+card_name)
 			.classed("active", true)
@@ -52,10 +45,11 @@ define(["d3", "lodash", "react", "robots.cards", "robots.audio", "robots.drag", 
     function runProgram() {
 		is_running = true;
 		viewToRunMode();
-		program.run({activate: activateCard,
-					 deactivate: deactivateCard,
-					 play: playAudioClip},
-					viewToEditMode);
+		cards.run(history.current(),
+				  {activate: activateCard,
+				   deactivate: deactivateCard,
+				   play: playAudioClip},
+				  viewToEditMode);
 	}
     
     function stopProgram() {
@@ -65,35 +59,30 @@ define(["d3", "lodash", "react", "robots.cards", "robots.audio", "robots.drag", 
 		viewToEditMode();
 	}
 	
-	function addNewCard(sequence, stack) {
-		var card = stack.newCard();
-		sequence.append(card);
+	function onEdit(new_program) {
+		history = history.push(new_program);
+		card_layout.programChanged(new_program);
 		
-		var cardCount =	program.totalCardCount();
+		var cardCount =	cards.programSize(new_program);
 		d3.select("#card-count").text(cardCount);
-		
-		card_layout.setState(program);
-		
 		d3.select("#run").attr("enabled", cardCount > 0);
-		
-		return card;
 	}
 	
 	function start() {
 		audio_player = new audio.PausingAudioPlayer(250);
 		cards.preload(audio_player);
 		
-		program = cards.newProgram();
+		history = edit.undoStartingWith(cards.newProgram());
 		is_running = false;
 		
-		card_layout = layout.CardLayout({program: program, onNewCardDropped: addNewCard});
+		card_layout = gui.CardLayout({program: history.current(), onEdit: onEdit});
 		
 		d3.select("#clear").on("click", clearProgram);
 		d3.select("#run").on("click", runProgram);
 		d3.select("#stop").on("click", stopProgram);
 		
 		React.renderComponent(card_layout, document.getElementById("program"));
-		React.renderComponent(layout.CardStacks({cards: cards}), document.getElementById("stacks"));
+		React.renderComponent(gui.CardStacks({cards: cards}), document.getElementById("stacks"));
 		
 		d3.select("body").classed("loading", false);
 		

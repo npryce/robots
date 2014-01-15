@@ -141,6 +141,10 @@ body {
 	font-size: inherit;
 }
 
+.card {
+	cursor: crosshair;
+}
+
 .running .cursor {
 	display: none;
 }
@@ -179,7 +183,7 @@ body {
 }
 
 #stacks .card {
-	cursor: move;
+	cursor: default;
 }
 
 .cursor {

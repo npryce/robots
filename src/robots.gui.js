@@ -20,6 +20,24 @@ define(["modash", "react", "robots.cards", "robots.drag", "robots.edit"], functi
 	function rowsAreComplete(rows) {
 		return _.isEmpty(rows) || rowIsComplete(_.last(rows));
 	}
+
+	var Card = React.createClass({
+		displayName: "robots.gui.Card",
+		
+		render: function() {
+			var card = this.props.editor.node();
+			var attrs = {
+				className: "card " + (cards.isAtomicCard(card) ? "action" : "control"),
+				id: card.id,
+				onClick: this.handleClick
+			};
+			
+			return dom.div(_.extend(attrs, this.props.attrs), card.text);
+		},
+		handleClick: function() {
+			this.props.onEdit(this.props.editor.remove());
+		}
+	});
 	
 	var CardLayout = React.createClass({
 		displayName: "robots.gui.CardLayout",
@@ -59,12 +77,7 @@ define(["modash", "react", "robots.cards", "robots.drag", "robots.edit"], functi
 			}
 		},
 		renderCard: function(editor, extra_attrs) {
-			var card = editor.node();
-			var attrs = {};
-			attrs.className = "card " + (cards.isAtomicCard(card) ? "action" : "control"); // React doesn't support classList :-(
-			attrs.key = card.id;
-			_.extend(attrs, extra_attrs);
-			return dom.div(attrs, card.text);
+			return Card({editor: editor, attrs: extra_attrs, key: editor.node().id, onEdit: this.props.onEdit});
 		},
 		renderNewCardDropTarget: function(appender, required) {
 			var onEdit = this.props.onEdit;

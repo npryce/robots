@@ -32,6 +32,9 @@ define(["lodash", "chai", "robots.cards", "robots.edit"], function(_, chai, card
 				assert.deepEqual(appender.insertAfter(a), program(a));
 				assert.deepEqual(appender.replaceWith(a), program(a));
 			});
+			it("ignores remove", function() {
+				assert.deepEqual(appender.remove(), empty_program);
+			});
 		});
 		
 		describe("Flat Program", function() {
@@ -55,8 +58,12 @@ define(["lodash", "chai", "robots.cards", "robots.edit"], function(_, chai, card
 				assert.deepEqual(editors[0].replaceWith(c), program(c, b));
 				assert.deepEqual(editors[1].replaceWith(c), program(a, c));
 			});
+			it("can remove existing card", function() {
+				assert.deepEqual(editors[0].remove(), program(b));
+				assert.deepEqual(editors[1].remove(), program(b));
+			});
 		});
-
+		
 		describe("Nested Program", function() {
 			var p = program(a,repeat(2, [b,c]));
 			var p_editors = edit.editorsFor(p);
@@ -79,6 +86,11 @@ define(["lodash", "chai", "robots.cards", "robots.edit"], function(_, chai, card
 			it ("can replace existing card", function() {
 				assert.deepEqual(repeat_body_editors[0].replaceWith(d), program(a, repeat(2, [d, c])));
 				assert.deepEqual(repeat_body_editors[1].replaceWith(d), program(a, repeat(2, [b, d])));
+			});
+			it("can remove existing card", function() {
+				assert.deepEqual(p_editors[1].remove(), program(a));
+				assert.deepEqual(repeat_body_editors[0].remove(), program(a, repeat(2, [c])));
+				assert.deepEqual(repeat_body_editors[1].remove(), program(a, repeat(2, [b])));
 			});
 			
 			it("can append to nested branch", function() {

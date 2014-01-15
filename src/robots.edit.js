@@ -19,6 +19,9 @@ define(["lodash", "robots.cards"], function(_, cards) {
 	EditPoint.prototype.replaceWith = function(new_node) {
 		return spliceIntoParent(this, this.index, this.index+1, new_node);
 	};
+	EditPoint.prototype.remove = function() {
+		return spliceIntoParent(this, this.index, this.index+1);
+	};
 	EditPoint.prototype.editorsForBranch = function(branch_name) {
 		return editorsFor(this.node()[branch_name], this, branch_name);
 	};
@@ -27,8 +30,9 @@ define(["lodash", "robots.cards"], function(_, cards) {
 	};
 	
 	// TODO - make iterative because JavaScript does not have TCO
-	function spliceIntoParent(edit_point, index1, index2, new_node) {
-		var new_sequence = edit_point.sequence.slice(0,index1).concat([new_node], edit_point.sequence.slice(index2));
+	function spliceIntoParent(edit_point, index1, index2) {
+		var new_elements = _.rest(arguments, 3);
+		var new_sequence = edit_point.sequence.slice(0,index1).concat(new_elements, edit_point.sequence.slice(index2));
 		var parent = edit_point.parent;
 		
 		if (!_.isUndefined(parent)) {

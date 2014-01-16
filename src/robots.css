@@ -139,10 +139,7 @@ body {
 	overflow: none;
 	font-family: inherit;
 	font-size: inherit;
-}
-
-.card {
-	cursor: crosshair;
+	cursor: default;
 }
 
 .running .cursor {
@@ -180,10 +177,6 @@ body {
 	animation-duration: 0.15s;
 	animation-iteration-count: infinite;
 	transform-origin: 50% 50%;
-}
-
-#stacks .card {
-	cursor: default;
 }
 
 .cursor {

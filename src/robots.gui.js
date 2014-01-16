@@ -1,5 +1,6 @@
 define(["modash", "react", "robots.cards", "robots.drag", "robots.edit"], function(_, React, cards, drag, edit) {
     var dom = React.DOM;
+	var drag_gesture = drag.gesture();
 	
 	function uniqueCardId() {
 		return _.uniqueId("card-");
@@ -83,11 +84,10 @@ define(["modash", "react", "robots.cards", "robots.drag", "robots.edit"], functi
 			var onEdit = this.props.onEdit;
 			
 			return DropTarget({
-				action: "new",
 				key: "append",
 				required: required,
-				onCardDropped: function(stack) {
-					onEdit(appender.insertAfter(cards.newCard(stack, uniqueCardId())));
+				onCardDropped: function(card) {
+					onEdit(appender.insertAfter(card));
 				}
 			});
 		}
@@ -105,25 +105,26 @@ define(["modash", "react", "robots.cards", "robots.drag", "robots.edit"], functi
 			n.addEventListener("carddrop", this.cardDrop);
 		},
 		cardDragIn: function(ev) {
-			drag.accept(ev, drag.action(ev) == this.props.action);
+			drag.acceptDrop(ev);
 		},
 		cardDrop: function(ev) {
 			this.props.onCardDropped(drag.data(ev));
 		}
 	});
 	
-	
-	var new_card_gesture = drag.gesture("new");
-		   
 	var CardStack = React.createClass({
 		displayName: "robots.gui.CardStack",
 		
 		render: function() {
-			return dom.div({className: "card " + this.props.category},
+			return dom.div({className: "card " + this.props.category}, 
 						   this.props.stack.text);
 		},
 		componentDidMount: function() {
-			d3.select(this.getDOMNode()).data([this.props.stack]).call(new_card_gesture);
+			this.getDOMNode().addEventListener("carddragstart", this.cardDragStart);
+			drag_gesture.bind(this.getDOMNode());
+		},
+		cardDragStart: function(ev) {
+			drag.acceptDrag(ev, cards.newCard(this.props.stack, uniqueCardId()));
 		}
 	});
 	

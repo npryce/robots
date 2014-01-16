@@ -1,23 +1,27 @@
 define(["d3", "lodash"], function(d3, _) {
-    function newDragInEvent(action) {
-		return new CustomEvent("carddragin", {detail: {action: action, accepted: false}});
+    function newDragStartEvent() {
+		return new CustomEvent("carddragstart", {detail: {data: null}});
 	}
-    function newDragEvent(action) {
-		return new CustomEvent("carddrag", {detail: {action: action, accepted: true}});
+    function newDragInEvent(data) {
+		return new CustomEvent("carddragin", {detail: {accepted: false}});
 	}
-    function newDragOutEvent(action) {
+    function newDragEvent(data) {
+		return new CustomEvent("carddrag", {detail: {accepted: true}});
+	}
+    function newDragOutEvent(data) {
 		return new CustomEvent("carddragout");
 	}
-    function newDropEvent(action, data) {
-		return new CustomEvent("carddrop", {detail: {action: action, data: data}});
+    function newDropEvent(data) {
+		return new CustomEvent("carddrop", {detail: {data: data}});
 	}
 	
     function removeElement(e) {
 		d3.select(e || this).remove();
 	}
 	
-    function gesture(drop_action) {
+    function gesture() {
         var drag = d3.behavior.drag();
+		var dragged_data = null;
 		var dragged_element = null;
 		var drop_target = null;
 		
@@ -31,15 +35,24 @@ define(["d3", "lodash"], function(d3, _) {
 		});
 		drag.on("dragstart", function() {
             drop_target = null;
+			dragged_data = null;
 			if (dragged_element != null) {
 				removeElement(dragged_element);
 			}
 			
-			dragged_element = this.cloneNode(true);
-			dragged_element.classList.add("dragging");
-			document.body.appendChild(dragged_element);
+			var start_event = newDragStartEvent();
+			this.dispatchEvent(start_event);
+			
+			dragged_data = start_event.detail.data;
+			if (dragged_data) {
+				dragged_element = this.cloneNode(true);
+				dragged_element.classList.add("dragging");
+				document.body.appendChild(dragged_element);
+			}
 		});
 		drag.on("drag", function() {
+			if (dragged_data === null) return;
+			
 			var ev = d3.event;
 			
 			dragged_element.style.left = ev.x + "px";
@@ -48,11 +61,11 @@ define(["d3", "lodash"], function(d3, _) {
 			var under = document.elementFromPoint(ev.sourceEvent.pageX, ev.sourceEvent.pageY);
 			if (under !== drop_target) {
 				if (drop_target !== null) {
-					drop_target.dispatchEvent(newDragOutEvent(drop_action));
+					drop_target.dispatchEvent(newDragOutEvent(dragged_data));
 					drop_target = null;
 				}
 				if (under !== null) {
-					var drag_in_event = newDragInEvent(drop_action);
+					var drag_in_event = newDragInEvent(dragged_data);
 					under.dispatchEvent(drag_in_event);
 					if (drag_in_event.detail.accepted) {
 						drop_target = under;
@@ -62,17 +75,19 @@ define(["d3", "lodash"], function(d3, _) {
 			else if (under !== null) { 
 				// under will be null while dragging outside the browser window
 				
-				var drag_event = newDragEvent(drop_action);
+				var drag_event = newDragEvent(dragged_data);
 				under.dispatchEvent(drag_event);
 				if (!drag_event.detail.accepted) {
 					drop_target = null;
 				}
 			}
 		});
-		drag.on("dragend", function(data) {
+		drag.on("dragend", function() {
+			if (dragged_data === null) return;
+			
 			if (drop_target != null) {
 				removeElement(dragged_element);
-				drop_target.dispatchEvent(newDropEvent(drop_action, data));
+				drop_target.dispatchEvent(newDropEvent(dragged_data));
 			}
 			else {
 				d3.select(dragged_element)
@@ -84,7 +99,11 @@ define(["d3", "lodash"], function(d3, _) {
 			drop_target = null;
         });
 		
-		return drag;
+		return {
+			bind: function(drag_source_element) {
+				d3.select(drag_source_element).call(drag);
+			}
+		};
     }
     
 	return {
@@ -92,14 +111,15 @@ define(["d3", "lodash"], function(d3, _) {
 		
 		// Because I can't safely add methods or properties to CustomEvent 
 		// but don't want to expose its structure.
-		action: function(event) {
-			return event.detail.action;
+		
+		acceptDrag: function(event, data) {
+			event.detail.data = data;
 		},
 		data: function(event) {
 			return event.detail.data;
 		},
-		accept: function(event, flag) {
-			event.detail.accepted = flag || _.isUndefined(flag);
+		acceptDrop: function(event, accepted) {
+			event.detail.accepted = accepted || _.isUndefined(accepted);
 		}
 	};
 });

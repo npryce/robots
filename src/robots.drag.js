@@ -100,7 +100,10 @@ define(["d3", "lodash"], function(d3, _) {
         });
 		
 		return {
-			bind: function(drag_source_element) {
+			bind: function(drag_source_element, data_provider_fn) {
+				drag_source_element.addEventListener("carddragstart", function(ev) {
+					ev.detail.data = data_provider_fn();
+				});
 				d3.select(drag_source_element).call(drag);
 			}
 		};
@@ -112,9 +115,6 @@ define(["d3", "lodash"], function(d3, _) {
 		// Because I can't safely add methods or properties to CustomEvent 
 		// but don't want to expose its structure.
 		
-		acceptDrag: function(event, data) {
-			event.detail.data = data;
-		},
 		data: function(event) {
 			return event.detail.data;
 		},

@@ -120,11 +120,10 @@ define(["modash", "react", "robots.cards", "robots.drag", "robots.edit"], functi
 						   this.props.stack.text);
 		},
 		componentDidMount: function() {
-			this.getDOMNode().addEventListener("carddragstart", this.cardDragStart);
-			drag_gesture.bind(this.getDOMNode());
+			drag_gesture.bind(this.getDOMNode(), this.newCard);
 		},
-		cardDragStart: function(ev) {
-			drag.acceptDrag(ev, cards.newCard(this.props.stack, uniqueCardId()));
+		newCard: function() {
+			return cards.newCard(this.props.stack, uniqueCardId());
 		}
 	});
 	

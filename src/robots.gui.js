@@ -35,8 +35,13 @@ define(["modash", "react", "robots.cards", "robots.drag", "robots.edit"], functi
 			
 			return dom.div(_.extend(attrs, this.props.attrs), card.text);
 		},
-		handleClick: function() {
+		componentDidMount: function() {
+			drag_gesture.bind(this.getDOMNode(), this.startMovingCard);
+		},
+		startMovingCard: function() {
+			var card = this.props.editor.node();
 			this.props.onEdit(this.props.editor.remove());
+			return card;
 		}
 	});
 	

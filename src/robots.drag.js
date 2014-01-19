@@ -1,116 +1,160 @@
-define(["d3", "lodash"], function(d3, _) {
+define(["lodash"], function(_) {
     function newDragStartEvent() {
-		return new CustomEvent("carddragstart", {detail: {data: null}});
+		return new CustomEvent("carddragstart", {bubbles: true, detail: {data: null}});
 	}
     function newDragInEvent(data) {
-		return new CustomEvent("carddragin", {detail: {accepted: false}});
-	}
-    function newDragEvent(data) {
-		return new CustomEvent("carddrag", {detail: {accepted: true}});
+		return new CustomEvent("carddragin", {bubbles: true, detail: {accepted: false}});
 	}
     function newDragOutEvent(data) {
-		return new CustomEvent("carddragout");
+		return new CustomEvent("carddragout", {bubbles: true});
 	}
     function newDropEvent(data) {
-		return new CustomEvent("carddrop", {detail: {data: data}});
+		return new CustomEvent("carddrop", {bubbles: true, detail: {data: data, accepted:true}});
 	}
 	
     function removeElement(e) {
-		d3.select(e || this).remove();
+		(e || this).remove();
 	}
 	
-    function gesture() {
-        var drag = d3.behavior.drag();
-		var dragged_data = null;
-		var dragged_element = null;
-		var drop_target = null;
+	function pageOrigin(e) {
+		var box = e.getBoundingClientRect();
+		var scrollLeft = window.pageXOffset;
+		var scrollTop = window.pageYOffset;
 		
-		function origin(e) {
-			var bounds = e.getBoundingClientRect();
-			return {x: bounds.left, y: bounds.top};
+		var left = box.left + scrollLeft;
+		var top  = box.top +  scrollTop;
+		
+		return [left, top];
+	}
+	
+	function setElementPosition(e, coords) {
+		e.style.left = coords[0] + "px";
+		e.style.top = coords[1] + "px";
+	}
+	
+	
+	var initialised = false;
+	var drag_state = null;
+	var dragged_data = null;
+	var drag_offset_x = null;
+	var drag_offset_y = null;
+	var dragged_element = null;
+	var drop_target = null;
+	
+	function startDragging(target, page_x, page_y) {
+		var start_event = newDragStartEvent();
+		
+        drop_target = null;
+		dragged_data = null;
+		if (dragged_element != null) {
+			removeElement(dragged_element);
 		}
 		
-		drag.origin(function() {
-			return origin(this);
-		});
-		drag.on("dragstart", function() {
-            drop_target = null;
-			dragged_data = null;
-			if (dragged_element != null) {
-				removeElement(dragged_element);
-			}
-			
-			var start_event = newDragStartEvent();
-			this.dispatchEvent(start_event);
-			
-			dragged_data = start_event.detail.data;
-			if (dragged_data) {
-				dragged_element = this.cloneNode(true);
-				dragged_element.classList.add("dragging");
-				document.body.appendChild(dragged_element);
-			}
-		});
-		drag.on("drag", function() {
-			if (dragged_data === null) return;
-			
-			var ev = d3.event;
-			
-			dragged_element.style.left = ev.x + "px";
-			dragged_element.style.top = ev.y + "px";
-			
-			var under = document.elementFromPoint(ev.sourceEvent.pageX, ev.sourceEvent.pageY);
-			if (under !== drop_target) {
-				if (drop_target !== null) {
-					drop_target.dispatchEvent(newDragOutEvent(dragged_data));
-					drop_target = null;
-				}
-				if (under !== null) {
-					var drag_in_event = newDragInEvent(dragged_data);
-					under.dispatchEvent(drag_in_event);
-					if (drag_in_event.detail.accepted) {
-						drop_target = under;
-					}
-				}
-			}
-			else if (under !== null) { 
-				// under will be null while dragging outside the browser window
-				
-				var drag_event = newDragEvent(dragged_data);
-				under.dispatchEvent(drag_event);
-				if (!drag_event.detail.accepted) {
-					drop_target = null;
-				}
-			}
-		});
-		drag.on("dragend", function() {
-			if (dragged_data === null) return;
-			
-			if (drop_target != null) {
-				removeElement(dragged_element);
-				drop_target.dispatchEvent(newDropEvent(dragged_data));
-			}
-			else {
-				d3.select(dragged_element)
-					.classed("disappearing", true)
-					.on("transitionend", removeElement);
-			}
-			
-			dragged_element = null;
-			drop_target = null;
-        });
+		target.dispatchEvent(start_event);
 		
-		return {
-			bind: function(drag_source_element, data_provider_fn) {
-				drag_source_element.addEventListener("carddragstart", function(ev) {
-					ev.detail.data = data_provider_fn();
-				});
-				d3.select(drag_source_element).call(drag);
+		dragged_data = start_event.detail.data;
+		if (dragged_data) {
+			var source_element = start_event.detail.element;
+			var source_pos = start_event.detail.element_origin;
+			
+			dragged_element = source_element.cloneNode(true);
+			dragged_element.classList.add("dragging");
+			setElementPosition(dragged_element, source_pos);
+			
+			document.body.appendChild(dragged_element);
+			
+			drag_state = {
+				data: start_event.detail.data,
+				dragged_element: dragged_element,
+				dragged_element_origin: source_pos,
+				gesture_origin: [page_x, page_y],
+				drop_target: null
+			};
+			
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+    function dragTo(page_x, page_y) {
+		setElementPosition(dragged_element, [
+			drag_state.dragged_element_origin[0] + (page_x - drag_state.gesture_origin[0]),
+			drag_state.dragged_element_origin[1] + (page_y - drag_state.gesture_origin[1])]);
+		
+		var under = document.elementFromPoint(page_x, page_y);
+		if (under !== drag_state.drop_target) {
+			if (drag_state.drop_target !== null) {
+				drag_state.drop_target.dispatchEvent(newDragOutEvent(dragged_data));
+				drag_state.drop_target = null;
 			}
-		};
-    }
-    
+			
+			if (under !== null) {
+				var drag_in_event = newDragInEvent(dragged_data);
+				under.dispatchEvent(drag_in_event);
+				if (drag_in_event.detail.accepted) {
+					drag_state.drop_target = under;
+				}
+			}
+		}
+	}
+	
+    function drop() {
+		var dragged_element = drag_state.dragged_element;
+		var dropped;
+		
+		if (drag_state.drop_target) {
+			var drop_event = newDropEvent(drag_state.data);
+			drag_state.drop_target.dispatchEvent(drop_event);
+			dropped = drop_event.detail.accepted;
+		}
+		else {
+			dropped = false;
+		}
+		
+		if (dropped) {
+			removeElement(dragged_element);
+		} else {
+			drag_state.dragged_element.classList.add("disappearing");
+			drag_state.dragged_element.addEventListener("transitionend", function() {removeElement(dragged_element);});
+		}
+		
+		drag_state = null;
+	}
+	
+	function bodyMouseDown(ev) {
+		if (startDragging(ev.target, ev.pageX, ev.pageY)) {
+			document.body.addEventListener("mousemove", bodyMouseDrag, true);
+		}
+	}
+	
+	function bodyMouseUp(ev) {
+		document.body.removeEventListener("mousemove", bodyMouseDrag, true);
+		if (drag_state) drop();
+	}
+	
+	function bodyMouseDrag(ev) {
+		if (drag_state) dragTo(ev.pageX, ev.pageY);
+	}
+	
+	function initDragAndDrop() {
+		var body = document.body;
+		body.addEventListener("mousedown", bodyMouseDown);
+		body.addEventListener("mouseup", bodyMouseUp);
+		initialised = true;
+	}
+	
+	initDragAndDrop();
+	
 	return {
-		gesture: gesture,
+		bind: function(drag_source_element, data_provider_fn) {
+			drag_source_element.addEventListener("carddragstart", function(ev) {
+				ev.detail.element = ev.currentTarget;
+				ev.detail.element_origin = pageOrigin(ev.currentTarget);
+				ev.detail.data = data_provider_fn();
+			});
+		},
 		
 		// Because I can't safely add methods or properties to CustomEvent 
 		// but don't want to expose its structure.
@@ -118,7 +162,7 @@ define(["d3", "lodash"], function(d3, _) {
 		data: function(event) {
 			return event.detail.data;
 		},
-		acceptDrop: function(event, accepted) {
+		accept: function(event, accepted) {
 			event.detail.accepted = accepted || _.isUndefined(accepted);
 		}
 	};

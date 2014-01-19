@@ -1,6 +1,5 @@
 define(["modash", "react", "robots.cards", "robots.drag", "robots.edit"], function(_, React, cards, drag, edit) {
     var dom = React.DOM;
-	var drag_gesture = drag.gesture();
 	
 	function uniqueCardId() {
 		return _.uniqueId("card-");
@@ -29,14 +28,13 @@ define(["modash", "react", "robots.cards", "robots.drag", "robots.edit"], functi
 			var card = this.props.editor.node();
 			var attrs = {
 				className: "card " + (cards.isAtomicCard(card) ? "action" : "control"),
-				id: card.id,
-				onClick: this.handleClick
+				id: card.id
 			};
 			
 			return dom.div(_.extend(attrs, this.props.attrs), card.text);
 		},
 		componentDidMount: function() {
-			drag_gesture.bind(this.getDOMNode(), this.startMovingCard);
+			drag.bind(this.getDOMNode(), this.startMovingCard);
 		},
 		startMovingCard: function() {
 			var card = this.props.editor.node();
@@ -110,7 +108,7 @@ define(["modash", "react", "robots.cards", "robots.drag", "robots.edit"], functi
 			n.addEventListener("carddrop", this.cardDrop);
 		},
 		cardDragIn: function(ev) {
-			drag.acceptDrop(ev);
+			drag.accept(ev);
 		},
 		cardDrop: function(ev) {
 			this.props.onCardDropped(drag.data(ev));
@@ -125,7 +123,7 @@ define(["modash", "react", "robots.cards", "robots.drag", "robots.edit"], functi
 						   this.props.stack.text);
 		},
 		componentDidMount: function() {
-			drag_gesture.bind(this.getDOMNode(), this.newCard);
+			drag.bind(this.getDOMNode(), this.newCard);
 		},
 		newCard: function() {
 			return cards.newCard(this.props.stack, uniqueCardId());

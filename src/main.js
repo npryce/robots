@@ -1,6 +1,6 @@
 requirejs.config({
     paths: {
-		'd3': 'd3-3.3.9',
+		'd3': 'd3-3.4.1',
 		'react': 'react-0.8.0',
 		'lodash': 'lodash-2.4.1',
 		'howler': 'howler-1.1.14'
@@ -11,7 +11,6 @@ requirejs.config({
         }
     }
 });
-
 
 require(["robots", "domReady"], function(robots, onDomReady) {
 	onDomReady(robots.start);

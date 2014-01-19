@@ -4,7 +4,7 @@ requirejs.config({
     baseUrl: '/base/',
 	
 	paths: {
-		'd3': 'src/d3-3.3.9',
+		'd3': 'src/d3-3.4.1',
 		'lodash': 'src/lodash-2.4.1',
 		'modash': 'src/modash',
 		'robots.cards': 'src/robots.cards',

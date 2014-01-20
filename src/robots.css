@@ -200,6 +200,38 @@ body {
 	display:none;
 }
 
+
+.annotation {
+    background: red;
+	color: white;
+	font-size: 60%;
+    width: 1em;
+    height: 1em;
+    position: absolute;
+	top: -0.25em;
+	right: -0.25em;
+    text-align: center;
+	z-index: 0;
+}
+
+.annotation:before, .annotation:after {
+    background: red;
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: inherit;
+    width: inherit;
+	z-index: -1;
+}
+
+.annotation:before {
+    transform: rotate(30deg);
+}
+.annotation:after {
+    transform: rotate(60deg);
+}
+
 @keyframes jiggle {
 	0% {
 		transform: rotate(0deg);

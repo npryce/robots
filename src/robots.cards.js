@@ -35,6 +35,7 @@ define(["lodash"], function(_){
 		
         function runNextIteration() {
 		    if (iteration < card.repeat) {
+				context.annotate(card.id, card.repeat - iteration);
 				iteration++;
 				evalSequence(card.body, context, runNextIteration);
 			} else {

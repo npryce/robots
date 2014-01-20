@@ -7,8 +7,7 @@ define(["zepto", "lodash", "react", "robots.cards", "robots.audio", "robots.edit
 	var history;
 	var is_running;
 	var card_layout;
-
-
+	
     function viewToRunMode() {
 		$("body").removeClass("editing").addClass("running");
 	}
@@ -18,14 +17,26 @@ define(["zepto", "lodash", "react", "robots.cards", "robots.audio", "robots.edit
 		$("#program .active").removeClass("active");
 	}
 	
+	function cardElement(card_name) {
+		return $("#"+card_name);
+	}
+	
     function activateCard(card_name) {
-		$("#"+card_name)
+		cardElement(card_name)
 			.addClass("active")
 			.each(function() {this.scrollIntoView(false);});
 	}
 	
 	function deactivateCard(card_name) {
-		$("#"+card_name).removeClass("active");
+		cardElement(card_name)
+			.removeClass("active")
+			.find(".annotation").remove();
+	}
+	
+	function annotateCard(card_name, annotation) {
+		var card = cardElement(card_name);
+		card.find(".annotation").remove();
+		card.append("<div class='annotation'>" + annotation + "</div>");
 	}
     
     function playAudioClip(clip_name, done_callback) {
@@ -38,6 +49,7 @@ define(["zepto", "lodash", "react", "robots.cards", "robots.audio", "robots.edit
 		cards.run(history.current(),
 				  {activate: activateCard,
 				   deactivate: deactivateCard,
+				   annotate: annotateCard,
 				   play: playAudioClip},
 				  viewToEditMode);
 	}
@@ -83,20 +95,18 @@ define(["zepto", "lodash", "react", "robots.cards", "robots.audio", "robots.edit
 		audio_player = new audio.PausingAudioPlayer(250);
 		cards.preload(audio_player);
 		
-		var initial_program = cards.newProgram();
-		
-		card_layout = gui.CardLayout({program: initial_program, onEdit: onEdit});
+		card_layout = gui.CardLayout({onEdit: onEdit});
 		
 		$("#clear").on("click", clearProgram);
-		$("#run").on("click", runProgram);
-		$("#stop").on("click", stopProgram);
 		$("#undo").on("click", undo);
 		$("#redo").on("click", redo);
+		$("#run").on("click", runProgram);
+		$("#stop").on("click", stopProgram);
 		
 		React.renderComponent(card_layout, document.getElementById("program"));
 		React.renderComponent(gui.CardStacks({cards: cards}), document.getElementById("stacks"));
 		
-		updateHistory(edit.undoStartingWith(initial_program));
+		updateHistory(edit.undoStartingWith(cards.newProgram()));
 		
 		$("body").removeClass("loading");
 		

@@ -31,7 +31,8 @@ define(["modash", "react", "robots.cards", "robots.drag", "robots.edit"], functi
 				id: card.id
 			};
 			
-			return dom.div(_.extend(attrs, this.props.attrs), card.text);
+			return dom.div(_.extend(attrs, this.props.attrs),
+						   card.text);
 		},
 		componentDidMount: function() {
 			drag.bind(this.getDOMNode(), this.startMovingCard);
@@ -47,7 +48,7 @@ define(["modash", "react", "robots.cards", "robots.drag", "robots.edit"], functi
 		displayName: "robots.gui.CardLayout",
 		
 		getInitialState: function() {
-			return {program: this.props.program};
+			return {program: []};
 		},
 		programChanged: function(new_program) {
 			this.setState({program: new_program});
@@ -75,7 +76,7 @@ define(["modash", "react", "robots.cards", "robots.drag", "robots.edit"], functi
 				return this.renderCard(editor, {id: card.id});
 			}
 			else {
-				return dom.div({className:"cardgroup", id: card.id, key: card.id},
+				return dom.div({className: "cardgroup", id: card.id + "-group", key: card.id},
 					this.renderCard(editor),
 					this.renderSequence(editor.editorsForBranch("body"), editor.appenderForBranch("body")));
 			}

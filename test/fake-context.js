@@ -18,6 +18,9 @@ define(["lodash", "chai"], function(_, chai) {
 		this.trace.push({event:'activate', card_id:card_id});
 		this.active[card_id] = true;
 	};
+	FakeContext.prototype.annotate = function(card_id) {
+		this.trace.push({event:'annotate', card_id:card_id});
+	};
     FakeContext.prototype.deactivate = function(card_id) {
 		this.trace.push({event:'deactivate', card_id:card_id});
 		delete this.active[card_id];

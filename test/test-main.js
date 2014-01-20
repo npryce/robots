@@ -5,6 +5,7 @@ requirejs.config({
 	
 	paths: {
 		'd3': 'src/d3-3.4.1',
+		'zepto': 'src/zepto-1.1.2',
 		'lodash': 'src/lodash-2.4.1',
 		'modash': 'src/modash',
 		'robots.cards': 'src/robots.cards',
@@ -18,11 +19,11 @@ requirejs.config({
         d3: {
             exports: 'd3'
         },
+        'zepto': {
+            exports: '$'
+        },
 		chai: {
 			exports: 'chai'
-		},
-		'js-tree-cursor': {
-			exports: 'TreeCursor'
 		}
     },
     

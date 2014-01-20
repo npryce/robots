@@ -93,12 +93,13 @@ body {
 }
 
 #controls button {
-	border-style: solid;
-	border-color: #111111;
+	x-border-style: solid;
+	x-border-color: #111111;
 	border-radius: 0.25em;
-	border-width: 0.08em;
+	border-width: 0.1em;
 	font-size: 65%;
 	font-family: inherit;
+	min-width: 4.5em;
 }
 
 .cardsequence, .cardrow, .cardgroup {

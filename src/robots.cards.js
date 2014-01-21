@@ -152,7 +152,7 @@ define(["lodash"], function(_){
 				repeat: i,
 				branches: ["body"],
 				title: "Repeat " + i + " " + pluralise("Time", i),
-				text: String(i),
+				text: String(i) + "×",
 				eval: evalRepeat
 			};
 		}),

@@ -16,6 +16,6 @@ requirejs.config({
     }
 });
 
-require(["robots", "domReady"], function(robots, onDomReady) {
-	onDomReady(robots.start);
+require(["zepto", "robots"], function($, robots) {
+	$(robots.start);
 });

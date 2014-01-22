@@ -76,7 +76,7 @@ define(["zepto", "lodash", "react", "robots.cards", "robots.audio", "robots.edit
 		
 		var cardCount =	cards.programSize(history.current());
 		
-		document.getElementById("card-count").text = cardCount;
+		document.getElementById("card-count").innerText = cardCount;
 		document.getElementById("undo").disabled = !history.canUndo();
 		document.getElementById("redo").disabled = !history.canRedo();
 		document.getElementById("run").disabled = (cardCount == 0);

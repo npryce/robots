@@ -65,8 +65,8 @@ body {
 	justify-content: flex-start;
 	align-items: center;
 	flex: initial;
-	background-color: #222;
-	color: #EEEEEE;
+	background-color: #101010;
+	color: #FEFEFE;
 	padding: 0.125em;
 	text-align: right;
 	font-size: 65%;
@@ -160,12 +160,19 @@ body {
 	box-shadow: 1px 1px 6px rgba(0,0,0,0.8);
 }
 
+#stacks .card {
+	border-bottom-width: 0.1em;
+	border-style: solid;
+}
+
 .card.control {
 	background-color: #AAAAFF;
+	border-color: #6666CC;
 }
 
 .card.action {
 	background-color: #FFFFAA;
+	border-color: #CCCC66;
 }
 
 .card.dragging {

@@ -58,6 +58,7 @@ define(["zepto", "lodash", "react", "robots.cards", "robots.audio", "robots.edit
 		console.log("stop");
 		is_running = false;
 		audio_player.stop();
+		$(".annotation").remove();
 		viewToEditMode();
 	}
 	

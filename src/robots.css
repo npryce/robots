@@ -136,7 +136,7 @@ body {
 }
 
 .card, .cursor {
-	display: inline-block;
+	display: inline-flex;
 	position: relative;
 	flex: initial;
     width: 1.5em;
@@ -149,6 +149,11 @@ body {
 	font-family: inherit;
 	font-size: inherit;
 	cursor: default;
+	
+	justify-content: center;
+	align-content: center;
+	flex-direction: row;
+	align-items: center;
 }
 
 .card {
@@ -164,7 +169,7 @@ body {
 }
 
 .card.dragging {
-    display: block;
+    display: flex;
 	position: fixed;
 	z-index: 1;
 	opacity: 0.9;

@@ -32,7 +32,7 @@ define(["modash", "react", "robots.cards", "robots.drag", "robots.edit"], functi
 			};
 			
 			return dom.div(_.extend(attrs, this.props.attrs),
-						   card.text);
+						   dom.div({className: "cardtext"}, card.text));
 		},
 		componentDidMount: function() {
 			drag.bind(this.getDOMNode(), this.startMovingCard);
@@ -120,8 +120,8 @@ define(["modash", "react", "robots.cards", "robots.drag", "robots.edit"], functi
 		displayName: "robots.gui.CardStack",
 		
 		render: function() {
-			return dom.div({className: "card " + this.props.category}, 
-						   this.props.stack.text);
+			return dom.div({className: "card " + this.props.category},
+						   dom.div({className: "cardtext"}, this.props.stack.text));
 		},
 		componentDidMount: function() {
 			drag.bind(this.getDOMNode(), this.newCard);

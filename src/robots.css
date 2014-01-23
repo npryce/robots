@@ -43,7 +43,7 @@ body {
 #content {
 	position: relative;
 	flex: 1 1;
-	background-color: #FFFFEE;
+	background-color: #EEEEEE;
 }
 
 #program {
@@ -57,17 +57,6 @@ body {
 	margin: 0;
 	overflow-y: scroll;
 	-webkit-overflow-scrolling: touch;
-}
-
-#header:after {
-	bottom: 16px;
-	box-shadow: 0px 8px 16px rgba(0,0,0,.3);
-}
-
-#stacks {
-	flex: initial;
-	background-color: #CCFFFF;
-	padding: 0.125em;
 }
 
 #header {
@@ -99,6 +88,29 @@ body {
 	font-size: 65%;
 	font-family: inherit;
 	min-width: 4.5em;
+	min-height: 2em;
+}
+
+#playercontrols {
+	position: relative;
+	flex: initial;
+	background-color: #666666;
+	padding: 0.125em;
+	height: auto;
+}
+
+#playercontrols>div {
+	top: 0px;
+	left: 0px;
+	width: 100%;
+}
+
+.running #playercontrols .editcontrol {
+	display: none;
+}
+
+.editing #playercontrols .runcontrol {
+	display: none;
 }
 
 .cardsequence, .cardrow, .cardgroup {
@@ -125,14 +137,12 @@ body {
 
 .card, .cursor {
 	display: inline-block;
+	position: relative;
 	flex: initial;
     width: 1.5em;
     height:  1.5em;
 	color: #111111;
-	border-style: solid;
-	border-color: #111111;
 	border-radius: 0.25em;
-	border-width: 0.08em;
 	margin: 0.125em;
     text-align: center;
 	overflow: none;
@@ -141,8 +151,8 @@ body {
 	cursor: default;
 }
 
-.running .cursor {
-	display: none;
+.card {
+	box-shadow: 1px 1px 6px rgba(0,0,0,0.8);
 }
 
 .card.control {
@@ -170,7 +180,7 @@ body {
 	transition-duration: 0.25s;
 }
 
-#program .card.active, .cardgroup.active>.card {
+#program .card.action.active, #program .annotation {
 	animation-name: jiggle;
 	animation-direction: normal;
 	animation-duration: 0.15s;
@@ -180,6 +190,8 @@ body {
 
 .cursor {
 	border-style: dotted;
+	border-color: rgba(0,0,0,0.4);
+	border-width: 0.08em;
 	background-color: transparent;
 }
 
@@ -191,6 +203,10 @@ body {
 	transform-origin: 50% 50%;
 }
 
+.running .cursor {
+	display: none;
+}
+
 .running .editcontrol {
 	display: none;
 }
@@ -198,7 +214,6 @@ body {
 .editing .runcontrol {
 	display:none;
 }
-
 
 .annotation {
     background: red;

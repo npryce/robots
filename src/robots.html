@@ -18,8 +18,12 @@
 	<link href="html5reset.css" rel="stylesheet" type="text/css"/>
 	<link href="robots.css" rel="stylesheet" type="text/css"/>
 	<style type="text/css">
-	  .loading #controls {
+	  .loading .runcontrol {
           display: none;
+      }
+      
+	  .loading #playercontrols {
+	      display: none;
       }
 	</style>
 	
@@ -29,10 +33,10 @@
 	<header id="header">
 	  <div id="stats">Cost: <span id="card-count">0</span>¢</div>
 	  <div id="controls">
-        <button class="editcontrol" type="button" id="clear">Clear</button>
-        <button class="editcontrol" type="button" id="undo">Undo</button>
-        <button class="editcontrol" type="button" id="redo">Redo</button>
-        <button class="editcontrol" type="button" id="run">Run</button>
+        <button class="editcontrol" type="button" id="clear" disabled="true">Clear</button>
+        <button class="editcontrol" type="button" id="undo" disabled="true">Undo</button>
+        <button class="editcontrol" type="button" id="redo" disabled="true">Redo</button>
+        <button class="editcontrol" type="button" id="run" disabled="true">Run</button>
         <button class="runcontrol" type="button" id="stop">Stop</button>
 	  </div>
 	</header>
@@ -41,9 +45,11 @@
 	  <div id="program"></div>
 	</div>
 	
-	<div id="stacks" class="editcontrol">
-	  <div id="control"></div>
-	  <div id="actions"></div>
+	<div id="playercontrols">
+  	  <div id="stacks" class="editcontrol">
+		<div id="control"></div>
+		<div id="actions"></div>
+	  </div>
 	</div>
   </body>
 </html>

@@ -3,16 +3,27 @@ define(["robots.cards", "lodash", "chai", "fake-context"], function(cards, _, ch
     
 	var assert = chai.assert;
     
-    function action(name) {
-		return cards.newCard({action:name, eval:cards.eval.action}, 'id');
+    function action(name, id) {
+		return cards.newCard({action:name, eval:cards.eval.action}, id || name);
 	}
 	
     function program() {
 		return _.toArray(arguments);
 	}
 	
-    function repeat(n, body) {
-		var card = cards.newCard(cards.repeat[n-2], 'id'); // there are no repeat cards for 0 or 1 iterations
+    function repeat(n) {
+		var body, id;
+		
+		if (arguments.length == 2) {
+			body = arguments[1];
+			id = 'id';
+		}
+		else {
+			id = arguments[1];
+			body = arguments[2];
+		}
+		
+		var card = cards.newCard(cards.repeat[n-2], id); // there are no repeat cards for 0 or 1 iterations
 		card.body = body;
 		return card;
 	}
@@ -102,9 +113,33 @@ define(["robots.cards", "lodash", "chai", "fake-context"], function(cards, _, ch
 		        assert.deepEqual(context.played, ["actions/a", "actions/d"]);
 		        assert(context.isDone);
 	        });
+
+	        it("annotates the card on each iteration", function() {
+				var context = new FakeContext();
+				var a = action("a");
+				var r = repeat(2, "r", [a]);
+                var p = program(r);
+				
+			    run(p, context);
+				
+		        assert.deepEqual(context.trace, [
+					{event: 'activate', card_id: "r"},
+					{event: 'annotate', card_id: "r", annotation: 2},
+					{event: 'activate', card_id: "a"},
+					{event: 'play', sample: "actions/a"},
+					{event: 'deactivate', card_id: "a"},
+					{event: 'annotate', card_id: "r", annotation: 1},
+					{event: 'activate', card_id: "a"},
+					{event: 'play', sample: "actions/a"},
+					{event: 'deactivate', card_id: "a"},
+					{event: 'deactivate', card_id: "r"},
+					{event: 'done'}
+				]);
+		        assert(context.isDone);
+	        });
         });
     });
-
+	
     describe("Total Card Count Calculation", function() {
 		it("counts action cards as 1", function(){
             var p = program(action("a"));

@@ -31,7 +31,7 @@
   </head>
   <body class="loading">
 	<header id="header">
-	  <div id="stats">Cost: <span id="card-count">0</span>¢</div>
+	  <div class="stats">Cost: <span id="card-count">0</span>¢</div>
 	  <div id="controls">
         <button class="editcontrol" type="button" id="clear" disabled="true">Clear</button>
         <button class="editcontrol" type="button" id="undo" disabled="true">Undo</button>
@@ -45,10 +45,17 @@
 	  <div id="program"></div>
 	</div>
 	
-	<div id="playercontrols" class="editcontrol">
-  	  <div id="stacks">
+	<div id="playercontrols">
+  	  <div id="stacks" class="editcontrol">
 		<div id="control"></div>
 		<div id="actions"></div>
+	  </div>
+	  <div id="runpanel" class="runcontrol">
+		<div class="stats">Steps: <span id="steps">0</span> Saving: <span id="saving">0</span></div>
+		<div class="controls">
+		  <button type="button" id="again">Again</button>
+		  <button type="button" id="next">Next</button>
+		</div>
 	  </div>
 	</div>
   </body>

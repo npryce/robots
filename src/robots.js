@@ -7,6 +7,12 @@ define(["zepto", "lodash", "react", "robots.cards", "robots.audio", "robots.edit
 	var history;
 	var is_running;
 	var card_layout;
+	var audio_clip;
+	var next_step_callback = _.noop();
+	
+	function enable(id, flag) {
+		document.getElementById(id).disabled = !flag;
+	}
 	
     function viewToRunMode() {
 		$("body").removeClass("editing").addClass("running");
@@ -15,6 +21,10 @@ define(["zepto", "lodash", "react", "robots.cards", "robots.audio", "robots.edit
     function viewToEditMode() {
 		$("body").addClass("editing").removeClass("running");
 		$("#program .active").removeClass("active");
+		$(".annotation").remove();
+		
+		enable("again", false);
+		enable("next", false);
 	}
 	
 	function cardElement(card_name) {
@@ -40,7 +50,26 @@ define(["zepto", "lodash", "react", "robots.cards", "robots.audio", "robots.edit
 	}
     
     function playAudioClip(clip_name, done_callback) {
-		audio_player.play(clip_name, done_callback);
+		audio_clip = clip_name;
+		next_step_callback = done_callback;
+		audio_player.play(clip_name, audioClipFinished);
+	}
+	
+	function audioClipFinished() {
+		enable("again", true);
+		enable("next", true);
+	}
+	
+	function playAudioClipAgain() {
+		enable("again", false);
+		enable("next", false);
+		audio_player.play(audio_clip, audioClipFinished);		
+	}
+	
+	function nextStep() {
+		enable("again", false);
+		enable("next", false);
+		next_step_callback();
 	}
 	
     function runProgram() {
@@ -57,8 +86,8 @@ define(["zepto", "lodash", "react", "robots.cards", "robots.audio", "robots.edit
     function stopProgram() {
 		console.log("stop");
 		is_running = false;
+		next_step_callback = _.noop();
 		audio_player.stop();
-		$(".annotation").remove();
 		viewToEditMode();
 	}
 	
@@ -78,10 +107,10 @@ define(["zepto", "lodash", "react", "robots.cards", "robots.audio", "robots.edit
 		var cardCount =	cards.programSize(history.current());
 		
 		document.getElementById("card-count").innerText = cardCount;
-		document.getElementById("undo").disabled = !history.canUndo();
-		document.getElementById("redo").disabled = !history.canRedo();
-		document.getElementById("run").disabled = (cardCount == 0);
-		document.getElementById("clear").disabled = (cardCount == 0);
+		enable("undo", history.canUndo());
+		enable("redo", history.canRedo());
+		enable("run", cardCount > 0);
+		enable("clear", cardCount > 0);
 	}
 	
 	function undo() {
@@ -93,7 +122,7 @@ define(["zepto", "lodash", "react", "robots.cards", "robots.audio", "robots.edit
 	}
 	
 	function start() {
-		audio_player = new audio.PausingAudioPlayer(250);
+		audio_player = new audio.AudioPlayer();
 		cards.preload(audio_player);
 		
 		card_layout = gui.CardLayout({onEdit: onEdit});
@@ -103,6 +132,8 @@ define(["zepto", "lodash", "react", "robots.cards", "robots.audio", "robots.edit
 		$("#redo").on("click", redo);
 		$("#run").on("click", runProgram);
 		$("#stop").on("click", stopProgram);
+		$("#again").on("click", playAudioClipAgain);
+		$("#next").on("click", nextStep);
 		
 		React.renderComponent(card_layout, document.getElementById("program"));
 		React.renderComponent(gui.CardStacks({cards: cards}), document.getElementById("stacks"));

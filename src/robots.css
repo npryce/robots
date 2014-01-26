@@ -43,7 +43,7 @@ body {
 #content {
 	position: relative;
 	flex: 1 1;
-	background-color: #EEEEEE;
+	background-color: #FEFEFF;
 }
 
 #program {
@@ -72,7 +72,7 @@ body {
 	font-size: 65%;
 }
 
-#header #stats {
+#header .stats {
 	flex: 1 1;
 	text-align: left;
 	margin-left: 0.125em;
@@ -82,7 +82,7 @@ body {
 	flex: initial;
 }
 
-#controls button {
+button {
 	border-radius: 0.25em;
 	border-width: 0.1em;
 	font-size: 65%;
@@ -93,16 +93,21 @@ body {
 
 #playercontrols {
 	position: relative;
-	flex: initial;
 	background-color: #666666;
-	padding: 0.125em;
-	height: auto;
+	color: #FEFEFE;
 }
 
-#playercontrols>div {
-	top: 0px;
-	left: 0px;
-	width: 100%;
+#stacks {
+	padding: 0.125em;
+}	
+
+#runpanel {
+	font-size: 65%;
+}
+
+#runpanel>div {
+	margin: 0.5em;
+	text-align: center;
 }
 
 .running #playercontrols .editcontrol {

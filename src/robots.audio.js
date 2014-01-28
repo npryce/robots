@@ -47,43 +47,8 @@ define(["lodash", "howler"], function(_, howler) {
 		this.is_playing = false;
 	};
 	
-	function PausingAudioPlayer(pause_between_clips, timer, audio_player) {
-		this.timer = timer || window;
-		this.audio_player = audio_player || new AudioPlayer(this.timer);
-		this.pause_between_clips = pause_between_clips;
-		this.is_first_clip = true;
-		this.timeout = null;
-	}
-	PausingAudioPlayer.prototype.load = function(clip) {
-		this.audio_player.load(clip);
-	};
-    PausingAudioPlayer.prototype.play = function(sample_name, completion_callback) {
-		var playSample = _.bind(function() {
-			this.audio_player.play(sample_name, completion_callback);
-			this.timeout = null;
-		}, this);
-		
-		if (this.is_first_clip) {
-			this.is_first_clip = false;
-			playSample();
-		}
-		else {
-			this.timeout = this.timer.setTimeout(playSample, this.pause_between_clips);
-		}
-	};
-    PausingAudioPlayer.prototype.stop = function(sample_name, completion_callback) {
-		if (this.timeout != null) {
-			this.timer.clearTimeout(this.timeout);
-			this.timeout = null;
-		} else {
-			this.audio_player.stop();
-		}
-		
-		this.is_first_clip = true;
-	};
     
 	return {
-		AudioPlayer: AudioPlayer,
-		PausingAudioPlayer: PausingAudioPlayer
+		AudioPlayer: AudioPlayer
 	};
 });

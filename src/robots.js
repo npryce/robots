@@ -7,7 +7,6 @@ define(["zepto", "lodash", "react", "robots.cards", "robots.audio", "robots.edit
 	var history;
 	var is_running;
 	var card_layout;
-	var audio_clip;
 	var next_step_callback = _.noop();
 	
 	function enable(id, flag) {
@@ -49,26 +48,28 @@ define(["zepto", "lodash", "react", "robots.cards", "robots.audio", "robots.edit
 		card.append("<div class='annotation'>" + annotation + "</div>");
 	}
     
+	function enablePlayButtons(flag) {
+		enable("again", flag);
+		enable("next", flag);
+	}
+	
     function playAudioClip(clip_name, done_callback) {
-		audio_clip = clip_name;
 		next_step_callback = done_callback;
+		enablePlayButtons(false);
 		audio_player.play(clip_name, audioClipFinished);
 	}
 	
 	function audioClipFinished() {
-		enable("again", true);
-		enable("next", true);
+		enablePlayButtons(true);
 	}
 	
 	function playAudioClipAgain() {
-		enable("again", false);
-		enable("next", false);
-		audio_player.play(audio_clip, audioClipFinished);		
+		enablePlayButtons(false);
+		audio_player.replay(audioClipFinished);
 	}
 	
 	function nextStep() {
-		enable("again", false);
-		enable("next", false);
+		enablePlayButtons(false);
 		next_step_callback();
 	}
 	

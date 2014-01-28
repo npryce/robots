@@ -6,6 +6,7 @@ define(["lodash", "howler"], function(_, howler) {
 		this.samples = {};
 		this.current = null;
 		this.completion_callback = _.noop;
+		this.is_playing = false;
     }
 	
 	AudioPlayer.prototype.load = function(sample_name) {
@@ -18,11 +19,15 @@ define(["lodash", "howler"], function(_, howler) {
 		sample.load();
 	};
     AudioPlayer.prototype.isPlaying = function() {
-		return this.current != null;
+		return this.is_playing;
 	};
     AudioPlayer.prototype.play = function(sample_name, completion_callback) {
-		this.completion_callback = completion_callback;
 		this.current = this.samples[sample_name];
+		this.replay(completion_callback);
+	};
+	AudioPlayer.prototype.replay = function(completion_callback) {
+		this.completion_callback = completion_callback;
+		this.is_playing = true;
 		console.log("playing " + this.current.urls()[0]);
 		this.current.play();
 	};
@@ -38,8 +43,8 @@ define(["lodash", "howler"], function(_, howler) {
 		}
 	};
 	AudioPlayer.prototype._clearPlayback = function() {
-		this.current = null;
 		this.completion_callback = _.noop;
+		this.is_playing = false;
 	};
 	
 	function PausingAudioPlayer(pause_between_clips, timer, audio_player) {

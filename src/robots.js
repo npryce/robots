@@ -5,6 +5,7 @@ define(["zepto", "lodash", "react", "robots.cards", "robots.audio", "robots.edit
 	
     var audio_player;
 	var history;
+	var run_context = null;
 	var is_running;
 	var card_layout;
 	var next_step_callback = _.noop();
@@ -56,6 +57,11 @@ define(["zepto", "lodash", "react", "robots.cards", "robots.audio", "robots.edit
     
 	function performAction(action_id, action_description, done_callback) {
 		playAudioClip("actions/" + action_id, done_callback);
+		
+		this.action_count++;
+		$("#description").text(action_description);
+		$("#steps").text(this.action_count);
+		$("#saving").text(Math.max(0, this.action_count - this.card_count));
 	}
 	
 	function enablePlayButtons(flag) {
@@ -84,27 +90,32 @@ define(["zepto", "lodash", "react", "robots.cards", "robots.audio", "robots.edit
 	}
 	
     function runProgram() {
-		is_running = true;
 		viewToRunMode();
 		
-		var context = {
+		run_context = {
+			card_count: cards.programSize(history.current()),
+			action_count: 0,
 			activate: activateCard,
 			deactivate: deactivateCard,
 			annotate: annotateCard,
 			performAction: performAction
 		};
-
+		
 		cards.run(history.current(),
-				  context,
-				  viewToEditMode);
+				  run_context,
+				  programFinished);
+	}
+	
+	function programFinished() {
+		run_context = null;
+		next_step_callback = _.noop();
+		viewToEditMode();
 	}
     
     function stopProgram() {
 		console.log("stop");
-		is_running = false;
-		next_step_callback = _.noop();
 		audio_player.stop();
-		viewToEditMode();
+		programFinished();
 	}
 	
 	function onEdit(new_program) {

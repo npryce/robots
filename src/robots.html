@@ -31,7 +31,10 @@
   </head>
   <body class="loading">
 	<header id="header">
-	  <div class="stats">Cost: <span id="card-count">0</span>¢</div>
+	  <div class="stats">Cards: <span id="card-count">0</span><span class="runcontrol">,
+		                 Actions: <span id="steps">0</span>,
+                         Saving: <span id="saving">0</span></span></div>
+      
 	  <div id="controls">
         <button class="editcontrol" type="button" id="clear" disabled="true">Clear</button>
         <button class="editcontrol" type="button" id="undo" disabled="true">Undo</button>
@@ -51,10 +54,10 @@
 		<div id="actions"></div>
 	  </div>
 	  <div id="runpanel" class="runcontrol">
-		<div class="stats">Steps: <span id="steps">0</span> Saving: <span id="saving">0</span></div>
+		<div>&ldquo;<span id="description"></span>&rdquo;</div>
 		<div class="controls">
 		  <button type="button" id="again">Again</button>
-		  <button type="button" id="next">Next</button>
+		  <button type="button" id="next">Ok</button>
 		</div>
 	  </div>
 	</div>

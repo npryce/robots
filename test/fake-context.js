@@ -9,9 +9,9 @@ define(["lodash", "chai"], function(_, chai) {
 		this.active = {};
 		this.isDone = false;
 	}
-	FakeContext.prototype.play = function(sample_name, onfinished) {
-		this.trace.push({event:'play', sample:sample_name});
-		this.played.push(sample_name);
+	FakeContext.prototype.performAction = function(action_id, action_description, onfinished) {
+		this.trace.push({event:'action', action: action_id, description: action_description});
+		this.played.push(action_id);
 		onfinished();
 	};
     FakeContext.prototype.activate = function(card_id) {

@@ -27,7 +27,7 @@ define(["lodash"], function(_){
 	}
 	
 	function evalAction(card, context, onfinished) {
-		context.play("actions/" + card.action, onfinished);
+		context.performAction(card.action, card.title, onfinished);
 	}
 	
 	function evalRepeat(card, context, onfinished) {
@@ -85,12 +85,6 @@ define(["lodash"], function(_){
 		return _.isEmpty(c.branches);
 	}
 	
-    function preload(audio_player) {
-		_.values(cards.action).forEach(function (card_type) {
-			audio_player.load("actions/" + card_type.action);
-		});
-	};
-
 
 	var cards = {
 		newProgram: newProgram,
@@ -100,7 +94,6 @@ define(["lodash"], function(_){
 		cardSize: cardSize,
 		isAtomicCard: isAtomicCard,
 		isControlCard: isControlCard,
-		preload: preload,
 		run: evalSequence,
 		
 		action: [

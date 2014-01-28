@@ -9,6 +9,12 @@ define(["zepto", "lodash", "react", "robots.cards", "robots.audio", "robots.edit
 	var card_layout;
 	var next_step_callback = _.noop();
 	
+    function preloadAudio(audio_player) {
+		_.values(cards.action).forEach(function (c) {
+			audio_player.load("actions/" + c.action);
+		});
+	};
+	
 	function enable(id, flag) {
 		document.getElementById(id).disabled = !flag;
 	}
@@ -48,6 +54,10 @@ define(["zepto", "lodash", "react", "robots.cards", "robots.audio", "robots.edit
 		card.append("<div class='annotation'>" + annotation + "</div>");
 	}
     
+	function performAction(action_id, action_description, done_callback) {
+		playAudioClip("actions/" + action_id, done_callback);
+	}
+	
 	function enablePlayButtons(flag) {
 		enable("again", flag);
 		enable("next", flag);
@@ -76,11 +86,16 @@ define(["zepto", "lodash", "react", "robots.cards", "robots.audio", "robots.edit
     function runProgram() {
 		is_running = true;
 		viewToRunMode();
+		
+		var context = {
+			activate: activateCard,
+			deactivate: deactivateCard,
+			annotate: annotateCard,
+			performAction: performAction
+		};
+
 		cards.run(history.current(),
-				  {activate: activateCard,
-				   deactivate: deactivateCard,
-				   annotate: annotateCard,
-				   play: playAudioClip},
+				  context,
 				  viewToEditMode);
 	}
     
@@ -124,7 +139,7 @@ define(["zepto", "lodash", "react", "robots.cards", "robots.audio", "robots.edit
 	
 	function start() {
 		audio_player = new audio.AudioPlayer();
-		cards.preload(audio_player);
+		preloadAudio(audio_player);
 		
 		card_layout = gui.CardLayout({onEdit: onEdit});
 		

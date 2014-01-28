@@ -4,7 +4,7 @@ define(["robots.cards", "lodash", "chai", "fake-context"], function(cards, _, ch
 	var assert = chai.assert;
     
     function action(name, id) {
-		return cards.newCard({action:name, eval:cards.eval.action}, id || name);
+		return cards.newCard({action:name, title: name, eval:cards.eval.action}, id || name);
 	}
 	
     function program() {
@@ -49,7 +49,7 @@ define(["robots.cards", "lodash", "chai", "fake-context"], function(cards, _, ch
 			
 		    run(p, context);
 			
-		    assert.deepEqual(context.played, ["actions/a"]);
+		    assert.deepEqual(context.played, ["a"]);
 		    assert(context.isDone);
 		});
 		
@@ -64,7 +64,7 @@ define(["robots.cards", "lodash", "chai", "fake-context"], function(cards, _, ch
 			
 		    run(p, context);
 			
-		    assert.deepEqual(context.played, ["actions/a", "actions/b", "actions/c", "actions/d"]);
+		    assert.deepEqual(context.played, ["a", "b", "c", "d"]);
 		    assert(context.isDone);
 		});
 				 
@@ -79,9 +79,9 @@ define(["robots.cards", "lodash", "chai", "fake-context"], function(cards, _, ch
 				run(p, context);
 				
 				assert.deepEqual(context.played, [
-					"actions/a", 
-					"actions/b", "actions/c", "actions/b", "actions/c", 
-					"actions/d"]);
+					"a", 
+					"b", "c", "b", "c", 
+					"d"]);
 				assert(context.isDone);
 		    });
 	        
@@ -95,10 +95,10 @@ define(["robots.cards", "lodash", "chai", "fake-context"], function(cards, _, ch
 			    run(p, context);
 
 			    assert.deepEqual(context.played, [
-									 "actions/a", 
-									 "actions/b", "actions/c", "actions/c", "actions/c", 
-									 "actions/b", "actions/c", "actions/c", "actions/c", 
-									 "actions/d"]);
+									 "a", 
+									 "b", "c", "c", "c", 
+									 "b", "c", "c", "c", 
+									 "d"]);
 			});
 			
 	        it("allows repeated actions with an empty body", function() {
@@ -110,7 +110,7 @@ define(["robots.cards", "lodash", "chai", "fake-context"], function(cards, _, ch
 				   
 			    run(p, context);
 			
-		        assert.deepEqual(context.played, ["actions/a", "actions/d"]);
+		        assert.deepEqual(context.played, ["a", "d"]);
 		        assert(context.isDone);
 	        });
 
@@ -121,16 +121,16 @@ define(["robots.cards", "lodash", "chai", "fake-context"], function(cards, _, ch
                 var p = program(r);
 				
 			    run(p, context);
-				
+				   
 		        assert.deepEqual(context.trace, [
 					{event: 'activate', card_id: "r"},
 					{event: 'annotate', card_id: "r", annotation: 2},
 					{event: 'activate', card_id: "a"},
-					{event: 'play', sample: "actions/a"},
+					{event: 'action', action: "a", description: "a"},
 					{event: 'deactivate', card_id: "a"},
 					{event: 'annotate', card_id: "r", annotation: 1},
 					{event: 'activate', card_id: "a"},
-					{event: 'play', sample: "actions/a"},
+					{event: 'action', action: "a", description: "a"},
 					{event: 'deactivate', card_id: "a"},
 					{event: 'deactivate', card_id: "r"},
 					{event: 'done'}

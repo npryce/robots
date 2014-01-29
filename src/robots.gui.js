@@ -4,38 +4,7 @@ define(["modash", "react", "zepto", "robots.cards", "robots.drag", "robots.edit"
 	function uniqueCardId() {
 		return _.uniqueId("card-");
 	}
-
-	function cardElement(card_name) {
-		return $("#"+card_name);
-	}
 	
-    function activateCard(card_name) {
-		cardElement(card_name)
-			.addClass("active")
-			.each(function() {this.scrollIntoView(false);});
-	}
-	
-	function deactivateCard(card_name) {
-		cardElement(card_name)
-			.removeClass("active")
-			.find(".annotation").remove();
-	}
-	
-	function deactivateCards(root) {
-		root.find(".active").removeClass("active");
-		removeAnnotations();
-	}
-	
-	function annotateCard(card_name, annotation) {
-		var card = cardElement(card_name);
-		card.find(".annotation").remove();
-		card.append("<div class='annotation'>" + annotation + "</div>");
-	}
-
-	function removeAnnotations() {
-		$(".annotation").remove();
-	}
-    
 	function cardCompletesRow(editor) {
 		return cards.isControlCard(editor.node());
 	}
@@ -125,6 +94,34 @@ define(["modash", "react", "zepto", "robots.cards", "robots.drag", "robots.edit"
 					onEdit(appender.insertAfter(card));
 				}
 			});
+		},
+		activateCard: function(card_name) {
+			this.cardElement(card_name)
+				.addClass("active")
+				.each(function() {this.scrollIntoView(false);});
+		},
+		deactivateCard: function(card_name) {
+			this.cardElement(card_name)
+				.removeClass("active")
+				.find(".annotation").remove();
+		},
+		deactivateCards: function() {
+			this.find(".active").removeClass("active");
+			this.removeAnnotations();
+		},
+		annotateCard: function(card_name, annotation) {
+			var card = this.cardElement(card_name);
+			card.find(".annotation").remove();
+			card.append("<div class='annotation'>" + annotation + "</div>");
+		},
+		removeAnnotations: function() {
+			this.find(".annotation").remove();
+		},
+		cardElement: function(card_id) {
+			return this.find("#"+card_id);
+		},
+		find: function(query) {
+			return $(this.getDOMNode()).find(query);
 		}
 	});
 	
@@ -187,11 +184,6 @@ define(["modash", "react", "zepto", "robots.cards", "robots.drag", "robots.edit"
 	
     return {
 		CardLayout: CardLayout,
-		CardStacks: CardStacks,
-		
-		activateCard: activateCard,
-		deactivateCard: deactivateCard,
-		annotateCard: annotateCard,
-		deactivateCards: deactivateCards
+		CardStacks: CardStacks
 	};
 });

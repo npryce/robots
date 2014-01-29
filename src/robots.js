@@ -27,7 +27,7 @@ define(["zepto", "lodash", "react", "robots.cards", "robots.audio", "robots.edit
     function viewToEditMode() {
 		$("body").addClass("editing").removeClass("running");
 		
-		gui.deactivateCards($("#program"));
+		card_layout.deactivateCards();
 		
 		enable("again", false);
 		enable("next", false);
@@ -73,9 +73,9 @@ define(["zepto", "lodash", "react", "robots.cards", "robots.audio", "robots.edit
 		run_context = {
 			card_count: cards.programSize(history.current()),
 			action_count: 0,
-			activate: gui.activateCard,
-			deactivate: gui.deactivateCard,
-			annotate: gui.annotateCard,
+			activate: card_layout.activateCard,
+			deactivate: card_layout.deactivateCard,
+			annotate: card_layout.annotateCard,
 			performAction: performAction
 		};
 		

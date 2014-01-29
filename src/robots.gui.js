@@ -1,10 +1,41 @@
-define(["modash", "react", "robots.cards", "robots.drag", "robots.edit"], function(_, React, cards, drag, edit) {
+define(["modash", "react", "zepto", "robots.cards", "robots.drag", "robots.edit"], function(_, React, $, cards, drag, edit) {
     var dom = React.DOM;
 	
 	function uniqueCardId() {
 		return _.uniqueId("card-");
 	}
 
+	function cardElement(card_name) {
+		return $("#"+card_name);
+	}
+	
+    function activateCard(card_name) {
+		cardElement(card_name)
+			.addClass("active")
+			.each(function() {this.scrollIntoView(false);});
+	}
+	
+	function deactivateCard(card_name) {
+		cardElement(card_name)
+			.removeClass("active")
+			.find(".annotation").remove();
+	}
+	
+	function deactivateCards(root) {
+		root.find(".active").removeClass("active");
+		removeAnnotations();
+	}
+	
+	function annotateCard(card_name, annotation) {
+		var card = cardElement(card_name);
+		card.find(".annotation").remove();
+		card.append("<div class='annotation'>" + annotation + "</div>");
+	}
+
+	function removeAnnotations() {
+		$(".annotation").remove();
+	}
+    
 	function cardCompletesRow(editor) {
 		return cards.isControlCard(editor.node());
 	}
@@ -156,6 +187,11 @@ define(["modash", "react", "robots.cards", "robots.drag", "robots.edit"], functi
 	
     return {
 		CardLayout: CardLayout,
-		CardStacks: CardStacks
+		CardStacks: CardStacks,
+		
+		activateCard: activateCard,
+		deactivateCard: deactivateCard,
+		annotateCard: annotateCard,
+		deactivateCards: deactivateCards
 	};
 });

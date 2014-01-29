@@ -26,35 +26,13 @@ define(["zepto", "lodash", "react", "robots.cards", "robots.audio", "robots.edit
     
     function viewToEditMode() {
 		$("body").addClass("editing").removeClass("running");
-		$("#program .active").removeClass("active");
-		$(".annotation").remove();
+		
+		gui.deactivateCards($("#program"));
 		
 		enable("again", false);
 		enable("next", false);
 	}
 	
-	function cardElement(card_name) {
-		return $("#"+card_name);
-	}
-	
-    function activateCard(card_name) {
-		cardElement(card_name)
-			.addClass("active")
-			.each(function() {this.scrollIntoView(false);});
-	}
-	
-	function deactivateCard(card_name) {
-		cardElement(card_name)
-			.removeClass("active")
-			.find(".annotation").remove();
-	}
-	
-	function annotateCard(card_name, annotation) {
-		var card = cardElement(card_name);
-		card.find(".annotation").remove();
-		card.append("<div class='annotation'>" + annotation + "</div>");
-	}
-    
 	function performAction(action_id, action_description, done_callback) {
 		playAudioClip("actions/" + action_id, done_callback);
 		
@@ -95,9 +73,9 @@ define(["zepto", "lodash", "react", "robots.cards", "robots.audio", "robots.edit
 		run_context = {
 			card_count: cards.programSize(history.current()),
 			action_count: 0,
-			activate: activateCard,
-			deactivate: deactivateCard,
-			annotate: annotateCard,
+			activate: gui.activateCard,
+			deactivate: gui.deactivateCard,
+			annotate: gui.annotateCard,
 			performAction: performAction
 		};
 		

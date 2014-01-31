@@ -6,9 +6,7 @@ define(["zepto", "lodash", "react", "robots.cards", "robots.audio", "robots.edit
     var audio_player;
 	var history;
 	var run_context = null;
-	var is_running;
 	var card_layout;
-	var next_step_callback = _.noop();
 	
     function preloadAudio(audio_player) {
 		_.values(cards.action).forEach(function (c) {
@@ -34,7 +32,9 @@ define(["zepto", "lodash", "react", "robots.cards", "robots.audio", "robots.edit
 	}
 	
 	function performAction(action_id, action_description, done_callback) {
-		playAudioClip("actions/" + action_id, done_callback);
+		this.next_step_callback = done_callback;
+		enablePlayButtons(false);
+		audio_player.play("actions/" + action_id, audioClipFinished);
 		
 		this.action_count++;
 		$("#description").text(action_description);
@@ -45,12 +45,6 @@ define(["zepto", "lodash", "react", "robots.cards", "robots.audio", "robots.edit
 	function enablePlayButtons(flag) {
 		enable("again", flag);
 		enable("next", flag);
-	}
-	
-    function playAudioClip(clip_name, done_callback) {
-		next_step_callback = done_callback;
-		enablePlayButtons(false);
-		audio_player.play(clip_name, audioClipFinished);
 	}
 	
 	function audioClipFinished() {
@@ -64,15 +58,17 @@ define(["zepto", "lodash", "react", "robots.cards", "robots.audio", "robots.edit
 	
 	function nextStep() {
 		enablePlayButtons(false);
-		next_step_callback();
+		run_context.next_step_callback();
 	}
 	
     function runProgram() {
 		viewToRunMode();
 		
 		run_context = {
+			next_step_callback: _.noop,
 			card_count: cards.programSize(history.current()),
 			action_count: 0,
+			
 			activate: card_layout.activateCard,
 			deactivate: card_layout.deactivateCard,
 			annotate: card_layout.annotateCard,
@@ -86,7 +82,6 @@ define(["zepto", "lodash", "react", "robots.cards", "robots.audio", "robots.edit
 	
 	function programFinished() {
 		run_context = null;
-		next_step_callback = _.noop();
 		viewToEditMode();
 	}
     
@@ -147,7 +142,6 @@ define(["zepto", "lodash", "react", "robots.cards", "robots.audio", "robots.edit
 		
 		$("body").removeClass("loading");
 		
-		is_running = false;
 		viewToEditMode();
 	}
 	

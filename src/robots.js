@@ -121,12 +121,22 @@ define(["zepto", "lodash", "react", "robots.cards", "robots.audio", "robots.edit
 		updateHistory(history.redo());
 	}
 	
-	function start() {
-		audio_player = new audio.AudioPlayer();
-		preloadAudio(audio_player);
+	function play() {
+		if (audio_player == null) {
+			audio_player = new audio.AudioPlayer();
+			preloadAudio(audio_player);
+		}
 		
+		updateHistory(edit.undoStartingWith(cards.newProgram()));
+		
+		$("body").removeClass("starting").addClass("playing");
+		viewToEditMode();
+	}
+	
+	function start() {
 		card_layout = gui.CardLayout({onEdit: onEdit});
 		
+		$("#play").on("click", play);
 		$("#clear").on("click", clearProgram);
 		$("#undo").on("click", undo);
 		$("#redo").on("click", redo);
@@ -138,11 +148,7 @@ define(["zepto", "lodash", "react", "robots.cards", "robots.audio", "robots.edit
 		React.renderComponent(card_layout, document.getElementById("program"));
 		React.renderComponent(gui.CardStacks({cards: cards}), document.getElementById("stacks"));
 		
-		updateHistory(edit.undoStartingWith(cards.newProgram()));
-		
-		$("body").removeClass("loading");
-		
-		viewToEditMode();
+		$("body").removeClass("loading").addClass("starting");
 	}
 	
     return {

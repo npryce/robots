@@ -18,46 +18,63 @@
 	<link href="html5reset.css" rel="stylesheet" type="text/css"/>
 	<link href="robots.css" rel="stylesheet" type="text/css"/>
 	<style type="text/css">
-	  .loading .runcontrol {
-          display: none;
-      }
-      
-	  .loading #playercontrols {
+	  .loading #startview, .loading #gameview {
 	      display: none;
-      }
+	  }
 	</style>
 	
 	<script src="require.js" type="text/javascript" data-main="main"></script>
   </head>
   <body class="loading">
-	<header id="header">
-	  <div class="stats">Cards: <span id="card-count">0</span><span class="runcontrol">,
-		                 Actions: <span id="steps">0</span>,
-                         Saving: <span id="saving">0</span></span></div>
-      
-	  <div id="controls">
-        <button class="editcontrol" type="button" id="clear" disabled="true">Clear</button>
-        <button class="editcontrol" type="button" id="undo" disabled="true">Undo</button>
-        <button class="editcontrol" type="button" id="redo" disabled="true">Redo</button>
-        <button class="editcontrol" type="button" id="run" disabled="true">Run</button>
-        <button class="runcontrol" type="button" id="stop">Stop</button>
+	<div id="startview">
+	  <h1>Robot Master</h1>
+	  
+	  <p>Basic instructions to go here...</p>
+	  
+	  <div id="game-config">
+		<h2>Activate Programming Cards:</h2>
+		<ul id="language-features">
+		  <li><input id="lang-repeat" type="checkbox" checked="true"></input><label for="lang-repeat"> Repeating</label></li>
+		  <li><input id="lang-procedures" type="checkbox" checked="true"></input><label for="lang-procedures"> Procedures</label></li>
+		  <li><input id="lang-error-handling" type="checkbox" checked="true"></input><label for="lang-error-handling"> Deciding</label></li>
+		  <li><input id="lang-infinite-repeast" type="checkbox" checked="true"></input><label for="lang-infinite-repeast"> Repeating Forever</label></li>
+		</ul>
 	  </div>
-	</header>
-	
-	<div id="content">
-	  <div id="program"></div>
+	  <div id="start-buttons">
+		<button id="play">Play</button>
+	  </div>
 	</div>
 	
-	<div id="playercontrols">
-  	  <div id="stacks" class="editcontrol">
-		<div id="control"></div>
-		<div id="actions"></div>
+	<div id="gameview">
+	  <header id="header">
+		<div class="stats">Cards: <span id="card-count">0</span><span class="runcontrol">,
+		    Actions: <span id="steps">0</span>,
+            Saving: <span id="saving">0</span></span></div>
+		
+		<div id="controls">
+		  <button class="editcontrol" type="button" id="clear" disabled="true">Clear</button>
+		  <button class="editcontrol" type="button" id="undo" disabled="true">Undo</button>
+		  <button class="editcontrol" type="button" id="redo" disabled="true">Redo</button>
+		  <button class="editcontrol" type="button" id="run" disabled="true">Run</button>
+		  <button class="runcontrol" type="button" id="stop">Stop</button>
+		</div>
+	  </header>
+	  
+	  <div id="content">
+		<div id="program"></div>
 	  </div>
-	  <div id="runpanel" class="runcontrol">
-		<div>&ldquo;<span id="description"></span>&rdquo;</div>
-		<div class="controls">
-		  <button type="button" id="again">Again</button>
-		  <button type="button" id="next">Ok</button>
+	  
+	  <div id="playercontrols">
+  		<div id="stacks" class="editcontrol">
+		  <div id="control"></div>
+		  <div id="actions"></div>
+		</div>
+		<div id="runpanel" class="runcontrol">
+		  <div>&ldquo;<span id="description"></span>&rdquo;</div>
+		  <div class="controls">
+			<button type="button" id="again">Again</button>
+			<button type="button" id="next">Ok</button>
+		  </div>
 		</div>
 	  </div>
 	</div>

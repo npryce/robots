@@ -26,9 +26,9 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2.4101562"
-     inkscape:cx="152.47974"
+     inkscape:cx="103.52026"
      inkscape:cy="128"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="layer5"
      inkscape:document-units="px"
      inkscape:window-width="1280"
      inkscape:window-height="776"
@@ -49,14 +49,13 @@
     </rdf:RDF>
   </metadata>
   <g
-     inkscape:label="Robot"
+     inkscape:label="step-forward, step-backward, turn-clockwise, turn-anticlockwise"
      id="layer1"
      inkscape:groupmode="layer"
      transform="translate(0,-512)"
      style="display:inline">
     <g
-       id="g3870"
-       transform="translate(-1.2328034e-7,2.5026513e-6)">
+       id="g3870">
       <path
          transform="matrix(1.2149333,0,0,1.2149333,-44.977111,480.45799)"
          d="m 178.59179,131.3175 c 0,20.00154 -16.21445,36.21599 -36.21598,36.21599 -20.00154,0 -36.21598,-16.21445 -36.21598,-36.21599 0,-20.00153 16.21444,-36.215976 36.21598,-36.215976 20.00153,0 36.21598,16.214446 36.21598,36.215976 z"
@@ -95,48 +94,46 @@
   <g
      inkscape:groupmode="layer"
      id="layer2"
-     inkscape:label="Forward"
+     inkscape:label="step-forward"
      style="display:none">
     <g
-       style="display:inline"
-       id="g3881"
-       transform="translate(-1.2328034e-7,0.34032691)">
+       id="g3005"
+       transform="translate(0,-9.810791e-6)">
       <path
          inkscape:connector-curvature="0"
          id="path3876"
-         d="m 128.20746,545.75689 0,36.09724"
-         style="fill:none;stroke:#000000;stroke-width:16;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;display:inline"
-         transform="translate(0,-512)" />
+         d="m 128.20746,34.09722 0,36.09724"
+         style="fill:none;stroke:#000000;stroke-width:16;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;display:inline" />
       <path
          sodipodi:nodetypes="ccc"
          inkscape:connector-curvature="0"
          id="path3868"
-         d="M 146.17031,55.664518 127.63358,17.426319 109.65446,55.962298"
-         inkscape:transform-center-y="21.309529"
+         d="M 146.17031,43.241999 127.63358,17.766646 109.65446,43.440388"
+         inkscape:transform-center-y="14.197001"
          inkscape:transform-center-x="-1.4281769"
-         style="color:#000000;fill:none;stroke:#000000;stroke-width:15.99999905;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+         style="color:#000000;fill:none;stroke:#000000;stroke-width:16;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
     </g>
   </g>
   <g
      inkscape:groupmode="layer"
      id="layer3"
-     inkscape:label="Backward"
+     inkscape:label="step-backward"
      style="display:none">
     <g
-       id="g3885"
-       transform="matrix(1,0,0,-1,1.6596434,255.65967)">
+       style="display:inline"
+       id="g3009"
+       transform="matrix(1,0,0,-1,0,256.00001)">
       <path
-         transform="translate(0,-512)"
          style="fill:none;stroke:#000000;stroke-width:16;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;display:inline"
-         d="m 128.20746,545.75689 0,36.09724"
-         id="path3887"
+         d="m 128.20746,34.09722 0,36.09724"
+         id="path3011"
          inkscape:connector-curvature="0" />
       <path
-         style="color:#000000;fill:none;stroke:#000000;stroke-width:15.99999905;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+         style="color:#000000;fill:none;stroke:#000000;stroke-width:16;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
          inkscape:transform-center-x="-1.4281769"
-         inkscape:transform-center-y="21.309529"
-         d="M 146.17031,55.664518 127.63358,17.426319 109.65446,55.962298"
-         id="path3889"
+         inkscape:transform-center-y="14.197001"
+         d="M 146.17031,43.241999 127.63358,17.766646 109.65446,43.440388"
+         id="path3013"
          inkscape:connector-curvature="0"
          sodipodi:nodetypes="ccc" />
     </g>
@@ -144,10 +141,10 @@
   <g
      inkscape:groupmode="layer"
      id="layer4"
-     inkscape:label="Anticlockwise"
-     style="display:none">
+     inkscape:label="turn-anticlockwise"
+     style="display:inline">
     <g
-       id="g3864">
+       id="g3058">
       <path
          transform="translate(-0.696915,0)"
          sodipodi:open="true"
@@ -162,24 +159,24 @@
          style="color:#000000;fill:none;stroke:#000000;stroke-width:16;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
          sodipodi:type="arc" />
       <path
-         sodipodi:nodetypes="ccc"
+         style="color:#000000;fill:none;stroke:#000000;stroke-width:16;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+         inkscape:transform-center-x="-5.1979305"
+         inkscape:transform-center-y="-15.400931"
+         d="m 18.073159,110.0343 14.07971,28.18449 21.96846,-22.35565"
+         id="path3055"
          inkscape:connector-curvature="0"
-         id="path3836"
-         d="M 60.693344,97.94754 34.297685,135.7499 21.576079,91.401387"
-         inkscape:transform-center-y="-24.165298"
-         inkscape:transform-center-x="-8.417576"
-         style="color:#000000;fill:none;stroke:#000000;stroke-width:16;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+         sodipodi:nodetypes="ccc" />
     </g>
   </g>
   <g
      inkscape:groupmode="layer"
      id="layer5"
-     inkscape:label="Clockwise"
-     style="display:none">
+     inkscape:label="turn-clockwise"
+     style="display:inline">
     <g
-       id="g3849"
-       transform="matrix(-1,0,0,1,256.69691,0)">
+       id="g3062">
       <path
+         transform="matrix(-1,0,0,1,256.69691,0)"
          sodipodi:type="arc"
          style="color:#000000;fill:none;stroke:#000000;stroke-width:16;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
          id="path3839"
@@ -192,13 +189,13 @@
          sodipodi:end="4.712389"
          sodipodi:open="true" />
       <path
-         style="color:#000000;fill:none;stroke:#000000;stroke-width:16;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
-         inkscape:transform-center-x="-8.417576"
-         inkscape:transform-center-y="-24.165298"
-         d="M 61.390259,97.94754 34.9946,135.7499 22.272994,91.401387"
-         id="path3841"
+         sodipodi:nodetypes="ccc"
          inkscape:connector-curvature="0"
-         sodipodi:nodetypes="ccc" />
+         id="path3013-6"
+         d="M 237.92684,108.37466 223.84713,136.55915 201.87867,114.2035"
+         inkscape:transform-center-y="-15.400931"
+         inkscape:transform-center-x="5.1979305"
+         style="color:#000000;fill:none;stroke:#000000;stroke-width:16;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
     </g>
   </g>
 </svg>

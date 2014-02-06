@@ -1,11 +1,15 @@
 
 target?=dev
 
+ACTIONS=step-forward step-backward turn-clockwise turn-anticlockwise
+
 WAVS=$(wildcard src/audio/*.wav src/audio/*/*.wav)
 SRCS=$(wildcard src/*.html src/*.css src/*.js src/*.png src/*.ttf) $(WAVS)
 OUTDIR=built/$(target)
 
-BUILT:=$(SRCS:src/%=$(OUTDIR)/%) $(WAVS:src/%.wav=$(OUTDIR)/%.mp3)
+BUILT:=$(SRCS:src/%=$(OUTDIR)/%) \
+	   $(WAVS:src/%.wav=$(OUTDIR)/%.mp3) \
+	   $(ACTIONS:%=$(OUTDIR)/icons/%.svg)
 
 all: $(OUTDIR)/robots.manifest
 
@@ -14,6 +18,10 @@ $(OUTDIR)/%.css: src/%.css node_modules/autoprefixer/bin/autoprefixer
 
 $(OUTDIR)/%.mp3: src/%.wav
 	lame -h -b 192 $< $@
+
+$(OUTDIR)/icons/%.svg: artwork/actions.svg tools/svgx
+	@mkdir -p $(dir $@)
+	tools/svgx $< $* > $@
 
 $(OUTDIR)/%: src/%
 	@mkdir -p $(dir $@)

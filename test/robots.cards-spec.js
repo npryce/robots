@@ -171,4 +171,15 @@ define(["robots.cards", "lodash", "chai", "fake-context"], function(cards, _, ch
 			assert.equal(cards.programSize(p), 1);
 		});
     });
+	
+    describe("Predefined Cards", function() {
+		it("actions have unique names", function() {
+			var actions = [];
+			
+			_.each(cards.action, function(c) {
+				assert.notInclude(actions, c.action, "duplicate action name: " + c.action);
+				actions.push(c.action);
+			});
+		});
+	});
 });

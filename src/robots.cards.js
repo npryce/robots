@@ -116,7 +116,7 @@ define(["lodash"], function(_){
 				eval: evalAction
 			},
 			{
-				action: "turn-clockwise",
+				action: "turn-anticlockwise",
 				title: "Turn Anticlockwise",
 				text: "\u21B6",
 				eval: evalAction

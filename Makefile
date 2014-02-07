@@ -1,27 +1,35 @@
 
 target?=dev
 
-ACTIONS=step-forward step-backward turn-clockwise turn-anticlockwise
+ACTIONS=step-forward step-backward step-left step-right \
+		turn-clockwise turn-anticlockwise \
+		pick-up put-down shoot
 
-WAVS=$(wildcard src/audio/*.wav src/audio/*/*.wav)
-SRCS=$(wildcard src/*.html src/*.css src/*.js src/*.png src/*.ttf) $(WAVS)
+SRCS=$(wildcard src/*.html src/*.css src/*.js src/*.png src/*.ttf)
 OUTDIR=built/$(target)
 
 BUILT:=$(SRCS:src/%=$(OUTDIR)/%) \
-	   $(WAVS:src/%.wav=$(OUTDIR)/%.mp3) \
-	   $(ACTIONS:%=$(OUTDIR)/icons/%.svg)
+	   $(ACTIONS:%=$(OUTDIR)/icons/%.svg) \
+       $(ACTIONS:%=$(OUTDIR)/audio/actions/%.wav) \
+       $(ACTIONS:%=$(OUTDIR)/audio/actions/%.mp3)
 
 all: $(OUTDIR)/robots.manifest
 
 $(OUTDIR)/%.css: src/%.css node_modules/autoprefixer/bin/autoprefixer
+	@mkdir -p $(dir $@)
 	node_modules/autoprefixer/bin/autoprefixer -o $@ $<
 
-$(OUTDIR)/%.mp3: src/%.wav
+$(OUTDIR)/%.mp3: $(OUTDIR)/%.wav
+	@mkdir -p $(dir $@)
 	lame -h -b 192 $< $@
 
 $(OUTDIR)/icons/%.svg: artwork/actions.svg tools/svgx
 	@mkdir -p $(dir $@)
 	tools/svgx $< $* > $@
+
+$(OUTDIR)/audio/actions/%.wav:
+	@mkdir -p $(dir $@)
+	echo "$*" | tr - ' ' | espeak -v english_rp --stdin -w $@
 
 $(OUTDIR)/%: src/%
 	@mkdir -p $(dir $@)

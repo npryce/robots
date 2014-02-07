@@ -118,21 +118,18 @@ define(["lodash"], function(_){
 				eval: evalAction
 			},
 			{
-				action: "jump-forward",
-				title: "Jump Forward",
-				text: "\u21EA",
-				eval: evalAction
-			},
-			{
 				action: "pick-up",
 				title: "Pick Up",
-				text: "\u261D",
 				eval: evalAction
 			},
 			{
 				action: "put-down",
 				title: "Put Down",
-				text: "\u261F",
+				eval: evalAction
+			},
+			{
+				action: "shoot",
+				title: "Shoot",
 				eval: evalAction
 			}
 		],

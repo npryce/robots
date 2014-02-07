@@ -100,25 +100,21 @@ define(["lodash"], function(_){
 			{
 				action: "step-forward",
 				title: "Step Forward",
-				text: "\u21E7",
 				eval: evalAction
 			},
 			{
 				action: "step-backward",
 				title: "Step Backward",
-				text: "\u21E9",
-				eval: evalAction
-			},
-			{
-				action: "turn-clockwise",
-				title: "Turn Clockwise",
-				text: "\u21B7",
 				eval: evalAction
 			},
 			{
 				action: "turn-anticlockwise",
 				title: "Turn Anticlockwise",
-				text: "\u21B6",
+				eval: evalAction
+			},
+			{
+				action: "turn-clockwise",
+				title: "Turn Clockwise",
 				eval: evalAction
 			},
 			{

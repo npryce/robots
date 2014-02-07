@@ -210,6 +210,15 @@ button {
 	/* background-color: rgba(0,0,0, 0.1); */
 }
 
+.stackrow {
+	display: flex;
+	flex: initial;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-content: flex-start;
+	align-items: flex-start;
+}
+
 .card, .cursor {
 	display: inline-flex;
 	position: relative;
@@ -225,10 +234,20 @@ button {
 	font-size: inherit;
 	cursor: default;
 	
+	flex-direction: column;
 	justify-content: center;
 	align-content: center;
-	flex-direction: row;
 	align-items: center;
+}
+
+.card img {
+	display: block;
+	margin: 0px;
+	padding: 0.1em;
+	border: 0px;
+	flex-shrink: 1;
+	flex-grow: 1;
+	pointer-events: none;
 }
 
 .card {

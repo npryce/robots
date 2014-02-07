@@ -125,17 +125,24 @@ define(["lodash"], function(_) {
 	
 	function bodyMouseDown(ev) {
 		if (startDragging(ev.target, ev.pageX, ev.pageY)) {
+			ev.preventDefault();
 			document.body.addEventListener("mousemove", bodyMouseDrag, true);
 		}
 	}
 	
 	function bodyMouseUp(ev) {
-		document.body.removeEventListener("mousemove", bodyMouseDrag, true);
-		if (drag_state) drop();
+		if (drag_state) {
+			ev.preventDefault();
+			document.body.removeEventListener("mousemove", bodyMouseDrag, true);
+			drop();
+		}
 	}
 	
 	function bodyMouseDrag(ev) {
-		if (drag_state) dragTo(ev.pageX, ev.pageY);
+		if (drag_state) {
+			ev.preventDefault();
+			dragTo(ev.pageX, ev.pageY);
+		}
 	}
 	
 	function initDragAndDrop() {

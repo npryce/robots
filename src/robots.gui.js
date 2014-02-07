@@ -21,18 +21,23 @@ define(["modash", "react", "zepto", "robots.cards", "robots.drag", "robots.edit"
 		return _.isEmpty(rows) || rowIsComplete(_.last(rows));
 	}
 
+	function renderCard(card, attrs) {
+		return dom.div(attrs,
+			card.text ? dom.div({className: "cardtext"}, card.text)
+					  : dom.img({src: "icons/"+card.action+".svg"}));
+	}
+
 	var Card = React.createClass({
 		displayName: "robots.gui.Card",
 		
 		render: function() {
 			var card = this.props.editor.node();
-			var attrs = {
+			var attrs = _.extend({
 				className: "card " + (cards.isAtomicCard(card) ? "action" : "control"),
-				id: card.id
-			};
+			    id: card.id
+			}, this.props.attrs);
 			
-			return dom.div(_.extend(attrs, this.props.attrs),
-						   dom.div({className: "cardtext"}, card.text));
+			return renderCard(card, attrs);
 		},
 		componentDidMount: function() {
 			drag.bind(this.getDOMNode(), this.startMovingCard);
@@ -148,8 +153,7 @@ define(["modash", "react", "zepto", "robots.cards", "robots.drag", "robots.edit"
 		displayName: "robots.gui.CardStack",
 		
 		render: function() {
-			return dom.div({className: "card " + this.props.category},
-						   dom.div({className: "cardtext"}, this.props.stack.text));
+			return renderCard(this.props.stack, {className: "card " + this.props.category});
 		},
 		componentDidMount: function() {
 			drag.bind(this.getDOMNode(), this.newCard);
@@ -165,7 +169,7 @@ define(["modash", "react", "zepto", "robots.cards", "robots.drag", "robots.edit"
 		render: function() {
 			var category = this.props.category;
 			
-			return dom.div({id: category},
+			return dom.div({id: category, className: "stackrow"},
 					 _.map(this.props.stacks, function(stack, id) {
 							   return CardStack({category: category, stack: stack, key: id});
 						   }));

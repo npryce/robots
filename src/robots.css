@@ -101,6 +101,14 @@ body {
 	font-size: 150%;
 }
 
+#startview #version {
+	position: fixed;
+	right: 0.5em;
+	bottom: 0.5em;
+	color: #888888;
+	font-size: 50%;
+}
+
 .starting #gameview {
 	display: none;
 }

@@ -1,6 +1,8 @@
 
 target?=dev
 
+VERSION:=$(shell git describe --tags --always --dirty='+')
+
 ACTIONS=step-forward step-backward step-left step-right \
 		turn-clockwise turn-anticlockwise \
 		pick-up put-down shoot
@@ -30,6 +32,10 @@ $(OUTDIR)/icons/%.svg: artwork/actions.svg tools/svgx
 $(OUTDIR)/audio/actions/%.wav:
 	@mkdir -p $(dir $@)
 	echo "$*" | tr - ' ' | espeak -v english_rp --stdin -w $@
+
+$(OUTDIR)/%.html: src/%.html
+	@mkdir -p $(dir $@)
+	sed s/{{version}}/$(VERSION)/g $< > $@
 
 $(OUTDIR)/%: src/%
 	@mkdir -p $(dir $@)

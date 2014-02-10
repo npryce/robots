@@ -192,7 +192,7 @@ button {
 }
 
 #runpanel button[disabled] {
-	display: hidden;
+	display: none;
 }
 
 .running #playercontrols .editcontrol {

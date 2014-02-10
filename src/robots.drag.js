@@ -1,4 +1,9 @@
 define(["lodash"], function(_) {
+	var initialised = false;
+	var drag_state = null;
+	var dragged_data = null;
+	var dragged_element = null;
+	
     function newDragStartEvent() {
 		return new CustomEvent("carddragstart", {bubbles: true, detail: {data: null}});
 	}
@@ -33,18 +38,9 @@ define(["lodash"], function(_) {
 	}
 	
 	
-	var initialised = false;
-	var drag_state = null;
-	var dragged_data = null;
-	var drag_offset_x = null;
-	var drag_offset_y = null;
-	var dragged_element = null;
-	var drop_target = null;
-	
 	function startDragging(target, page_x, page_y) {
 		var start_event = newDragStartEvent();
 		
-        drop_target = null;
 		dragged_data = null;
 		if (dragged_element != null) {
 			removeElement(dragged_element);
@@ -130,6 +126,13 @@ define(["lodash"], function(_) {
 		}
 	}
 	
+	function bodyMouseDrag(ev) {
+		if (drag_state) {
+			ev.preventDefault();
+			dragTo(ev.pageX, ev.pageY);
+		}
+	}
+
 	function bodyMouseUp(ev) {
 		if (drag_state) {
 			ev.preventDefault();
@@ -138,10 +141,38 @@ define(["lodash"], function(_) {
 		}
 	}
 	
-	function bodyMouseDrag(ev) {
-		if (drag_state) {
+
+	function touchWithId(touches, id) {
+		return _.find(touches, function(t) {return t.identifier === id;});
+	}
+	
+	function bodyTouchStart(ev) {
+		var touch = ev.changedTouches[0];
+		if (startDragging(touch.target, touch.pageX, touch.pageY)) {
 			ev.preventDefault();
-			dragTo(ev.pageX, ev.pageY);
+			drag_state.touch_id = touch.identifier;
+			document.body.addEventListener("touchmove", bodyTouchDrag, true);
+		}
+	}
+
+	function bodyTouchDrag(ev) {
+		if (drag_state) {
+			var touch = touchWithId(ev.changedTouches, drag_state.touch_id);
+			if (touch) {
+				ev.preventDefault();
+				dragTo(touch.pageX, touch.pageY);
+			}
+		}
+	}	
+
+	function bodyTouchEnd(ev) {
+		if (drag_state) {
+			var touch = touchWithId(ev.changedTouches, drag_state.touch_id);
+			if (touch) {
+				ev.preventDefault();
+				document.body.removeEventListener("touchmove", bodyTouchDrag, true);
+				drop();
+			}
 		}
 	}
 	
@@ -149,6 +180,11 @@ define(["lodash"], function(_) {
 		var body = document.body;
 		body.addEventListener("mousedown", bodyMouseDown);
 		body.addEventListener("mouseup", bodyMouseUp);
+		
+		body.addEventListener("touchstart", bodyTouchStart);
+		body.addEventListener("touchend", bodyTouchEnd);
+		body.addEventListener("touchcancel", bodyTouchEnd);
+		
 		initialised = true;
 	}
 	

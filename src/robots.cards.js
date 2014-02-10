@@ -66,7 +66,7 @@ define(["lodash"], function(_){
 	}
 	
 	function cardSize(card) {
-		return 1 + _(card).at(card.branches).flatten().map(programSize).reduce(sum, 0);
+		return 1 + _(card).at(card.branches).map(programSize).reduce(sum, 0);
 	}
 	
 	function programSize(seq) {

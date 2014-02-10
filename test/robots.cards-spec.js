@@ -170,6 +170,12 @@ define(["robots.cards", "lodash", "chai", "fake-context"], function(cards, _, ch
             
 			assert.equal(cards.programSize(p), 1);
 		});
+		
+		it("counts total cards in nested repeats", function() {
+			var p = program(repeat(2, [repeat(3, [])]));
+			
+			assert.equal(cards.programSize(p), 2);
+		});
     });
 	
     describe("Predefined Cards", function() {

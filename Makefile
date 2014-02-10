@@ -2,6 +2,7 @@
 target?=dev
 
 VERSION:=$(shell git describe --tags --always --dirty='+')
+BUILDTIME:=$(shell date --rfc-3339=seconds)
 
 ACTIONS=step-forward step-backward step-left step-right \
 		turn-clockwise turn-anticlockwise \
@@ -35,7 +36,7 @@ $(OUTDIR)/audio/actions/%.wav:
 
 $(OUTDIR)/%.html: src/%.html built/version-$(VERSION).txt
 	@mkdir -p $(dir $@)
-	sed s/{{version}}/$(VERSION)/g $< > $@
+	sed -e "s/{{version}}/$(VERSION)/g" -e "s/{{buildtime}}/$(BUILDTIME)/g" $< > $@
 
 built/version-$(VERSION).txt:
 	@mkdir -p $(dir $@)

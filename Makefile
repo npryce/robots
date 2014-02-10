@@ -33,9 +33,13 @@ $(OUTDIR)/audio/actions/%.wav:
 	@mkdir -p $(dir $@)
 	echo "$*" | tr - ' ' | espeak -v english_rp --stdin -w $@
 
-$(OUTDIR)/%.html: src/%.html
+$(OUTDIR)/%.html: src/%.html built/version-$(VERSION).txt
 	@mkdir -p $(dir $@)
 	sed s/{{version}}/$(VERSION)/g $< > $@
+
+built/version-$(VERSION).txt:
+	@mkdir -p $(dir $@)
+	touch $@
 
 $(OUTDIR)/%: src/%
 	@mkdir -p $(dir $@)

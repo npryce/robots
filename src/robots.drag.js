@@ -1,8 +1,6 @@
 define(["lodash"], function(_) {
 	var initialised = false;
 	var drag_state = null;
-	var dragged_data = null;
-	var dragged_element = null;
 	
     function newDragStartEvent() {
 		return new CustomEvent("carddragstart", {bubbles: true, detail: {data: null}});
@@ -36,24 +34,22 @@ define(["lodash"], function(_) {
 		e.style.left = coords[0] + "px";
 		e.style.top = coords[1] + "px";
 	}
-	
-	
+
 	function startDragging(target, page_x, page_y) {
 		var start_event = newDragStartEvent();
 		
-		dragged_data = null;
-		if (dragged_element != null) {
-			removeElement(dragged_element);
+		if (drag_state != null) {
+			removeElement(drag_state.dragged_element);
 		}
 		
 		target.dispatchEvent(start_event);
 		
-		dragged_data = start_event.detail.data;
+		var dragged_data = start_event.detail.data;
 		if (dragged_data) {
 			var source_element = start_event.detail.element;
 			var source_pos = start_event.detail.element_origin;
 			
-			dragged_element = source_element.cloneNode(true);
+			var dragged_element = source_element.cloneNode(true);
 			dragged_element.classList.add("dragging");
 			setElementPosition(dragged_element, source_pos);
 			
@@ -66,7 +62,7 @@ define(["lodash"], function(_) {
 				gesture_origin: [page_x, page_y],
 				drop_target: null
 			};
-			
+
 			return true;
 		}
 		else {
@@ -75,19 +71,19 @@ define(["lodash"], function(_) {
 	}
 	
     function dragTo(page_x, page_y) {
-		setElementPosition(dragged_element, [
+		setElementPosition(drag_state.dragged_element, [
 			drag_state.dragged_element_origin[0] + (page_x - drag_state.gesture_origin[0]),
 			drag_state.dragged_element_origin[1] + (page_y - drag_state.gesture_origin[1])]);
 		
 		var under = document.elementFromPoint(page_x, page_y);
 		if (under !== drag_state.drop_target) {
 			if (drag_state.drop_target !== null) {
-				drag_state.drop_target.dispatchEvent(newDragOutEvent(dragged_data));
+				drag_state.drop_target.dispatchEvent(newDragOutEvent(drag_state.data));
 				drag_state.drop_target = null;
 			}
 			
 			if (under !== null) {
-				var drag_in_event = newDragInEvent(dragged_data);
+				var drag_in_event = newDragInEvent(drag_state.data);
 				under.dispatchEvent(drag_in_event);
 				if (drag_in_event.detail.accepted) {
 					drag_state.drop_target = under;
@@ -112,8 +108,15 @@ define(["lodash"], function(_) {
 		if (dropped) {
 			removeElement(dragged_element);
 		} else {
-			drag_state.dragged_element.classList.add("disappearing");
-			drag_state.dragged_element.addEventListener("transitionend", function() {removeElement(dragged_element);});
+			function removeDraggedElement(ev) {
+				ev.target.remove();
+			}
+			
+			dragged_element.addEventListener("transitionend", removeDraggedElement);
+			dragged_element.addEventListener("animationend", removeDraggedElement);
+			dragged_element.addEventListener("webkitAnimationEnd", removeDraggedElement);
+			
+			dragged_element.classList.add("disappearing");
 		}
 		
 		drag_state = null;

@@ -88,8 +88,8 @@ body {
 	list-style-type: none;
 }
 
-#startview li {
-	margin-bottom: 0.25em;
+#startview ol li {
+	margin-bottom: 0.75em;
 }
 
 #startview ul input {
@@ -299,16 +299,17 @@ button {
 	position: fixed;
 	z-index: 1;
 	opacity: 0.9;
-	transform: scale(1.1) rotate(-6deg);
-	transform-origin: 50% 50%;
 	pointer-events: none;
+	animation-name: slip;
+	animation-direction: normal;
+	animation-duration: 0.125s;
+	animation-iteration-count: 1;
+	animation-fill-mode: forwards;
+	transform-origin: 50% 50%;
 }
 
 .card.dragging.disappearing {
-	transform: rotate(-6deg) scale(1.5);
-	opacity: 0;
-	transition-property: opacity transform;
-	transition-duration: 0.25s;
+	animation-name: slip-away;
 }
 
 #program .card.action.active, #program .annotation {
@@ -375,6 +376,23 @@ button {
 }
 .annotation:after {
     transform: rotate(60deg);
+}
+
+@keyframes slip {
+	to {
+		transform: scale(1.1) rotate(-6deg);
+	}
+}
+
+@keyframes slip-away {
+	from {
+		transform:  scale(1.1) rotate(-6deg);
+		opacity: 0.9;
+	}
+	to {
+		transform: scale(1.5) rotate(-6deg);
+		opacity: 0;
+	}
 }
 
 @keyframes jiggle {

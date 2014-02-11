@@ -284,6 +284,15 @@ button {
 	border-style: solid;
 }
 
+#program .card {
+	animation-name: slip;
+	animation-direction: reverse;
+	animation-duration: 0.125s;
+	animation-iteration-count: 1;
+	animation-fill-mode: backwards;
+	transform-origin: 50% 50%;
+}
+
 .card.control {
 	background-color: #AAAAFF;
 	border-color: #6666CC;
@@ -374,6 +383,7 @@ button {
 .annotation:before {
     transform: rotate(30deg);
 }
+
 .annotation:after {
     transform: rotate(60deg);
 }

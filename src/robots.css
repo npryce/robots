@@ -180,6 +180,10 @@ button {
 	color: black;
 }
 
+button[disabled] {
+	color: #AAAAAA;
+}
+
 #playercontrols {
 	position: relative;
 	background-color: #666666;

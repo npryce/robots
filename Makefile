@@ -2,7 +2,7 @@
 target?=dev
 
 VERSION:=$(shell git describe --tags --always --dirty='+')
-BUILDTIME:=$(shell date --rfc-3339=seconds)
+BUILDTIME:=$(shell date -u +%Y%m%dT%H:%M:%SZ)
 
 ACTIONS=step-forward step-backward step-left step-right \
 		turn-clockwise turn-anticlockwise \
@@ -15,6 +15,8 @@ BUILT:=$(SRCS:src/%=$(OUTDIR)/%) \
 	   $(ACTIONS:%=$(OUTDIR)/icons/%.svg) \
        $(ACTIONS:%=$(OUTDIR)/audio/actions/%.wav) \
        $(ACTIONS:%=$(OUTDIR)/audio/actions/%.mp3)
+
+md5sum=md5sum -b
 
 all: $(OUTDIR)/robots.manifest
 
@@ -49,8 +51,8 @@ $(OUTDIR)/%: src/%
 $(OUTDIR)/robots.manifest: $(BUILT)
 	@mkdir -p $(dir $@)
 	echo CACHE MANIFEST > $@
-	echo -n "# " >> $@
-	cat $^ | md5sum -b | cut -d " " -f 1 >> $@
+	printf "# " >> $@
+	cat $^ | $(md5sum) | cut -d " " -f 1 >> $@
 	echo >> $@
 	for f in $(BUILT:$(OUTDIR)/%=%); do echo $$f >> $@; done
 

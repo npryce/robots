@@ -2,7 +2,7 @@
 
 import sys
 import re
-import lxml.etree as etree
+import xml.etree.ElementTree as etree
 
 NS = {
     "svg": "http://www.w3.org/2000/svg",
@@ -12,12 +12,14 @@ NS = {
 svg = etree.parse(sys.argv[1])
 wanted = sys.argv[2]
 
-for layer in svg.xpath("//svg:g[@inkscape:groupmode='layer' and @inkscape:label]", namespaces=NS):
-    label = layer.xpath("@inkscape:label", namespaces=NS)[0]
+for layer in svg.findall(".//svg:g[@inkscape:groupmode='layer']", namespaces=NS):
+    label = layer.get("{http://www.inkscape.org/namespaces/inkscape}label", "")
     flags = set(re.split(" *, *", label))
     if wanted in flags:
         layer.set("style", "display:inline")
     else:
-        layer.getparent().remove(layer)
+        # can't get parent of ElementTree node (unlike lxml.etree), but it happens
+        # that all layers are children of the root svg node.
+        svg.getroot().remove(layer)
 
-print etree.tostring(svg)
+print etree.tostring(svg.getroot(), 'utf-8', method="xml")

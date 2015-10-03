@@ -1,13 +1,11 @@
 Building
 --------
 
-To build on Linux, use the command:
+On a Mac, install Homebrew and then run the bootstrap.sh scripts to install essential tools.
+
+To build, use the command:
 
     make
-
-To build on MacOS X, use the command:
-
-    make md5sum=md5
 
 Output ends up in built/dev/
 

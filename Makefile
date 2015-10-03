@@ -16,7 +16,7 @@ BUILT:=$(SRCS:src/%=$(OUTDIR)/%) \
        $(ACTIONS:%=$(OUTDIR)/audio/actions/%.wav) \
        $(ACTIONS:%=$(OUTDIR)/audio/actions/%.mp3)
 
-md5sum=md5sum -b
+md5:=$(shell which md5sum || which md5)
 
 all: $(OUTDIR)/robots.manifest
 
@@ -52,7 +52,7 @@ $(OUTDIR)/robots.manifest: $(BUILT)
 	@mkdir -p $(dir $@)
 	echo CACHE MANIFEST > $@
 	printf "# " >> $@
-	cat $^ | $(md5sum) | cut -d " " -f 1 >> $@
+	cat $^ | $(md5) $(md5flags) | cut -d " " -f 1 >> $@
 	echo >> $@
 	for f in $(BUILT:$(OUTDIR)/%=%); do echo $$f >> $@; done
 
@@ -95,3 +95,5 @@ node_modules/%: package.json
 	npm install # npm install for $@
 	touch $@
 
+tmp:
+	echo $(md5) $(md5flags)

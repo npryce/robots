@@ -12,5 +12,5 @@ Output ends up in built/dev/
 Running
 -------
 
-Open built/dev/robots.html in a modern web browser (Firefox or Chrome, Safari on MacOS X will not work).
+Open built/dev/robots.html in a modern web browser (Firefox, Chrome, Safari).
 

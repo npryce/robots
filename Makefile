@@ -20,9 +20,9 @@ md5:=$(shell which md5sum || which md5)
 
 all: $(OUTDIR)/robots.manifest
 
-$(OUTDIR)/%.css: src/%.css node_modules/autoprefixer/bin/autoprefixer
+$(OUTDIR)/%.css: src/%.css node_modules/.bin/postcss
 	@mkdir -p $(dir $@)
-	node_modules/autoprefixer/bin/autoprefixer -o $@ $<
+	node_modules/.bin/postcss --use autoprefixer --output $@ $<
 
 $(OUTDIR)/%.mp3: $(OUTDIR)/%.wav
 	@mkdir -p $(dir $@)

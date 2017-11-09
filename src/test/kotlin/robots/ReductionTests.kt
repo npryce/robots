@@ -1,15 +1,18 @@
 package robots
 
-import org.junit.Assert.assertEquals
+import org.junit.Assert.fail
 import org.junit.Test
 
-class ReductionTest {
+class ReductionTests {
     private val a = Action("a")
     private val b = Action("b")
     private val c = Action("c")
     private val d = Action("d")
-    private val e = Action("e")
     
+    @Test
+    fun `reduce no-op`() {
+        Seq(Empty) reducesTo Reduction(null, null)
+    }
     
     @Test
     fun `reduce action`() {
@@ -19,8 +22,8 @@ class ReductionTest {
     
     @Test
     fun `reduce repeat`() {
-        Repeat(10, a) reducesTo Reduction(a, Repeat(9, a))
-        Repeat(1, a) reducesTo Reduction(a, null)
+        Repeat(10, a) reducesTo Reduction(null, Seq(a, Repeat(9, a)))
+        Repeat(1, a) reducesTo Reduction(null, a)
     }
     
     @Test
@@ -31,7 +34,7 @@ class ReductionTest {
     
     @Test
     fun `reduce sequence starting with repeat`() {
-        Seq(Repeat(10, a), b) reducesTo Reduction(a, Seq(Repeat(9, a), b))
+        Seq(Repeat(10, a), b) reducesTo Reduction(null, Seq(Seq(a, Repeat(9, a)), b))
     }
     
     @Test
@@ -41,13 +44,15 @@ class ReductionTest {
     
     @Test
     fun `reduce sequence of sequences with a repeat`() {
-        Seq(Seq(Repeat(10,a), b), Seq(c, d)) reducesTo Reduction(a, Seq(Seq(Repeat(9, a), b), Seq(c, d)))
+        Seq(Seq(Repeat(10,a), b), Seq(c, d)) reducesTo Reduction(null, Seq(Seq(Seq(a, Repeat(9, a)), b), Seq(c, d)))
     }
     
     private infix fun AST.reducesTo(expected: Reduction) {
         val reduced = reduce()
-        
-        assertEquals("action", expected.action?.toCompactString(), reduced.action?.toCompactString())
-        assertEquals("future", expected.future?.toCompactString(), reduced.future?.toCompactString())
+        if (reduced != expected) {
+            fail("reduction of ${this.toCompactString()}\nexpected: ${expected.toCompactString()}\nactual:   ${reduced.toCompactString()}")
+        }
     }
+    
+    private fun Reduction.toCompactString() = "Reduction(action=${action?.toCompactString()}, future=${future?.toCompactString()})"
 }

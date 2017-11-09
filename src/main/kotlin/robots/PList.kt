@@ -7,8 +7,8 @@ sealed class PList<out T> {
     abstract fun isEmpty(): Boolean
 }
 object Empty : PList<Nothing>() {
-    override val head = null
-    override val tail: PList<Nothing> = this
+    override val head get() = null
+    override val tail get() = this
     override fun isEmpty() = true
 }
 data class Cons<out T>(override val head: T, override val tail: PList<T>) : PList<T>() {

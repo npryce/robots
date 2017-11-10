@@ -19,7 +19,7 @@ private fun reduceCons(head: AST, tail: PList<AST>) = when (head) {
     is Repeat ->
         Reduction(null,
             if (head.times > 1) {
-                Seq(Cons(head.repeated, Cons(head.copy(times = head.times - 1), tail)))
+                Seq(Cons(head.repeated, Cons(head.furtherIterations(), tail)))
             }
             else if (head.times == 1) {
                 Seq(Cons(head.repeated, tail))
@@ -34,3 +34,6 @@ private fun reduceCons(head: AST, tail: PList<AST>) = when (head) {
                 is Cons<AST> -> Seq(Cons(head.steps.head, Cons(Seq(head.steps.tail), tail)))
             })
 }
+
+private fun Repeat.furtherIterations() =
+    copy(times = times - 1)

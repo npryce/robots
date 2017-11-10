@@ -1,9 +1,9 @@
 package robots
 
 fun main(args: Array<String>) {
-    val ast = Repeat(2, Seq(Repeat(4, Action("clockwise")), Action("forward")))
+    val ast = Seq(Repeat(2, Seq(Repeat(4, Seq(Action("clockwise"))), Action("forward"))))
     
-    val trace = start(ast).run()
+    val trace = start(ast).run(Seq::reduce)
     
     report(trace)
 }

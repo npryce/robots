@@ -10,44 +10,43 @@ class ReductionTests {
     private val d = Action("d")
     
     @Test
-    fun `reduce no-op`() {
-        Seq(Empty) reducesTo Reduction(null, null)
+    fun `reduce nop`() {
+        nop reducesTo Reduction(null, null)
     }
     
     @Test
-    fun `reduce action`() {
-        a reducesTo Reduction(a, null)
-        b reducesTo Reduction(b, null)
+    fun `reduce single action`() {
+        Seq(a) reducesTo Reduction(a, nop)
     }
     
     @Test
-    fun `reduce repeat`() {
-        Repeat(10, a) reducesTo Reduction(null, Seq(a, Repeat(9, a)))
-        Repeat(1, a) reducesTo Reduction(null, a)
-    }
-    
-    @Test
-    fun `reduce linear sequence of actions`() {
+    fun `reduce sequence of actions`() {
         Seq(a, b) reducesTo Reduction(a, Seq(b))
         Seq(a, b, c) reducesTo Reduction(a, Seq(b, c))
     }
     
     @Test
     fun `reduce sequence starting with repeat`() {
-        Seq(Repeat(10, a), b) reducesTo Reduction(null, Seq(Seq(a, Repeat(9, a)), b))
+        Seq(Repeat(10, Seq(a)), b) reducesTo Reduction(null, Seq(Seq(a), Repeat(9, Seq(a)), b))
+        Seq(Repeat(1, Seq(a)), b) reducesTo Reduction(null, Seq(Seq(a), b))
     }
     
     @Test
-    fun `reduce sequence of sequences`() {
-        Seq(Seq(a,b), Seq(c, d)) reducesTo Reduction(a, Seq(Seq(b), Seq(c,d)))
+    fun `reduce sequence starting with empty sequence`() {
+        Seq(Seq(), a) reducesTo Reduction(null, Seq(a))
     }
     
     @Test
-    fun `reduce sequence of sequences with a repeat`() {
-        Seq(Seq(Repeat(10,a), b), Seq(c, d)) reducesTo Reduction(null, Seq(Seq(Seq(a, Repeat(9, a)), b), Seq(c, d)))
+    fun `reduce sequence starting with non-empty sequence`() {
+        Seq(Seq(a, b), Seq(c, d)) reducesTo Reduction(null, Seq(a, Seq(b), Seq(c, d)))
     }
     
-    private infix fun AST.reducesTo(expected: Reduction) {
+    @Test
+    fun `reduce sequence starting with sequences starting with a repeat`() {
+        Seq(Seq(Repeat(10, Seq(a)), b), Seq(c, d)) reducesTo Reduction(null, Seq(Repeat(10, Seq(a)), Seq(b), Seq(c, d)))
+    }
+    
+    private infix fun Seq.reducesTo(expected: Reduction) {
         val reduced = reduce()
         if (reduced != expected) {
             fail("reduction of ${this.toCompactString()}\nexpected: ${expected.toCompactString()}\nactual:   ${reduced.toCompactString()}")

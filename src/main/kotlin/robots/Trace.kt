@@ -12,10 +12,8 @@ fun Trace.next(reduce: (Seq) -> Reduction = Seq::reduceToAction) = when (next) {
     else -> reduce(next).let { (action, future) -> Trace(action, future, this) }
 }
 
-fun Trace.run(reduce: (Seq) -> Reduction = Seq::reduceToAction): Trace {
-    var current: Trace = this
-    while (!current.isFinished()) current = current.next(reduce)
-    return current
+tailrec fun Trace.run(reduce: (Seq) -> Reduction = Seq::reduceToAction): Trace {
+    return if (isFinished()) this else next(reduce).run(reduce)
 }
 
 fun Trace.toSeq(): Seq {

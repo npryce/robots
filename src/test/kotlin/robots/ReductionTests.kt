@@ -42,6 +42,11 @@ class ReductionTests {
     }
     
     @Test
+    fun `reduce sequence starting with single-element sequence`() {
+        Seq(Seq(a), Seq(b,c)) reducesTo Reduction(null, Seq(a, Seq(b, c)))
+    }
+    
+    @Test
     fun `reduce sequence starting with sequences starting with a repeat`() {
         Seq(Seq(Repeat(10, Seq(a)), b), Seq(c, d)) reducesTo Reduction(null, Seq(Repeat(10, Seq(a)), Seq(b), Seq(c, d)))
     }

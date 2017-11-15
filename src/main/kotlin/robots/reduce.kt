@@ -10,10 +10,10 @@ tailrec fun Seq.reduceToAction(): Reduction {
 fun Seq.reduce(): Reduction =
     when (steps) {
         Empty -> Reduction(null, null)
-        is Cons<AST> -> reduceCons(steps.head, steps.tail)
+        is Cons<AST> -> reduceHead(steps.head, steps.tail)
     }
 
-private fun reduceCons(head: AST, tail: PList<AST>) = when (head) {
+private fun reduceHead(head: AST, tail: PList<AST>) = when (head) {
     is Action ->
         Reduction(head, Seq(tail))
     is Repeat ->
@@ -31,7 +31,9 @@ private fun reduceCons(head: AST, tail: PList<AST>) = when (head) {
         Reduction(null,
             when (head.steps) {
                 Empty -> Seq(tail)
-                is Cons<AST> -> Seq(Cons(head.steps.head, Cons(Seq(head.steps.tail), tail)))
+                is Cons<AST> -> {
+                    Seq(Cons(head.steps.head, if (head.steps.tail.isEmpty()) tail else Cons(Seq(head.steps.tail), tail)))
+                }
             })
 }
 

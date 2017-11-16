@@ -20,13 +20,12 @@ class ParseCompactStringTest {
     @Test
     fun `parse sequence of actions`() {
         assertThat("[a, b, c]".toSeq().ok(),
-            equalTo(Seq(Action("a"), Action("b"), Action("c"))))
+            equalTo(Seq(a, b, c)))
     }
     
     @Test
     fun `parse compact string`() {
         assertThat("[a, [b, c], 4•[d, e]]".toSeq().ok(),
-            equalTo(Seq(Action("a"), Seq(Action("b"), Action("c")), Repeat(4, Seq(Action("d"), Action("e"))))))
+            equalTo(Seq(a, Seq(b, c), Repeat(4, Seq(d, e)))))
     }
-    
 }

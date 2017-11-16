@@ -4,11 +4,6 @@ import org.junit.Assert.fail
 import org.junit.Test
 
 class ReductionTests {
-    private val a = Action("a")
-    private val b = Action("b")
-    private val c = Action("c")
-    private val d = Action("d")
-    
     @Test
     fun `reduce nop`() {
         nop reducesTo Reduction(null, null)

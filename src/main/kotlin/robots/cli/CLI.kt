@@ -60,10 +60,3 @@ private fun readCommand(latest: () -> Trace): String? {
     System.out.flush()
     return readLine()
 }
-
-private tailrec fun report(trace: Trace) {
-    println("(" + (trace.action?.name ?: " ") + ") " + (trace.next?.toCompactString() ?: ""))
-    if (trace.past != null) {
-        report(trace.past)
-    }
-}

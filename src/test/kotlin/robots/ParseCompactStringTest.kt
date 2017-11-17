@@ -28,4 +28,12 @@ class ParseCompactStringTest {
         assertThat("[a, [b, c], 4•[d, e]]".toSeq().ok(),
             equalTo(Seq(a, Seq(b, c), Repeat(4, d, e))))
     }
+    
+    @Test
+    fun `parse funky string`() {
+        val poo = "\uD83D\uDCA9"
+        assertThat("[3•[$poo]]".toSeq().ok(), equalTo(
+            Seq(Repeat(3, Action(poo)))
+        ))
+    }
 }

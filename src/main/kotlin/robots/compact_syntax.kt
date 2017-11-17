@@ -9,8 +9,8 @@ import org.javafp.parsecj.Combinators.choice
 import org.javafp.parsecj.Message
 import org.javafp.parsecj.Parser
 import org.javafp.parsecj.Reply
-import org.javafp.parsecj.Text
 import org.javafp.parsecj.Text.intr
+import org.javafp.parsecj.Text.regex
 import org.javafp.parsecj.Text.string
 import org.javafp.parsecj.Text.wspaces
 import org.javafp.parsecj.input.Input
@@ -34,15 +34,13 @@ private fun PList<AST>.toCompactString(): String {
 }
 
 
-private val action: Parser<Char, AST> = Text.alpha.map { start: Char -> Action(start.toString()) }
+private val action: Parser<Char, AST> = regex("[^\\$begin\\$end\\$multiply\\$separator\\p{Space}\\p{Digit}]").map(::Action)
 
 private val repeat: Parser<Char, AST> =
-    intr.bind { count -> string(multiply).then(sequenceElements).map<AST> { seq -> Repeat(count.toInt(), seq) } }
+    intr.bind { count -> string(multiply).then(sequenceElements).map<AST> { repeated -> Repeat(count.toInt(), repeated) } }
 
 private val sequence: Parser<Char, Seq> =
-    recursive { sequenceElements }
-        .map { elements -> Seq(elements)}
-        .label("sequence")
+    recursive { sequenceElements }.map(::Seq).label("sequence")
 
 private val sequenceElement: Parser<Char, AST> = choice(action, repeat, sequence)
 

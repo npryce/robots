@@ -15,8 +15,10 @@ subprojects {
     version '1.0-SNAPSHOT'
 
     repositories {
-        maven { url 'http://dl.bintray.com/kotlin/kotlin-eap-1.2' }
         mavenCentral()
+        maven { url 'http://dl.bintray.com/kotlin/kotlin-eap-1.2' }
+        maven { url 'https://kotlin.bintray.com/kotlin-js-wrappers' }
+        maven { url "http://dl.bintray.com/kotlin/kotlinx.html" }
     }
 }
 
@@ -27,6 +29,7 @@ configure(project(':common')) {
         compile "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlin_version"
         testCompile "org.jetbrains.kotlin:kotlin-test-annotations-common:$kotlin_version"
         testCompile "org.jetbrains.kotlin:kotlin-test-common:$kotlin_version"
+        testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     }
 }
 
@@ -37,7 +40,10 @@ configure(project(':js')) {
         expectedBy project(':common')
 
         compile "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
+        compile 'org.jetbrains:kotlin-react:16.0.0-pre.8-kotlin-1.1.51'
+        compile 'org.jetbrains:kotlin-react-dom:16.0.0-pre.8-kotlin-1.1.51'
         testCompile "org.jetbrains.kotlin:kotlin-test-js:$kotlin_version"
+        testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     }
 }
 

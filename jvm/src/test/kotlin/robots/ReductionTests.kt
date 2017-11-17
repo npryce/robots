@@ -1,7 +1,7 @@
 package robots
 
-import org.junit.Assert.fail
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.fail
 
 class ReductionTests {
     @Test
@@ -51,9 +51,13 @@ class ReductionTests {
     private infix fun Seq.reducesTo(expected: Reduction) {
         val reduced = reduce()
         if (reduced != expected) {
-            fail("reduction of ${this.toCompactString()}\nexpected: ${expected.toCompactString()}\nactual:   ${reduced.toCompactString()}")
+            fail("reduction of $this\nexpected: $expected\nactual:   $reduced")
         }
     }
     
-    private fun Reduction.toCompactString() = "Reduction(action=${action?.name}, future=${future?.toCompactString()})"
+    private val a = Action("a")
+    private val b = Action("b")
+    private val c = Action("c")
+    private val d = Action("d")
+    private val e = Action("e")
 }

@@ -55,5 +55,5 @@ class ReductionTests {
         }
     }
     
-    private fun Reduction.toCompactString() = "Reduction(action=${action?.toCompactString()}, future=${future?.toCompactString()})"
+    private fun Reduction.toCompactString() = "Reduction(action=${action?.name}, future=${future?.toCompactString()})"
 }

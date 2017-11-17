@@ -6,6 +6,7 @@ import com.natpryce.Result
 import org.javafp.data.IList
 import org.javafp.parsecj.Combinators
 import org.javafp.parsecj.Combinators.choice
+import org.javafp.parsecj.Combinators.eof
 import org.javafp.parsecj.Message
 import org.javafp.parsecj.Parser
 import org.javafp.parsecj.Reply
@@ -20,11 +21,8 @@ private val end = "]"
 private val multiply = "•"
 private val separator = ","
 
-fun AST.toCompactString(): String = when (this) {
-    is Action -> name
-    is Repeat -> times.toString() + multiply + begin + repeated.toCompactString() + end
-    is Seq -> begin + steps.toCompactString() + end
-}
+fun Seq.toCompactString(): String =
+    steps.toCompactString()
 
 private fun PList<AST>.toCompactString(): String {
     return when (this) {
@@ -33,22 +31,39 @@ private fun PList<AST>.toCompactString(): String {
     }
 }
 
+private fun AST.toCompactString(): String = when (this) {
+    is Action -> name
+    is Repeat -> times.toString() + multiply + begin + repeated.toCompactString() + end
+    is Seq -> begin + steps.toCompactString() + end
+}
 
-private val action: Parser<Char, AST> = regex("[^\\$begin\\$end\\$multiply\\$separator\\p{Space}\\p{Digit}]").map(::Action)
+
+private val action: Parser<Char, AST> = regex("[^\\$begin\\$end\\$multiply\\$separator\\p{Space}\\p{Digit}]")
+    .map<AST>(::Action)
+    .label("action")
 
 private val repeat: Parser<Char, AST> =
-    intr.bind { count -> string(multiply).then(sequenceElements).map<AST> { repeated -> Repeat(count.toInt(), repeated) } }
+    intr.bind { count -> string(multiply).then(block)
+        .map<AST> { repeated -> Repeat(count.toInt(), repeated) } }
+        .label("repeat")
 
 private val sequence: Parser<Char, Seq> =
-    recursive { sequenceElements }.map(::Seq).label("sequence")
+    recursive { block }.map(::Seq)
+        .label("sequence")
 
-private val sequenceElement: Parser<Char, AST> = choice(action, repeat, sequence)
+private val blockElement: Parser<Char, AST> = choice(action, repeat, sequence)
 
-private val sequenceElements: Parser<Char, PList<AST>> =
-    sequenceElement.between(wspaces, wspaces).sepBy(string(separator)).between(string(begin), string(end))
+private val blockElements: Parser<Char, PList<AST>> =
+    blockElement.between(wspaces, wspaces).sepBy(string(separator))
         .map { elements -> elements.toPList() }
 
-private val topLevel: Parser<Char, Seq> = wspaces.then(sequence).followedBy(wspaces.then(Combinators.eof()))
+private val block: Parser<Char, PList<AST>> =
+    blockElements.between(string(begin), string(end))
+
+
+private val topLevel: Parser<Char, Seq> =
+    wspaces.then(blockElements).followedBy(wspaces).followedBy(eof())
+    .map(::Seq)
 
 private fun <I, A, B> Parser<I, A>.followedBy(after: Parser<I, B>) =
     bind { a -> after.then(Combinators.retn(a)) }

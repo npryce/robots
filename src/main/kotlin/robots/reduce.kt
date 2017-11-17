@@ -19,10 +19,10 @@ private fun reduceHead(head: AST, tail: PList<AST>) = when (head) {
     is Repeat ->
         Reduction(null,
             if (head.times > 1) {
-                Seq(Cons(head.repeated, Cons(head.furtherIterations(), tail)))
+                Seq(Cons(Seq(head.repeated), Cons(head.remainingIterations(), tail)))
             }
             else if (head.times == 1) {
-                Seq(Cons(head.repeated, tail))
+                Seq(Cons(Seq(head.repeated), tail))
             }
             else {
                 Seq(tail)
@@ -37,5 +37,5 @@ private fun reduceHead(head: AST, tail: PList<AST>) = when (head) {
             })
 }
 
-private fun Repeat.furtherIterations() =
+private fun Repeat.remainingIterations() =
     copy(times = times - 1)

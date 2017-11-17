@@ -22,7 +22,7 @@ private val separator = ","
 
 fun AST.toCompactString(): String = when (this) {
     is Action -> name
-    is Repeat -> times.toString() + multiply + repeated.toCompactString()
+    is Repeat -> times.toString() + multiply + begin + repeated.toCompactString() + end
     is Seq -> begin + steps.toCompactString() + end
 }
 
@@ -37,16 +37,20 @@ private fun PList<AST>.toCompactString(): String {
 private val action: Parser<Char, AST> = Text.alpha.map { start: Char -> Action(start.toString()) }
 
 private val repeat: Parser<Char, AST> =
-    intr.bind { count -> string(multiply).then(sequence).map<AST> { seq -> Repeat(count.toInt(), seq) } }
+    intr.bind { count -> string(multiply).then(sequenceElements).map<AST> { seq -> Repeat(count.toInt(), seq) } }
 
 private val sequence: Parser<Char, Seq> =
-    recursive { sequenceElement }.between(wspaces, wspaces).sepBy(string(separator)).between(string(begin), string(end))
-        .map { actions -> Seq(actions.toPList()) }
+    recursive { sequenceElements }
+        .map { elements -> Seq(elements)}
         .label("sequence")
 
 private val sequenceElement: Parser<Char, AST> = choice(action, repeat, sequence)
 
-private val topLevel: Parser<Char, Seq> = wspaces.then(sequence).followedBy(Text.wspaces.then(Combinators.eof()))
+private val sequenceElements: Parser<Char, PList<AST>> =
+    sequenceElement.between(wspaces, wspaces).sepBy(string(separator)).between(string(begin), string(end))
+        .map { elements -> elements.toPList() }
+
+private val topLevel: Parser<Char, Seq> = wspaces.then(sequence).followedBy(wspaces.then(Combinators.eof()))
 
 private fun <I, A, B> Parser<I, A>.followedBy(after: Parser<I, B>) =
     bind { a -> after.then(Combinators.retn(a)) }

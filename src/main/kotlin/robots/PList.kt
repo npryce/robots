@@ -10,6 +10,7 @@ object Empty : PList<Nothing>() {
     override val head get() = null
     override val tail get() = this
     override fun isEmpty() = true
+    override fun toString() = "Empty"
 }
 data class Cons<out T>(override val head: T, override val tail: PList<T>) : PList<T>() {
     override fun isEmpty() = false

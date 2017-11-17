@@ -22,8 +22,10 @@ class ReductionTests {
     
     @Test
     fun `reduce sequence starting with repeat`() {
-        Seq(Repeat(10, Seq(a)), b) reducesTo Reduction(null, Seq(Seq(a), Repeat(9, Seq(a)), b))
-        Seq(Repeat(1, Seq(a)), b) reducesTo Reduction(null, Seq(Seq(a), b))
+        Seq(Repeat(10, a, b), c) reducesTo Reduction(null, Seq(Seq(a, b), Repeat(9, a, b), c))
+        Seq(Repeat(10, a), b) reducesTo Reduction(null, Seq(Seq(a), Repeat(9, a), b))
+        Seq(Repeat(1, a, b), c) reducesTo Reduction(null, Seq(Seq(a, b), c))
+        Seq(Repeat(1, a), b) reducesTo Reduction(null, Seq(Seq(a), b))
     }
     
     @Test
@@ -38,7 +40,7 @@ class ReductionTests {
     
     @Test
     fun `reduce sequence starting with single-element sequence`() {
-        Seq(Seq(a), Seq(b,c)) reducesTo Reduction(null, Seq(a, Seq(b, c)))
+        Seq(Seq(a), Seq(b, c)) reducesTo Reduction(null, Seq(a, Seq(b, c)))
     }
     
     @Test

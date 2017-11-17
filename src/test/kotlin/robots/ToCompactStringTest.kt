@@ -7,7 +7,7 @@ import org.junit.Test
 class ToCompactStringTest {
     @Test
     fun `displays AST on one line with a compact but readable syntax`() {
-        assertThat(Seq(a, Seq(b, c), Repeat(4, Seq(d, e))).toCompactString(),
+        assertThat(Seq(a, Seq(b, c), Repeat(4, d, e)).toCompactString(),
             equalTo("[a, [b, c], 4•[d, e]]"))
     }
 }

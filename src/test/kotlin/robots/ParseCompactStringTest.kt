@@ -26,6 +26,6 @@ class ParseCompactStringTest {
     @Test
     fun `parse compact string`() {
         assertThat("[a, [b, c], 4•[d, e]]".toSeq().ok(),
-            equalTo(Seq(a, Seq(b, c), Repeat(4, Seq(d, e)))))
+            equalTo(Seq(a, Seq(b, c), Repeat(4, d, e))))
     }
 }

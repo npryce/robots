@@ -34,9 +34,10 @@ configure(project(':js')) {
     apply plugin: 'kotlin-platform-js'
 
     dependencies {
+        expectedBy project(':common')
+
         compile "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
         testCompile "org.jetbrains.kotlin:kotlin-test-js:$kotlin_version"
-        expectedBy project(':common')
     }
 }
 
@@ -47,6 +48,8 @@ configure(project(':jvm')) {
     compileTestKotlin.kotlinOptions.jvmTarget = "1.8"
 
     dependencies {
+        expectedBy project(':common')
+
         compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
         compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
         compile 'org.javafp:parsecj:0.5'
@@ -55,7 +58,6 @@ configure(project(':jvm')) {
         testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
         testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
         testCompile group: 'com.natpryce', name: 'hamkrest', version: '1.4.2.2'
-        expectedBy project(':common')
     }
 }
 

@@ -1,3 +1,4 @@
+@file:JvmName("CLI")
 package robots.cli
 
 import com.natpryce.onError

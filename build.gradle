@@ -1,10 +1,8 @@
-group 'com.natpryce.robots'
-version '1.0-SNAPSHOT'
-
 buildscript {
-    ext.kotlin_version = '1.1.60'
+    ext.kotlin_version = '1.2.0-rc-39'
 
     repositories {
+        maven { url 'http://dl.bintray.com/kotlin/kotlin-eap-1.2' }
         mavenCentral()
     }
     dependencies {
@@ -12,28 +10,52 @@ buildscript {
     }
 }
 
-apply plugin: 'java'
-apply plugin: 'kotlin'
+subprojects {
+    group 'com.natpryce.robots'
+    version '1.0-SNAPSHOT'
 
-sourceCompatibility = 1.8
-
-repositories {
-    mavenCentral()
+    repositories {
+        maven { url 'http://dl.bintray.com/kotlin/kotlin-eap-1.2' }
+        mavenCentral()
+    }
 }
 
-dependencies {
-    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
-    compile "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
-    compile 'org.javafp:parsecj:0.5'
-    compile 'com.natpryce:result4k:1.4.1'
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-    testCompile group: 'com.natpryce', name: 'hamkrest', version: '1.4.2.2'
+configure(project(':common')) {
+    apply plugin: 'kotlin-platform-common'
+
+    dependencies {
+        compile "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlin_version"
+        testCompile "org.jetbrains.kotlin:kotlin-test-annotations-common:$kotlin_version"
+        testCompile "org.jetbrains.kotlin:kotlin-test-common:$kotlin_version"
+    }
 }
 
-compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+configure(project(':js')) {
+    apply plugin: 'kotlin-platform-js'
+
+    dependencies {
+        compile "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
+        testCompile "org.jetbrains.kotlin:kotlin-test-js:$kotlin_version"
+        expectedBy project(':common')
+    }
 }
-compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+
+configure(project(':jvm')) {
+    apply plugin: 'kotlin-platform-jvm'
+
+    compileKotlin.kotlinOptions.jvmTarget = "1.8"
+    compileTestKotlin.kotlinOptions.jvmTarget = "1.8"
+
+    dependencies {
+        compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+        compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+        compile 'org.javafp:parsecj:0.5'
+        compile 'com.natpryce:result4k:1.4.1'
+        testCompile group: 'junit', name: 'junit', version: '4.12'
+        testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+        testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
+        testCompile group: 'com.natpryce', name: 'hamkrest', version: '1.4.2.2'
+        expectedBy project(':common')
+    }
 }
+

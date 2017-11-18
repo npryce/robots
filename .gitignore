@@ -2,3 +2,7 @@
 out/
 target/
 .gradle/
+jvm/build/
+js/build/
+common/build/
+build/

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html manifest="robots.manifest">
+  <head>
+	<meta charset="UTF-8">
+	<title>Robots!</title>
+	
+	<!-- iOS web-app configuration -->
+	<!--<link rel="apple-touch-startup-image" href="icon-robot-500.png">-->
+	<!--<link rel="apple-touch-icon" sizes="76x76" href="icon-robot-76.png"/>-->
+	<!--<link rel="apple-touch-icon" sizes="120x120" href="icon-robot-120.png"/>-->
+	<!--<link rel="apple-touch-icon" sizes="152x152" href="icon-robot-152.png"/>-->
+	<meta name="apple-mobile-web-app-capable" content="yes"/>
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="viewport" content="user-scalable=no, width=device-width"/>
+	<meta name="format-detection" content="telephone=no"/>
+	<!-- End of iOS web-app configuration -->
+	
+	<link href="html5reset.css" rel="stylesheet" type="text/css"/>
+	<link href="robots.css" rel="stylesheet" type="text/css"/>
+	<style type="text/css">
+	  .loading #startview, .loading #gameview {
+	      display: none;
+	  }
+	</style>
+  </head>
+  <body class="loading">
+	<div id="startview">
+	  <h1>Robot Master</h1>
+	  <div id="instructions">
+		<ol>
+		  <li>Set up a challenge</li>
+		  <li>Write a program to solve the challenge</li>
+		  <li>Child: Run the program</li>
+		  <li>Adult: Pretend to be a robot &amp; follow the vocal instructions given by the app</li>
+		</ol>
+	  </div>
+	  
+	  <div id="start-buttons">
+		<button id="play">Play</button>
+	  </div>
+	  
+	  <div id="version">Version: {{version}} Built: {{buildtime}}</div>
+	</div>
+	
+	<div id="gameview">
+	  <header id="header">
+		<div class="stats">Cards: <span id="card-count">0</span><span class="runcontrol">,
+		    Actions: <span id="steps">0</span>,
+            Saving: <span id="saving">0</span></span></div>
+		
+		<div id="controls">
+		  <button class="editcontrol" type="button" id="clear" disabled="true">Clear</button>
+		  <button class="editcontrol" type="button" id="undo" disabled="true">Undo</button>
+		  <button class="editcontrol" type="button" id="redo" disabled="true">Redo</button>
+		  <button class="editcontrol" type="button" id="run" disabled="true">Run</button>
+		  <button class="runcontrol" type="button" id="stop">Stop</button>
+		</div>
+	  </header>
+	  
+	  <div id="content">
+		<div id="program"></div>
+	  </div>
+	  
+	  <div id="playercontrols">
+  		<div id="stacks" class="editcontrol">
+		  <div id="control"></div>
+		  <div id="actions"></div>
+		</div>
+		<div id="runpanel" class="runcontrol">
+		  <div class="controls">
+			<button type="button" id="again">Again</button>
+			<button type="button" id="next">Ok</button>
+		  </div>
+		  <div>&ldquo;<span id="description"></span>&rdquo;</div>
+		</div>
+	  </div>
+	</div>
+  </body>
+</html>

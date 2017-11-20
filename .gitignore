@@ -3,6 +3,7 @@ out/
 target/
 .gradle/
 jvm/build/
-js/build/
+webui/build/
+webui/node_modules/
 common/build/
 build/

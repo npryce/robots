@@ -5,7 +5,7 @@ import kotlin.test.assertEquals
 
 class PListZipperTest {
     @Test
-    fun `traversing`() {
+    fun traversing() {
         val xs = pListOf(1,2,3,4,5,6)
         val x = xs.zipper().next()?.next()?.current
         
@@ -13,7 +13,7 @@ class PListZipperTest {
     }
     
     @Test
-    fun `modifying`() {
+    fun modifying() {
         val xs = pListOf(1,2,3,4,5,6)
         val munged = xs.zipper().next()?.next()?.remove()?.replaceWith(99)?.toPList()
         

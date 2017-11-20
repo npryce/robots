@@ -3,10 +3,12 @@ buildscript {
 
     repositories {
         maven { url 'http://dl.bintray.com/kotlin/kotlin-eap-1.2' }
+        maven { url "https://plugins.gradle.org/m2/" }
         mavenCentral()
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.moowork.gradle:gradle-node-plugin:1.2.0'
     }
 }
 
@@ -33,8 +35,17 @@ configure(project(':common')) {
     }
 }
 
-configure(project(':js')) {
+configure(project(':webui')) {
     apply plugin: 'kotlin-platform-js'
+    apply plugin: 'kotlin-dce-js'
+    apply plugin: 'com.moowork.node'
+
+    ext.webDir = "${buildDir}/web"
+
+    compileKotlin2Js {
+        kotlinOptions.moduleKind = "commonjs"
+        kotlinOptions.sourceMap = true
+    }
 
     dependencies {
         expectedBy project(':common')
@@ -45,6 +56,22 @@ configure(project(':js')) {
         testCompile "org.jetbrains.kotlin:kotlin-test-js:$kotlin_version"
         testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     }
+
+    node {
+        download = true
+    }
+
+    task assembleWeb(type: Sync) {
+        from 'src/main/web'
+        into webDir
+    }
+
+    task buildBundle(type: NpmTask, dependsOn: [npmInstall, runDceKotlinJs]) {
+        args = ["run", "bundle"]
+    }
+
+    assemble.dependsOn assembleWeb
+    assemble.dependsOn buildBundle
 }
 
 configure(project(':jvm')) {

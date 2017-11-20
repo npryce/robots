@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "react": "^16.1.1",
+    "react-dom": "^16.1.1"
+  },
+  "devDependencies": {
+    "webpack": "^3.8.1"
+  },
+  "scripts": {
+    "bundle": "webpack"
+  }
+}

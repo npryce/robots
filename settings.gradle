@@ -2,4 +2,4 @@ rootProject.name = 'robots-2'
 
 include 'jvm'
 include 'common'
-include 'js'
+include 'webui'

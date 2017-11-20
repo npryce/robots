@@ -1,10 +1,10 @@
 var path = require("path");
 
-var minDir = "build/classes/main/min";
+var kotlinDceOutputDir = "build/classes/main/min";
 
 module.exports = {
     devtool: 'source-map',
-    entry: path.resolve(__dirname, minDir, "webui.js"),
+    entry: path.resolve(__dirname, kotlinDceOutputDir, "webui.js"),
     output: {
         path: path.resolve(__dirname, "build/web"),
         filename: "robots.js"
@@ -12,7 +12,7 @@ module.exports = {
     resolve: {
         modules: [
             path.resolve(__dirname, "node_modules"),
-            path.resolve(__dirname, minDir)
+            path.resolve(__dirname, kotlinDceOutputDir)
         ]
     }
 };

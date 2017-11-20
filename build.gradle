@@ -64,6 +64,9 @@ configure(project(':webui')) {
     task assembleStaticAssets(type: Sync) {
         from 'src/main/web'
         into webDir
+        preserve {
+            include 'robots.js'
+        }
     }
 
     task assembleJsBundle(type: NpmTask, dependsOn: [npmInstall, runDceKotlinJs]) {

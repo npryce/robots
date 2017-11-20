@@ -61,17 +61,17 @@ configure(project(':webui')) {
         download = true
     }
 
-    task assembleWeb(type: Sync) {
+    task assembleStaticAssets(type: Sync) {
         from 'src/main/web'
         into webDir
     }
 
-    task buildBundle(type: NpmTask, dependsOn: [npmInstall, runDceKotlinJs]) {
+    task assembleJsBundle(type: NpmTask, dependsOn: [npmInstall, runDceKotlinJs]) {
         args = ["run", "bundle"]
     }
 
-    assemble.dependsOn assembleWeb
-    assemble.dependsOn buildBundle
+    assemble.dependsOn assembleStaticAssets
+    assemble.dependsOn assembleJsBundle
 }
 
 configure(project(':jvm')) {

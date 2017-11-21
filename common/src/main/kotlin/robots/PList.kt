@@ -7,15 +7,20 @@ sealed class PList<out T> : Iterable<T> {
     
     override fun iterator(): Iterator<T> =
         PListIterator(this)
+    
+    override fun toString() =
+        joinToString(prefix = "[", separator = ", ", postfix = "]")
 }
 
 object Empty : PList<Nothing>() {
     override val head get() = null
     override val tail get() = this
-    override fun toString() = "Empty"
+    override fun toString() = super.toString()
 }
 
-data class Cons<out T>(override val head: T, override val tail: PList<T>) : PList<T>()
+data class Cons<out T>(override val head: T, override val tail: PList<T>) : PList<T>() {
+    override fun toString() = super.toString()
+}
 
 fun PList<*>.isEmpty() = this == Empty
 fun PList<*>.isNotEmpty() = !isEmpty()

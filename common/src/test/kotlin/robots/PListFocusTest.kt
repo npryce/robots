@@ -4,7 +4,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.fail
 
-open class PListZipperTest {
+open class PListFocusTest {
     @Test
     fun traversing() {
         val xs = pListOf(1,2,3,4,5,6)

@@ -2,7 +2,7 @@ package robots
 
 import org.junit.Test
 
-class JvmPListZipperTest : PListZipperTest() {
+class JvmPListFocusTest : PListFocusTest() {
     @Test
     fun `will run on the JVM`() {
     

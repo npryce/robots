@@ -1,6 +1,5 @@
 package robots
 
-
 interface EditPoint {
     fun displayId(): String
     
@@ -10,16 +9,16 @@ interface EditPoint {
 }
 
 class PListElementEditPoint(
-    private val element: PListZipper<AST>,
+    private val element: PListFocus<AST>,
     private val replaceInProgram: (PList<AST>) -> Seq
 ) : EditPoint {
     override fun displayId() = element.current.displayId()
     
-    override fun remove() = replaceInProgram(element.remove()?.toPList()?: emptyPList())
+    override fun remove() = replaceInProgram(element.remove()?.toPList() ?: emptyPList())
     override fun replaceWith(newAST: AST) = apply { replaceWith(newAST) }
-    override fun insertBefore(newAST: AST) = apply { insert(newAST) }
+    override fun insertBefore(newAST: AST) = apply { insertBefore(newAST) }
     
-    private fun apply(action: PListZipper<AST>.() -> PListZipper<AST>) =
+    private fun apply(action: PListFocus<AST>.() -> PListFocus<AST>) =
         replaceInProgram(element.action().toPList())
 }
 
@@ -31,6 +30,9 @@ fun PList<AST>.editPoints(replaceInProgram: (PList<AST>) -> Seq): List<EditPoint
 fun Seq.editPoints() =
     steps.editPoints { copy(steps = it) }
 
-private fun AST.displayId(): String {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-}
+private fun AST.displayId() =
+    when (this) {
+        is Action -> name
+        is Repeat -> "${times}•"
+        is Seq -> "[]"
+    }

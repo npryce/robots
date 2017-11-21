@@ -3,7 +3,7 @@ package robots
 import kotlin.test.Test
 import kotlin.test.fail
 
-open class ReductionTests {
+open class ReductionTest {
     @Test
     fun reduce_nop() {
         nop reducesTo Reduction(null, null)

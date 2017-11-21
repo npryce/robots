@@ -1,7 +1,8 @@
 {
   "dependencies": {
     "react": "^16.1.1",
-    "react-dom": "^16.1.1"
+    "react-dom": "^16.1.1",
+    "react-beautiful-dnd": "^2.6.3"
   },
   "devDependencies": {
     "webpack": "^3.8.1"

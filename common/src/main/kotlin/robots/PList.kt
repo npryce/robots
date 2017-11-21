@@ -29,6 +29,15 @@ fun emptyPList() = Empty
 fun <T> pListOf(element: T) = Cons(element, Empty)
 fun <T> pListOf(vararg elements: T) = elements.foldRight(Empty, ::Cons)
 
+fun <T> PList<T>.notEmpty(): Cons<T>? = this as? Cons<T>
+
+// A short cut for this.notEmpty()?.let { cons -> ... }
+fun <T, U> PList<T>.notEmpty(f: (Cons<T>) -> U): U? {
+    return when (this) {
+        Empty -> null
+        is Cons<T> -> f(this)
+    }
+}
 
 private class PListIterator<out T>(private var current: PList<T>) : Iterator<T> {
     override fun hasNext() =

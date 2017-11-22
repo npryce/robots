@@ -1,7 +1,9 @@
 package robots
 
 interface EditPoint {
-    fun displayId(): String
+    val node: AST
+    
+    fun displayId(): String = node.displayId()
     
     fun remove(): Seq
     fun replaceWith(newAST: AST): Seq
@@ -12,7 +14,8 @@ class PListElementEditPoint(
     private val element: PListFocus<AST>,
     private val replaceInProgram: (PList<AST>) -> Seq
 ) : EditPoint {
-    override fun displayId() = element.current.displayId()
+    
+    override val node: AST get() = element.current
     
     override fun remove() = replaceInProgram(element.remove()?.toPList() ?: emptyPList())
     override fun replaceWith(newAST: AST) = apply { replaceWith(newAST) }
@@ -33,6 +36,6 @@ fun Seq.editPoints() =
 private fun AST.displayId() =
     when (this) {
         is Action -> name
-        is Repeat -> "${times}•"
+        is Repeat -> "${times}×"
         is Seq -> "[]"
     }

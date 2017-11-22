@@ -26,9 +26,5 @@ data class PListFocus<T>(private val back: PList<T>, val current: T, private val
     fun toPList(): PList<T> = back.fold(Cons(current, forth), { xs, x -> Cons(x, xs) })
 }
 
-fun <T> PList<T>.zipper(): PListFocus<T>? = when (this) {
-    Empty -> null
-    is Cons<T> -> PListFocus(Empty, head, tail)
-}
-
-
+fun <T> PList<T>.zipper(): PListFocus<T>? =
+    this.notEmpty { (head, tail) -> PListFocus(Empty, head, tail) }

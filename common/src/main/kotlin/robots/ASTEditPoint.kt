@@ -8,22 +8,25 @@ interface EditPoint {
     fun remove(): Seq
     fun replaceWith(newAST: AST): Seq
     fun insertBefore(newAST: AST): Seq
+    fun insertAfter(newAST: AST): Seq
 }
 
 class PListElementEditPoint(
-    private val element: PListFocus<AST>,
+    private val focus: PListFocus<AST>,
     private val replaceInProgram: (PList<AST>) -> Seq
 ) : EditPoint {
     
-    override val node: AST get() = element.current
+    override val node: AST get() = focus.current
     
-    override fun remove() = replaceInProgram(element.remove()?.toPList() ?: emptyPList())
+    override fun remove() = replaceInProgram(focus.remove()?.toPList() ?: emptyPList())
     override fun replaceWith(newAST: AST) = apply { replaceWith(newAST) }
     override fun insertBefore(newAST: AST) = apply { insertBefore(newAST) }
+    override fun insertAfter(newAST: AST) = apply { insertAfter(newAST) }
     
     private fun apply(action: PListFocus<AST>.() -> PListFocus<AST>) =
-        replaceInProgram(element.action().toPList())
+        replaceInProgram(focus.action().toPList())
 }
+
 
 fun PList<AST>.editPoints(replaceInProgram: (PList<AST>) -> Seq): List<EditPoint> =
     generateSequence(zipper(), { it.next() })

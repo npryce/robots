@@ -217,7 +217,7 @@ button[disabled] {
 	display: none;
 }
 
-.cardsequence, .cardrow, .cardgroup {
+.cardsequence, .cardrow, .cardblock {
 	flex-flow: row wrap;
 	justify-content: flex-start;
 	align-items: flex-start;
@@ -230,7 +230,7 @@ button[disabled] {
 	display: flex;
 }
 
-.cardgroup {
+.cardblock {
 	display: inline-flex;
 }
 

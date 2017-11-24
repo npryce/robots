@@ -1,5 +1,6 @@
 package robots.ui
 
+import react.dom.div
 import react.dom.render
 import robots.Action
 import robots.Repeat
@@ -14,6 +15,8 @@ fun main(args: Array<String>) {
     
     render(app) {
         programEditor(program)
-        cardStacks()
+        div("controls") {
+            cardStacks()
+        }
     }
 }

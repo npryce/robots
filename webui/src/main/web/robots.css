@@ -43,49 +43,39 @@ html, body {
 }
 
 body {
-	position: static;
-	flex-direction: column;
-	justify-content: flex-start;
-	align-items: stretch;
-	font-family: Gameplay, sans-serif;
+    position: static;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    font-family: Gameplay, sans-serif;
 }
-
 
 #app {
-	display: flex;
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	padding: 0.125em;
-	margin: 0;
-	overflow-y: scroll;
-	-webkit-overflow-scrolling: touch;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0.125em;
+    margin: 0;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
 }
 
-#header {
-	display: flex;
-	flex-direction: row;
-	justify-content: flex-start;
-	align-items: center;
-	flex: initial;
-	background-color: #101010;
-	color: #FEFEFE;
-	padding: 0.125em;
-	text-align: right;
-	font-size: 65%;
+.program {
+    flex-grow: 1;
+    flex-shrink: 1;
 }
 
-#header .stats {
-	flex: 1 1;
-	text-align: left;
-	margin-left: 0.125em;
+.controls {
+    flex-grow: 0;
+    flex-shrink: 0;
+    border-top: #DDDDDD 1px solid;
+    padding-top: 0.1em;
 }
 
-#header #controls {
-	flex: initial;
-}
 
 button {
 	border-radius: 0.25em;
@@ -221,14 +211,6 @@ button[disabled] {
 
 .card.dragging.disappearing {
 	animation-name: slip-away;
-}
-
-#program .card.action.active, #program .annotation {
-	animation-name: jiggle;
-	animation-direction: normal;
-	animation-duration: 0.15s;
-	animation-iteration-count: infinite;
-	transform-origin: 50% 50%;
 }
 
 .cursor {

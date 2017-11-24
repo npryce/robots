@@ -14,5 +14,6 @@ fun main(args: Array<String>) {
     
     render(app) {
         programEditor(program)
+        cardStacks()
     }
 }

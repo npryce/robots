@@ -50,92 +50,8 @@ body {
 	font-family: Gameplay, sans-serif;
 }
 
-.starting #startview {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-start;
-	align-items: center;
-	font-size: 50%;
-	margin: 2em;
-}
 
-.playing #startview {
-	display: none;
-}
-
-#startview h1 {
-	font-size: 200%;
-	margin-bottom: 1em;
-}
-
-#startview h2 {
-	font-size: 125%;
-	margin-bottom: 1em;
-}
-
-#startview #game-config {
-	margin-top: 2em;
-}
-
-#startview #start-buttons {
-	margin-top: 2em;
-}
-
-#startview ul {
-	list-style-type: none;
-}
-
-#startview ol li {
-	margin-bottom: 0.75em;
-}
-
-#startview ul input {
-	width: 1.75em;
-	height: 1.75em;
-}
-
-#startview button {
-	font-size: 150%;
-}
-
-#startview #version {
-	position: fixed;
-	right: 0.5em;
-	bottom: 0.5em;
-	color: #888888;
-	font-size: 50%;
-}
-
-.starting #gameview {
-	display: none;
-}
-
-.playing #gameview {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-start;
-	align-items: stretch;
-	font-family: Gameplay, sans-serif;
-}
-
-#content {
-	position: relative;
-	flex: 1 1;
-	background-color: #FEFEFF;
-	-webkit-overflow-scrolling: touch;
-}
-
-#program {
+#app {
 	display: flex;
 	position: absolute;
 	top: 0;
@@ -186,35 +102,10 @@ button[disabled] {
 	color: #AAAAAA;
 }
 
-#playercontrols {
+.playercontrols {
 	position: relative;
 	background-color: #666666;
 	color: #FEFEFE;
-}
-
-#stacks {
-	padding: 0.125em;
-}	
-
-#runpanel {
-	font-size: 65%;
-}
-
-#runpanel>div {
-	margin: 0.5em;
-	text-align: center;
-}
-
-#runpanel button[disabled] {
-	display: none;
-}
-
-.running #playercontrols .editcontrol {
-	display: none;
-}
-
-.editing #playercontrols .runcontrol {
-	display: none;
 }
 
 .cardsequence, .cardrow, .cardblock {
@@ -237,6 +128,16 @@ button[disabled] {
 /* for debugging */
 .cardrow {
 	/* background-color: rgba(0,0,0, 0.1); */
+}
+
+.stacks {
+    padding: 0.125em;
+}
+
+.stacks .card {
+    border-width: 0;
+    border-bottom-width: 0.1em;
+    border-style: solid;
 }
 
 .stackrow {
@@ -285,12 +186,7 @@ button[disabled] {
 	box-shadow: 1px 1px 6px rgba(0,0,0,0.8);
 }
 
-#stacks .card {
-	border-bottom-width: 0.1em;
-	border-style: solid;
-}
-
-#program .card {
+.program .card {
 	animation-name: slip;
 	animation-direction: reverse;
 	animation-duration: 0.125s;

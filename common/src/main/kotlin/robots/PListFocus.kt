@@ -26,5 +26,8 @@ data class PListFocus<T>(private val back: PList<T>, val current: T, private val
     fun toPList(): PList<T> = back.fold(Cons(current, forth), { xs, x -> Cons(x, xs) })
 }
 
-fun <T> PList<T>.zipper(): PListFocus<T>? =
+fun <T> PList<T>.focusHead(): PListFocus<T>? =
     this.notEmpty { (head, tail) -> PListFocus(Empty, head, tail) }
+
+fun PList<AST>.focusElements(): List<PListFocus<AST>> =
+    generateSequence(focusHead(), { it.next() }).toList()

@@ -92,12 +92,6 @@ button[disabled] {
 	color: #AAAAAA;
 }
 
-.playercontrols {
-	position: relative;
-	background-color: #666666;
-	color: #FEFEFE;
-}
-
 .cardsequence, .cardrow, .cardblock {
 	flex-flow: row wrap;
 	justify-content: flex-start;
@@ -216,7 +210,7 @@ button[disabled] {
 .cursor {
 	border-style: dotted;
 	border-color: rgba(0,0,0,0.4);
-	border-width: 0.08em;
+    box-shadow: none;
 	background-color: transparent;
 }
 
@@ -226,18 +220,6 @@ button[disabled] {
 	animation-duration: 1s;
 	animation-iteration-count: infinite;
 	transform-origin: 50% 50%;
-}
-
-.running .cursor {
-	display: none;
-}
-
-.running .editcontrol {
-	display: none;
-}
-
-.editing .runcontrol {
-	display:none;
 }
 
 .annotation {
@@ -251,25 +233,6 @@ button[disabled] {
 	right: -0.25em;
     text-align: center;
 	z-index: 0;
-}
-
-.annotation:before, .annotation:after {
-    background: red;
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: inherit;
-    width: inherit;
-	z-index: -1;
-}
-
-.annotation:before {
-    transform: rotate(30deg);
-}
-
-.annotation:after {
-    transform: rotate(60deg);
 }
 
 @keyframes slip {

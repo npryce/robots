@@ -29,28 +29,37 @@ class TopLevelEditPoint(
     private val program: Seq,
     override val focus: PListFocus<AST>
 ) : AbstractEditPoint() {
+    
     override val parent = null
     
     override fun splice(newSteps: PList<AST>) =
         program.copy(steps = newSteps)
 }
 
-fun Seq.editPoints() =
-    steps.focusElements()
-        .map { focus -> TopLevelEditPoint(this, focus) }
-
-
 class InternalEditPoint(
     override val parent: EditPoint,
     override val focus: PListFocus<AST>,
     private val replaceChildren: (PList<AST>) -> AST
 ) : AbstractEditPoint() {
+    
     override fun splice(newSteps: PList<AST>) =
         parent.replaceWith(replaceChildren(newSteps))
 }
 
 
-fun PList<AST>.editPoints(parent: EditPoint, replaceInParent: (PList<AST>) -> AST): List<EditPoint> =
+fun Seq.editPoints(): List<EditPoint> =
+    steps.focusElements()
+        .map { focus -> TopLevelEditPoint(this, focus) }
+
+fun EditPoint.children(): List<EditPoint> {
+    val node = this.node
+    return when (node) {
+        is Action -> emptyList()
+        is Repeat -> node.repeated.editPoints(this, { node.copy(repeated = it) })
+        is Seq -> node.steps.editPoints(this, { node.copy(steps = it) })
+    }
+}
+
+private fun PList<AST>.editPoints(parent: EditPoint, replaceInParent: (PList<AST>) -> AST): List<EditPoint> =
     focusElements()
         .map { zipper -> InternalEditPoint(parent, zipper, replaceInParent) }
-

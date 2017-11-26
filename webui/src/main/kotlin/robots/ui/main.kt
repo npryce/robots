@@ -1,5 +1,6 @@
 package robots.ui
 
+import react.RBuilder
 import react.dom.div
 import react.dom.render
 import robots.Action
@@ -9,14 +10,20 @@ import kotlin.browser.document
 
 
 fun main(args: Array<String>) {
-    val app = document.getElementById("app") ?: throw IllegalStateException("no element called 'app")
+    DragAndDrop.activate()
+    
+    val containerDiv = document.getElementById("app") ?: throw IllegalStateException("no element called 'app")
     
     val program = Seq(Action("a"), Repeat(3, Action("b"), Action("c"), Repeat(2, Action("x")), Action("y")), Action("d"), Action("e"))
     
-    render(app) {
+    render(containerDiv) {
         programEditor(program)
-        div("controls") {
-            cardStacks()
-        }
+        controlPanel()
+    }
+}
+
+private fun RBuilder.controlPanel() {
+    div("controls") {
+        cardStacks()
     }
 }

@@ -17,6 +17,8 @@ private class CardStack(props: CardStack.Props) : RComponent<CardStack.Props, RS
     
     override fun RBuilder.render() {
         div("card ${cardCategoryClass(props.instruction)}") {
+            ref { DragAndDrop.bind(it, { props.instruction }) }
+            
             +props.instruction.displayId()
         }
     }

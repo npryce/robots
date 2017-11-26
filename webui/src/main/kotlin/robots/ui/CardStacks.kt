@@ -10,7 +10,7 @@ import robots.Action
 import robots.Repeat
 
 
-class CardStack(props: CardStack.Props) : RComponent<CardStack.Props, RState>(props) {
+private class CardStack(props: CardStack.Props) : RComponent<CardStack.Props, RState>(props) {
     interface Props : RProps {
         var instruction: AST
     }
@@ -26,13 +26,14 @@ fun RBuilder.cardStack(instruction: AST) = child(CardStack::class) {
     attrs.instruction = instruction
 }
 
-fun RBuilder.cardStackRow(instructions: Iterable<AST>) {
+
+private fun RBuilder.cardStackRow(instructions: Iterable<AST>) {
     div("stackrow") {
         instructions.forEach { i -> cardStack(i) }
     }
 }
 
-fun RBuilder.cardStackRow(vararg instructions: AST) {
+private fun RBuilder.cardStackRow(vararg instructions: AST) {
     cardStackRow(instructions.toList())
 }
 

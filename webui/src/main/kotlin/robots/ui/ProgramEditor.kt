@@ -11,16 +11,17 @@ import robots.Action
 import robots.EditPoint
 import robots.Repeat
 import robots.Seq
+import robots.children
 import robots.editPoints
 import robots.splitAfter
 import robots.ui.ProgramEditor.Props
 
 
-interface CardProps : RProps {
+private interface CardProps : RProps {
     var editor: EditPoint
 }
 
-class ExtensionSpace(props: ExtensionSpace.Props) : RComponent<ExtensionSpace.Props, RState>(props) {
+private class ExtensionSpace(props: ExtensionSpace.Props) : RComponent<ExtensionSpace.Props, RState>(props) {
     interface Props : CardProps
     
     override fun RBuilder.render() {
@@ -33,7 +34,7 @@ fun RBuilder.extensionSpace(editor: EditPoint) = child(ExtensionSpace::class) {
 }
 
 
-class ActionCard(props: CardProps) : RComponent<CardProps, RState>(props) {
+private class ActionCard(props: CardProps) : RComponent<CardProps, RState>(props) {
     override fun RBuilder.render() {
         div("card action") { +props.editor.displayId() }
     }
@@ -43,7 +44,7 @@ fun RBuilder.actionCard(editor: EditPoint) = child(ActionCard::class) {
     attrs.editor = editor
 }
 
-class ControlCard(props: CardProps) : RComponent<CardProps, RState>(props) {
+private class ControlCard(props: CardProps) : RComponent<CardProps, RState>(props) {
     override fun RBuilder.render() {
         div("card control") { +props.editor.displayId() }
     }
@@ -54,7 +55,7 @@ fun RBuilder.controlCard(editor: EditPoint) = child(ControlCard::class) {
 }
 
 
-class SequenceEditor(props: Props) : RComponent<SequenceEditor.Props, RState>(props) {
+private class SequenceEditor(props: Props) : RComponent<SequenceEditor.Props, RState>(props) {
     interface Props : RProps {
         var elements: List<EditPoint>
     }
@@ -84,15 +85,15 @@ class SequenceEditor(props: Props) : RComponent<SequenceEditor.Props, RState>(pr
         val node = editPoint.node
         when (node) {
             is Action -> actionCard(editPoint)
-            is Repeat -> repeatBlock(node, editPoint)
+            is Repeat -> repeatBlock(editPoint)
             else -> TODO()
         }
     }
     
-    private fun RDOMBuilder<DIV>.repeatBlock(repeat: Repeat, editPoint: EditPoint) {
+    private fun RDOMBuilder<DIV>.repeatBlock(editPoint: EditPoint) {
         div("cardblock") {
             controlCard(editPoint)
-            cardSequence(repeat.repeated.editPoints(editPoint, { repeat.copy(repeated = it) }))
+            cardSequence(editPoint.children())
         }
     }
 }
@@ -101,7 +102,7 @@ fun RBuilder.cardSequence(elements: List<EditPoint>) = child(SequenceEditor::cla
     attrs.elements = elements
 }
 
-class ProgramEditor(props: Props) : RComponent<Props, RState>(props) {
+private class ProgramEditor(props: Props) : RComponent<Props, RState>(props) {
     interface Props : RProps {
         var program: Seq
     }

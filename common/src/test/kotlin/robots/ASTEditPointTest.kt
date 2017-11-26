@@ -41,7 +41,7 @@ open class ASTEditPointTest {
     }
     
     @Test
-    fun can_insert_program_element_before_focus() {
+    fun can_insert_before_program_element() {
         assertEquals(actual = editPoints[1].insertBefore(x), expected = Seq(a, x, b, Repeat(3, c, d), e),
             message = "can insert before top level element")
         assertEquals(actual = editPoints[2].insertBefore(x), expected = Seq(a, b, x, Repeat(3, c, d), e),
@@ -54,7 +54,7 @@ open class ASTEditPointTest {
     }
     
     @Test
-    fun can_insert_program_element_after_focus() {
+    fun can_insert_after_program() {
         assertEquals(actual = editPoints[1].insertAfter(x), expected = Seq(a, b, x, Repeat(3, c, d), e),
             message = "can insert after top level element")
         assertEquals(actual = editPoints[2].insertAfter(x), expected = Seq(a, b, Repeat(3, c, d), x, e),
@@ -65,6 +65,5 @@ open class ASTEditPointTest {
             expected = Seq(a, b, Repeat(3, c, d, x), e),
             message = "can insert after element of subtree")
     }
-    
 }
 

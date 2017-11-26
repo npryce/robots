@@ -16,15 +16,13 @@ class CompactSyntaxTest(val what: String, val syntax: String, val ast: Seq) {
         private val c = Action("c")
         private val d = Action("d")
         private val e = Action("e")
-        
-        private val poo = "\uD83D\uDCA9"
-        
+    
         private val examples: Map<String, Pair<String, Seq>> = mapOf(
             "empty program" to Pair("", nop),
             "sequence of single action" to Pair("a", Seq(a)),
             "sequence of actions" to Pair("a, b, c", Seq(a, b, c)),
             "nested program" to Pair("a, [b, c], 4•[d, e]", Seq(a, Seq(b, c), Repeat(4, d, e))),
-            "funky identifiers" to Pair("3•[⬆], $poo", Seq(Repeat(3, Action("⬆")), Action(poo)))
+            "funky identifiers" to Pair("3•[⬆], 💩", Seq(Repeat(3, Action("⬆")), Action("💩")))
         )
         
         @JvmStatic

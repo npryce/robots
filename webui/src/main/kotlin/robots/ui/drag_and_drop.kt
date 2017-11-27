@@ -1,5 +1,10 @@
 package robots.ui
 
+import browser.Touch
+import browser.TouchEvent
+import browser.TouchId
+import browser.TouchList
+import browser.get
 import org.w3c.dom.CustomEvent
 import org.w3c.dom.CustomEventInit
 import org.w3c.dom.Element
@@ -29,12 +34,15 @@ class DropDetail(
     var accepted: Boolean = false
 )
 
-// Temporary, while converting code
+private const val CARD_DRAG_START = "card-drag-start"
+private const val CARD_DRAG_IN = "card-drag-in"
+private const val CARD_DRAG_OUT = "card-drag-out"
+private const val CARD_DROP = "card-drop"
 
-fun DragStartEvent(detail: DragStartDetail) = CustomEvent("card-drag-start", CustomEventInit(bubbles = true, detail = detail))
-fun DragInEvent(detail: DragInDetail) = CustomEvent("card-drag-in", CustomEventInit(bubbles = true, detail = detail))
-fun DragOutEvent() = Event("card-drag-out", EventInit(bubbles = true))
-fun DropEvent(detail: DropDetail) = CustomEvent("card-drop", CustomEventInit(bubbles = true, detail = detail))
+fun DragStartEvent(detail: DragStartDetail) = CustomEvent(CARD_DRAG_START, CustomEventInit(bubbles = true, detail = detail))
+fun DragInEvent(detail: DragInDetail) = CustomEvent(CARD_DRAG_IN, CustomEventInit(bubbles = true, detail = detail))
+fun DragOutEvent() = Event(CARD_DRAG_OUT, EventInit(bubbles = true))
+fun DropEvent(detail: DropDetail) = CustomEvent(CARD_DROP, CustomEventInit(bubbles = true, detail = detail))
 
 data class Point(val x: Double, val y: Double)
 
@@ -56,6 +64,7 @@ private class DragState(
     val draggedElement: HTMLElement,
     val draggedElementOrigin: Point,
     val gestureOrigin: Point,
+    val touchId: TouchId?,
     
     var dropTarget: Element? = null
 )
@@ -65,10 +74,10 @@ private inline fun <reified T : Node> T.deepClone() = cloneNode(true) as T
 object DragAndDrop {
     private var dragState: DragState? = null
     
-    private fun startDragging(target: Element, pageX: Double, pageY: Double) =
-        startDragging(target, Point(pageX, pageY))
+    private fun startDragging(target: Element, pageX: Double, pageY: Double, touchId: TouchId? = null) =
+        startDragging(target, Point(pageX, pageY), touchId)
     
-    private fun startDragging(target: Element, startPosition: Point): Boolean {
+    private fun startDragging(target: Element, startPosition: Point, touchId: TouchId? = null): Boolean {
         if (dragState != null) {
             dragState?.draggedElement?.remove()
         }
@@ -88,7 +97,8 @@ object DragAndDrop {
             data = draggedData,
             draggedElement = draggedElement,
             draggedElementOrigin = sourcePos,
-            gestureOrigin = startPosition)
+            gestureOrigin = startPosition,
+            touchId = touchId)
         
         document.body?.appendChild(draggedElement)
         
@@ -124,12 +134,12 @@ object DragAndDrop {
         }
     }
     
-    fun drop() {
+    private fun drop() {
         val dragState = this.dragState ?: return
         val dropTarget = dragState.dropTarget
         val draggedElement = dragState.draggedElement
         
-        val isDropped =
+        val dropIsAccepted =
             if (dropTarget != null) {
                 val dropDetail = DropDetail(dragState.data)
                 dropTarget.dispatchEvent(DropEvent(dropDetail))
@@ -139,7 +149,7 @@ object DragAndDrop {
                 false
             }
         
-        if (isDropped) {
+        if (dropIsAccepted) {
             draggedElement.remove()
         }
         else {
@@ -157,7 +167,6 @@ object DragAndDrop {
     }
     
     private fun bodyMouseDown(ev: Event) {
-        console.log("body mouse down", ev)
         ev as MouseEvent
         if (startDragging(ev.target as HTMLElement, ev.pageX, ev.pageY)) {
             ev.preventDefault()
@@ -173,7 +182,7 @@ object DragAndDrop {
         }
     }
     
-    fun bodyMouseUp(ev: Event) {
+    private fun bodyMouseUp(ev: Event) {
         ev as MouseEvent
         if (dragState != null) {
             ev.preventDefault()
@@ -182,18 +191,62 @@ object DragAndDrop {
         }
     }
     
+    private fun TouchList.touchWithId(id: TouchId): Touch? {
+        return (0 until length)
+            .map { i -> this[i] }
+            .find { it.identifier == id }
+    }
+    
+    private fun TouchList.containsTouchWithId(id: TouchId): Boolean {
+        return touchWithId(id) != null
+    }
+    
+    private fun bodyTouchStart(ev: Event) {
+        ev as TouchEvent
+        
+        val touch = ev.changedTouches[0];
+        
+        if (startDragging(touch.target, touch.pageX, touch.pageY, touch.identifier)) {
+            ev.preventDefault();
+            document.body?.addEventListener("touchmove", ::bodyTouchDrag, true);
+        }
+    }
+    
+    private fun bodyTouchDrag(ev: Event) {
+        ev as TouchEvent
+        val dragState = this.dragState ?: return
+        val touchId = dragState.touchId ?: return
+        val touch = ev.changedTouches.touchWithId(touchId) ?: return
+        
+        ev.preventDefault();
+        dragTo(touch.pageX, touch.pageY);
+    }
+    
+    private fun bodyTouchEnd(ev: Event) {
+        ev as TouchEvent
+        
+        val dragState = this.dragState ?: return
+        val touchId = dragState.touchId ?: return
+        
+        if (ev.changedTouches.containsTouchWithId(touchId)) {
+            ev.preventDefault();
+            document.body?.removeEventListener("touchmove", ::bodyTouchDrag, true);
+            drop();
+        }
+    }
+    
     fun activate() {
         val body = document.body ?: return
         body.addEventListener("mousedown", ::bodyMouseDown)
         body.addEventListener("mouseup", ::bodyMouseUp)
 
-//        body.addEventListener("touchstart", bodyTouchStart)
-//        body.addEventListener("touchend", bodyTouchEnd)
-//        body.addEventListener("touchcancel", bodyTouchEnd)
+        body.addEventListener("touchstart", ::bodyTouchStart)
+        body.addEventListener("touchend", ::bodyTouchEnd)
+        body.addEventListener("touchcancel", ::bodyTouchEnd)
     }
     
-    fun bind(dragSourceElement: Element, dataProviderFn: () -> AST) {
-        dragSourceElement.addEventListener("carddragstart", { ev: Event ->
+    fun makeDraggable(dragSourceElement: Element, dataProviderFn: () -> AST) {
+        dragSourceElement.addEventListener(CARD_DRAG_START, { ev: Event ->
             ev as CustomEvent
             val sourceElement = ev.currentTarget as HTMLElement
             val detail = ev.detail as DragStartDetail
@@ -204,56 +257,3 @@ object DragAndDrop {
         })
     }
 }
-
-/*
-
-	function touchWithId(touches, id) {
-		return _.find(touches, function(t) {return t.identifier === id;});
-	}
-	
-	function bodyTouchStart(ev) {
-		var touch = ev.changedTouches[0];
-		if (startDragging(touch.target, touch.pageX, touch.pageY)) {
-			ev.preventDefault();
-			drag_state.touch_id = touch.identifier;
-			document.body.addEventListener("touchmove", bodyTouchDrag, true);
-		}
-	}
-
-	function bodyTouchDrag(ev) {
-		if (drag_state) {
-			var touch = touchWithId(ev.changedTouches, drag_state.touch_id);
-			if (touch) {
-				ev.preventDefault();
-				dragTo(touch.pageX, touch.pageY);
-			}
-		}
-	}
-
-	function bodyTouchEnd(ev) {
-		if (drag_state) {
-			var touch = touchWithId(ev.changedTouches, drag_state.touch_id);
-			if (touch) {
-				ev.preventDefault();
-				document.body.removeEventListener("touchmove", bodyTouchDrag, true);
-				drop();
-			}
-		}
-	}
-	
-	
-	return {
-		
-		// Because I can't safely add methods or properties to CustomEvent
-		// but don't want to expose its structure.
-		
-		data: function(event) {
-			return event.detail.data;
-		},
-		accept: function(event, accepted) {
-			event.detail.accepted = accepted || _.isUndefined(accepted);
-		}
-	};
-});
-
- */

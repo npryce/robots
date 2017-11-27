@@ -1,5 +1,6 @@
 package robots.ui
 
+import dnd.DragAndDrop
 import react.RBuilder
 import react.dom.div
 import react.dom.render

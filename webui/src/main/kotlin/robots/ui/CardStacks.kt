@@ -1,5 +1,6 @@
 package robots.ui
 
+import dnd.draggable
 import react.RBuilder
 import react.RComponent
 import react.RProps
@@ -16,10 +17,10 @@ private class CardStack(props: CardStack.Props) : RComponent<CardStack.Props, RS
     }
     
     override fun RBuilder.render() {
-        div("card ${cardCategoryClass(props.instruction)}") {
-            ref { DragAndDrop.makeDraggable(it, { props.instruction }) }
-            
-            +props.instruction.displayId()
+        draggable(dataProvider = {props.instruction}) {
+            div("card ${cardCategoryClass(props.instruction)}") {
+                +props.instruction.displayId()
+            }
         }
     }
 }

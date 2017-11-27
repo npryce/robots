@@ -189,12 +189,15 @@ button[disabled] {
 	border-color: #CCCC66;
 }
 
-.card.dragging {
+.dragging {
+    position: fixed;
+    z-index: 1;
+    opacity: 0.9;
+    pointer-events: none;
+}
+
+.dragging .card {
     display: flex;
-	position: fixed;
-	z-index: 1;
-	opacity: 0.9;
-	pointer-events: none;
 	animation-name: slip;
 	animation-direction: normal;
 	animation-duration: 0.125s;
@@ -203,7 +206,7 @@ button[disabled] {
 	transform-origin: 50% 50%;
 }
 
-.card.dragging.disappearing {
+.dragging.disappearing .card {
 	animation-name: slip-away;
 }
 

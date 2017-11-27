@@ -1,5 +1,6 @@
 package robots.ui
 
+import dnd.draggable
 import kotlinx.html.DIV
 import react.RBuilder
 import react.RComponent
@@ -36,7 +37,9 @@ fun RBuilder.extensionSpace(editor: EditPoint) = child(ExtensionSpace::class) {
 
 private class ActionCard(props: CardProps) : RComponent<CardProps, RState>(props) {
     override fun RBuilder.render() {
-        div("card action") { +props.editor.displayId() }
+        draggable(dataProvider = {props.editor.node}) {
+            div("card action") { +props.editor.displayId() }
+        }
     }
 }
 

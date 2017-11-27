@@ -1,4 +1,4 @@
-package robots.ui
+package dnd
 
 import browser.Touch
 import browser.TouchEvent
@@ -33,23 +33,18 @@ class DropDetail(
     var accepted: Boolean = false
 )
 
-private const val CARD_DRAG_START = "card-drag-start"
-private const val CARD_DRAG_IN = "card-drag-in"
-private const val CARD_DRAG_OUT = "card-drag-out"
-private const val CARD_DROP = "card-drop"
+internal const val CARD_DRAG_START = "card-drag-start"
+internal const val CARD_DRAG_IN = "card-drag-in"
+internal const val CARD_DRAG_OUT = "card-drag-out"
+internal const val CARD_DROP = "card-drop"
 
 fun DragStartEvent(detail: DragStartDetail) = CustomEvent(CARD_DRAG_START, CustomEventInit(bubbles = true, detail = detail))
 fun DragInEvent(detail: DragInDetail) = CustomEvent(CARD_DRAG_IN, CustomEventInit(bubbles = true, detail = detail))
 fun DragOutEvent() = Event(CARD_DRAG_OUT, EventInit(bubbles = true))
 fun DropEvent(detail: DropDetail) = CustomEvent(CARD_DROP, CustomEventInit(bubbles = true, detail = detail))
 
-data class Point(val x: Double, val y: Double)
-
-operator fun Point.plus(that: Point) = Point(this.x + that.x, this.y + that.y)
-operator fun Point.minus(that: Point) = Point(this.x - that.x, this.y - that.y)
-
-private fun pageOrigin(e: Element): Point {
-    val box = e.getBoundingClientRect()
+private fun Element.pageOrigin(): Point {
+    val box = getBoundingClientRect()
     return Point(box.left + window.pageXOffset, box.top + window.pageYOffset)
 }
 
@@ -220,7 +215,6 @@ object DragAndDrop {
     
     private fun bodyTouchEnd(ev: Event) {
         ev as TouchEvent
-        
         val dragState = this.dragState ?: return
         val touchId = dragState.touchId ?: return
         
@@ -248,7 +242,7 @@ object DragAndDrop {
             val detail = ev.detail as DragStartDetail
             
             detail.element = sourceElement
-            detail.elementOrigin = pageOrigin(sourceElement)
+            detail.elementOrigin = sourceElement.pageOrigin()
             detail.data = dataProviderFn()
         })
     }

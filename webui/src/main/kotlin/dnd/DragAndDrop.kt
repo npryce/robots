@@ -33,20 +33,15 @@ class DropDetail(
     var accepted: Boolean = false
 )
 
-internal const val CARD_DRAG_START = "card-drag-start"
-internal const val CARD_DRAG_IN = "card-drag-in"
-internal const val CARD_DRAG_OUT = "card-drag-out"
-internal const val CARD_DROP = "card-drop"
+internal const val DND_DRAG_START = "dnd-drag-start"
+internal const val DND_DRAG_IN = "dnd-drag-in"
+internal const val DND_DRAG_OUT = "dnd-drag-out"
+internal const val DND_DROP = "dnd-drop"
 
-fun DragStartEvent(detail: DragStartDetail) = CustomEvent(CARD_DRAG_START, CustomEventInit(bubbles = true, detail = detail))
-fun DragInEvent(detail: DragInDetail) = CustomEvent(CARD_DRAG_IN, CustomEventInit(bubbles = true, detail = detail))
-fun DragOutEvent() = Event(CARD_DRAG_OUT, EventInit(bubbles = true))
-fun DropEvent(detail: DropDetail) = CustomEvent(CARD_DROP, CustomEventInit(bubbles = true, detail = detail))
-
-private fun Element.pageOrigin(): Point {
-    val box = getBoundingClientRect()
-    return Point(box.left + window.pageXOffset, box.top + window.pageYOffset)
-}
+fun DragStartEvent(detail: DragStartDetail) = CustomEvent(DND_DRAG_START, CustomEventInit(bubbles = true, detail = detail))
+fun DragInEvent(detail: DragInDetail) = CustomEvent(DND_DRAG_IN, CustomEventInit(bubbles = true, detail = detail))
+fun DragOutEvent() = Event(DND_DRAG_OUT, EventInit(bubbles = true))
+fun DropEvent(detail: DropDetail) = CustomEvent(DND_DROP, CustomEventInit(bubbles = true, detail = detail))
 
 private fun ElementCSSInlineStyle.setPosition(p: Point) {
     style.left = "${p.x}px"
@@ -237,7 +232,7 @@ object DragAndDrop {
     }
     
     fun makeDraggable(dragSourceElement: Element, dataProviderFn: () -> Any) {
-        dragSourceElement.addEventListener(CARD_DRAG_START, { ev: Event ->
+        dragSourceElement.addEventListener(DND_DRAG_START, { ev: Event ->
             ev as CustomEvent
             val sourceElement = ev.currentTarget as HTMLElement
             val detail = ev.detail as DragStartDetail
@@ -249,3 +244,11 @@ object DragAndDrop {
     }
 }
 
+private fun Element.pageOrigin(): Point {
+    val box = getBoundingClientRect()
+    return Point(box.left + window.pageXOffset, box.top + window.pageYOffset)
+}
+
+
+internal inline fun <reified T> Event.detail(): T? =
+    (this as? CustomEvent)?.detail as? T

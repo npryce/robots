@@ -1,6 +1,7 @@
 package robots.ui
 
 import dnd.draggable
+import dnd.dropTarget
 import kotlinx.html.DIV
 import react.RBuilder
 import react.RComponent
@@ -8,6 +9,7 @@ import react.RProps
 import react.RState
 import react.dom.RDOMBuilder
 import react.dom.div
+import robots.AST
 import robots.Action
 import robots.EditPoint
 import robots.Repeat
@@ -15,7 +17,6 @@ import robots.Seq
 import robots.children
 import robots.editPoints
 import robots.splitAfter
-import robots.ui.ProgramEditor.Props
 
 
 private interface CardProps : RProps {
@@ -26,7 +27,17 @@ private class ExtensionSpace(props: ExtensionSpace.Props) : RComponent<Extension
     interface Props : CardProps
     
     override fun RBuilder.render() {
-        div("cursor") {}
+        dropTarget(::canAccept, ::accept) {
+            div("cursor") {}
+        }
+    }
+    
+    private fun canAccept(dragged: Any) =
+        dragged is AST
+    
+    private fun accept(dropped: Any) {
+        val newProgram = props.editor.insertAfter(dropped as AST)
+        console.log("new program", newProgram)
     }
 }
 
@@ -104,7 +115,7 @@ fun RBuilder.cardSequence(elements: List<EditPoint>) = child(SequenceEditor::cla
     attrs.elements = elements
 }
 
-private class ProgramEditor(props: Props) : RComponent<Props, RState>(props) {
+private class ProgramEditor(props: Props) : RComponent<ProgramEditor.Props, RState>(props) {
     interface Props : RProps {
         var program: Seq
     }

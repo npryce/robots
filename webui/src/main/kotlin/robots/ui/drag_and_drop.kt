@@ -14,23 +14,22 @@ import org.w3c.dom.Node
 import org.w3c.dom.css.ElementCSSInlineStyle
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.MouseEvent
-import robots.AST
 import kotlin.browser.document
 import kotlin.browser.window
 
 class DragStartDetail(
-    var data: AST? = null,
+    var data: Any? = null,
     var element: HTMLElement? = null,
     var elementOrigin: Point? = null
 )
 
 class DragInDetail(
-    val data: AST,
+    val data: Any,
     var acceptable: Boolean = false
 )
 
 class DropDetail(
-    val data: AST,
+    val data: Any,
     var accepted: Boolean = false
 )
 
@@ -60,7 +59,7 @@ private fun ElementCSSInlineStyle.setPosition(p: Point) {
 }
 
 private class DragState(
-    val data: AST,
+    val data: Any,
     val draggedElement: HTMLElement,
     val draggedElementOrigin: Point,
     val gestureOrigin: Point,
@@ -78,9 +77,7 @@ object DragAndDrop {
         startDragging(target, Point(pageX, pageY), touchId)
     
     private fun startDragging(target: Element, startPosition: Point, touchId: TouchId? = null): Boolean {
-        if (dragState != null) {
-            dragState?.draggedElement?.remove()
-        }
+        dragState?.draggedElement?.remove()
         
         val dragDetail = DragStartDetail()
         target.dispatchEvent(DragStartEvent(dragDetail))
@@ -104,7 +101,6 @@ object DragAndDrop {
         
         return true
     }
-    
     
     private fun dragTo(pageX: Double, pageY: Double) {
         dragTo(Point(pageX, pageY))
@@ -239,13 +235,13 @@ object DragAndDrop {
         val body = document.body ?: return
         body.addEventListener("mousedown", ::bodyMouseDown)
         body.addEventListener("mouseup", ::bodyMouseUp)
-
+        
         body.addEventListener("touchstart", ::bodyTouchStart)
         body.addEventListener("touchend", ::bodyTouchEnd)
         body.addEventListener("touchcancel", ::bodyTouchEnd)
     }
     
-    fun makeDraggable(dragSourceElement: Element, dataProviderFn: () -> AST) {
+    fun makeDraggable(dragSourceElement: Element, dataProviderFn: () -> Any) {
         dragSourceElement.addEventListener(CARD_DRAG_START, { ev: Event ->
             ev as CustomEvent
             val sourceElement = ev.currentTarget as HTMLElement
@@ -257,3 +253,4 @@ object DragAndDrop {
         })
     }
 }
+

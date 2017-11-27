@@ -5,6 +5,7 @@
     "react-beautiful-dnd": "^2.6.3"
   },
   "devDependencies": {
+    "source-map-loader": "^0.2.3",
     "webpack": "^3.8.1"
   },
   "scripts": {

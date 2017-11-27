@@ -14,5 +14,10 @@ module.exports = {
             path.resolve(__dirname, "node_modules"),
             path.resolve(__dirname, kotlinDceOutputDir)
         ]
+    },
+    module: {
+        rules: [
+            { test: /\.js/, use: 'source-map-loader'}
+        ]
     }
 };

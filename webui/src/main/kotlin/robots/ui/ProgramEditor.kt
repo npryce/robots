@@ -37,7 +37,7 @@ fun RBuilder.extensionSpace(editor: EditPoint) = child(ExtensionSpace::class) {
 
 private class ActionCard(props: CardProps) : RComponent<CardProps, RState>(props) {
     override fun RBuilder.render() {
-        draggable(dataProvider = {props.editor.node}) {
+        draggable(dataProvider = { props.editor.node }) {
             div("card action") { +props.editor.displayId() }
         }
     }
@@ -57,6 +57,12 @@ fun RBuilder.controlCard(editor: EditPoint) = child(ControlCard::class) {
     attrs.editor = editor
 }
 
+fun RDOMBuilder<DIV>.repeatBlock(editPoint: EditPoint) {
+    div("cardblock") {
+        controlCard(editPoint)
+        cardSequence(editPoint.children())
+    }
+}
 
 private class SequenceEditor(props: Props) : RComponent<SequenceEditor.Props, RState>(props) {
     interface Props : RProps {
@@ -90,13 +96,6 @@ private class SequenceEditor(props: Props) : RComponent<SequenceEditor.Props, RS
             is Action -> actionCard(editPoint)
             is Repeat -> repeatBlock(editPoint)
             else -> TODO()
-        }
-    }
-    
-    private fun RDOMBuilder<DIV>.repeatBlock(editPoint: EditPoint) {
-        div("cardblock") {
-            controlCard(editPoint)
-            cardSequence(editPoint.children())
         }
     }
 }

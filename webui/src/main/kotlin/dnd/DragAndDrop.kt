@@ -159,7 +159,8 @@ object DragAndDrop {
     
     private fun bodyMouseDown(ev: Event) {
         ev as MouseEvent
-        if (startDragging(ev.target as HTMLElement, ev.pageX, ev.pageY)) {
+        
+        if (ev.button.toInt() == 0 && startDragging(ev.target as HTMLElement, ev.pageX, ev.pageY)) {
             ev.preventDefault()
             document.body?.addEventListener("mousemove", ::bodyMouseDrag, true)
         }

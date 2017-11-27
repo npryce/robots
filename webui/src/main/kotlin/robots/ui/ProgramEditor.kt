@@ -121,25 +121,25 @@ fun RBuilder.cardSequence(elements: List<EditPoint>, onEdit: (Seq) -> Unit) = ch
 
 private class ProgramEditor(props: Props) : RComponent<ProgramEditor.Props, ProgramEditor.State>(props) {
     interface Props : RProps {
-        var program: Seq
+        var initialProgram: Seq
     }
     
     data class State(val program: Seq): RState
     
     init {
-        state = State(props.program)
+        state = State(props.initialProgram)
     }
     
     override fun RBuilder.render() {
-        cardSequence(props.program.editPoints(), onEdit = ::programEdited)
+        cardSequence(state.program.editPoints(), onEdit = ::programEdited)
     }
     
     private fun programEdited(newProgramState: Seq) {
-        setState({oldState -> oldState.copy(program = newProgramState)})
+        setState({ state: State -> state.copy(program = newProgramState) })
     }
 }
 
 
 fun RBuilder.programEditor(edited: Seq) = child(ProgramEditor::class) {
-    attrs.program = edited
+    attrs.initialProgram = edited
 }

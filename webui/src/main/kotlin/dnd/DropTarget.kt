@@ -1,7 +1,7 @@
 package dnd
 
+import org.w3c.dom.Element
 import org.w3c.dom.events.Event
-import org.w3c.dom.events.EventTarget
 import react.RBuilder
 import react.dom.div
 
@@ -31,10 +31,12 @@ fun RBuilder.dropTarget(
     }
     
     div("drop-target") {
-        ref { elt: EventTarget ->
-            elt.addEventListener(DND_DRAG_IN, ::dragIn)
-            elt.addEventListener(DND_DRAG_OUT, ::dragOut)
-            elt.addEventListener(DND_DROP, ::drop)
+        ref { elt: Element? ->
+            if (elt != null) {
+                elt.addEventListener(DND_DRAG_IN, ::dragIn)
+                elt.addEventListener(DND_DRAG_OUT, ::dragOut)
+                elt.addEventListener(DND_DROP, ::drop)
+            }
         }
         
         contents()

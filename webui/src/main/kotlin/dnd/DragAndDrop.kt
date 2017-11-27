@@ -15,7 +15,6 @@ import org.w3c.dom.css.ElementCSSInlineStyle
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.MouseEvent
 import kotlin.browser.document
-import kotlin.browser.window
 
 class DragStartDetail(
     var data: Any? = null,
@@ -230,24 +229,8 @@ object DragAndDrop {
         body.addEventListener("touchend", ::bodyTouchEnd)
         body.addEventListener("touchcancel", ::bodyTouchEnd)
     }
-    
-    fun makeDraggable(dragSourceElement: Element, dataProviderFn: () -> Any) {
-        dragSourceElement.addEventListener(DND_DRAG_START, { ev: Event ->
-            ev as CustomEvent
-            val sourceElement = ev.currentTarget as HTMLElement
-            val detail = ev.detail as DragStartDetail
-            
-            detail.element = sourceElement
-            detail.elementOrigin = sourceElement.pageOrigin()
-            detail.data = dataProviderFn()
-        })
-    }
 }
 
-private fun Element.pageOrigin(): Point {
-    val box = getBoundingClientRect()
-    return Point(box.left + window.pageXOffset, box.top + window.pageYOffset)
-}
 
 
 internal inline fun <reified T> Event.detail(): T? =

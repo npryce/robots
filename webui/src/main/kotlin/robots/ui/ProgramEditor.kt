@@ -21,7 +21,7 @@ import robots.splitAfter
 
 private interface CardProps : RProps {
     var editor: EditPoint
-    var onEdit: (Seq)->Unit
+    var onEdit: (Seq) -> Unit
 }
 
 private class ExtensionSpace(props: ExtensionSpace.Props) : RComponent<ExtensionSpace.Props, RState>(props) {
@@ -50,7 +50,7 @@ fun RBuilder.extensionSpace(editor: EditPoint, onEdit: (Seq) -> Unit) = child(Ex
 
 private class ActionCard(props: CardProps) : RComponent<CardProps, RState>(props) {
     override fun RBuilder.render() {
-        draggable(dataProvider = { props.editor.node }) {
+        draggable(dataProvider = { props.editor }) {
             div("card action") { +props.editor.displayId() }
         }
     }
@@ -70,7 +70,7 @@ fun RBuilder.controlCard(editor: EditPoint) = child(ControlCard::class) {
     attrs.editor = editor
 }
 
-fun RDOMBuilder<DIV>.repeatBlock(editPoint: EditPoint, onEdit: (Seq)->Unit) {
+fun RDOMBuilder<DIV>.repeatBlock(editPoint: EditPoint, onEdit: (Seq) -> Unit) {
     div("cardblock") {
         controlCard(editPoint)
         cardSequence(editPoint.children(), onEdit)
@@ -124,7 +124,7 @@ private class ProgramEditor(props: Props) : RComponent<ProgramEditor.Props, Prog
         var initialProgram: Seq
     }
     
-    data class State(val program: Seq): RState
+    data class State(val program: Seq) : RState
     
     init {
         state = State(props.initialProgram)
@@ -135,7 +135,7 @@ private class ProgramEditor(props: Props) : RComponent<ProgramEditor.Props, Prog
     }
     
     private fun programEdited(newProgramState: Seq) {
-        setState({ state: State -> state.copy(program = newProgramState) })
+        setState({ it.copy(program = newProgramState) })
     }
 }
 

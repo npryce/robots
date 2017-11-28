@@ -37,13 +37,13 @@ class DropTarget(props: DropTarget.Props): RComponent<DropTarget.Props, RState>(
     override fun RBuilder.render() {
         div("drop-target") {
             ref { elt: Element? ->
-                if (elt != null) {
-                    elt.addEventListener(DND_DRAG_IN, ::dragIn)
-                    elt.addEventListener(DND_DRAG_OUT, ::dragOut)
-                    elt.addEventListener(DND_DROP, ::drop)
+                elt?.apply {
+                    addEventListener(DND_DRAG_IN, ::dragIn)
+                    addEventListener(DND_DRAG_OUT, ::dragOut)
+                    addEventListener(DND_DROP, ::drop)
                 }
             }
-        
+            
             children()
         }
     }
@@ -53,7 +53,6 @@ fun RBuilder.dropTarget(canAccept: (Any)->Boolean, accept: (Any)->Unit, children
     child(DropTarget::class) {
         attrs.canAccept = canAccept
         attrs.accept = accept
-        
         children()
     }
 

@@ -11,18 +11,26 @@ import react.RState
 import react.dom.div
 import kotlin.browser.window
 
+interface DraggableProps : RProps {
+    var dataProvider: () -> Any
+}
 
-class Draggable(props: Draggable.Props) : RComponent<Draggable.Props, RState>(props) {
-    interface Props : RProps {
-        var dataProvider: () -> Any
-    }
+class Draggable(props: DraggableProps) : RComponent<DraggableProps, RState>(props) {
+    private var draggableElement: Element? = null
     
     override fun RBuilder.render() {
         div("draggable") {
-            ref { elt: Element? -> elt?.addEventListener(DND_DRAG_START, ::startDrag) }
-            
+            ref { elt: Element? -> draggableElement = elt }
             children()
         }
+    }
+    
+    override fun componentDidMount() {
+        draggableElement?.addEventListener(DND_DRAG_START, ::startDrag)
+    }
+    
+    override fun componentWillUnmount() {
+        draggableElement?.removeEventListener(DND_DRAG_START, ::startDrag)
     }
     
     private fun startDrag(ev: Event) {

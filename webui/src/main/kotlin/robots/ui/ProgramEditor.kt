@@ -135,7 +135,7 @@ private class ProgramEditor(props: Props) : RComponent<ProgramEditor.Props, Prog
     }
     
     private fun programEdited(newProgramState: Seq) {
-        setState({ it.copy(program = newProgramState) })
+        setState({ State(program = newProgramState) })
     }
 }
 

@@ -9,18 +9,27 @@ import react.RState
 import react.dom.div
 
 
-class DropTarget(props: DropTarget.Props): RComponent<DropTarget.Props, RState>(props) {
+class DropTarget(props: DropTarget.Props): RComponent<DropTarget.Props, DropTarget.State>(props) {
     interface Props: RProps {
         var canAccept: (Any)->Boolean
         var accept: (Any)->Unit
     }
     
-    private fun dragIn(ev: Event) {
-        val detail: DragInDetail = ev.detail() ?: return
-        detail.acceptable = props.canAccept(detail.data)
+    data class State(val isDraggedOver: Boolean): RState
+    
+    init {
+        state = State(isDraggedOver = false)
     }
     
-    private fun dragOut(it: Event) {
+    private fun dragIn(ev: Event) {
+        val detail: DragInDetail = ev.detail() ?: return
+        val canAccept = props.canAccept(detail.data)
+        setState({State(isDraggedOver = canAccept)})
+        detail.acceptable = canAccept
+    }
+    
+    private fun dragOut(@Suppress("UNUSED_PARAMETER") ev: Event) {
+        setState({State(isDraggedOver = false)})
     }
     
     private fun drop(ev: Event) {

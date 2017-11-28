@@ -19,55 +19,29 @@ import robots.editPoints
 import robots.splitAfter
 
 
-private interface CardProps : RProps {
-    var editor: EditPoint
-    var onEdit: (Seq) -> Unit
-}
-
-private class ExtensionSpace(props: ExtensionSpace.Props) : RComponent<ExtensionSpace.Props, RState>(props) {
-    interface Props : CardProps
-    
-    override fun RBuilder.render() {
-        dropTarget(::canAccept, ::accept) {
-            div("cursor") {}
-        }
-    }
-    
-    private fun canAccept(dragged: Any) =
+fun RBuilder.extensionSpace(editor: EditPoint, onEdit: (Seq) -> Unit) {
+    fun canAccept(dragged: Any) =
         dragged is AST
     
-    private fun accept(dropped: Any) {
-        val newProgram = props.editor.insertAfter(dropped as AST)
-        props.onEdit(newProgram)
+    fun accept(dropped: Any) {
+        val newProgram = editor.insertAfter(dropped as AST)
+        onEdit(newProgram)
+    }
+    
+    dropTarget(::canAccept, ::accept) {
+        div("cursor") {}
     }
 }
 
-fun RBuilder.extensionSpace(editor: EditPoint, onEdit: (Seq) -> Unit) = child(ExtensionSpace::class) {
-    attrs.editor = editor
-    attrs.onEdit = onEdit
-}
 
-
-private class ActionCard(props: CardProps) : RComponent<CardProps, RState>(props) {
-    override fun RBuilder.render() {
-        draggable(dataProvider = { props.editor }) {
-            div("card action") { +props.editor.displayId() }
-        }
+fun RBuilder.actionCard(editor: EditPoint) {
+    draggable(dataProvider = { editor }) {
+        div("card action") { +editor.displayId() }
     }
 }
 
-fun RBuilder.actionCard(editor: EditPoint) = child(ActionCard::class) {
-    attrs.editor = editor
-}
-
-private class ControlCard(props: CardProps) : RComponent<CardProps, RState>(props) {
-    override fun RBuilder.render() {
-        div("card control") { +props.editor.displayId() }
-    }
-}
-
-fun RBuilder.controlCard(editor: EditPoint) = child(ControlCard::class) {
-    attrs.editor = editor
+fun RBuilder.controlCard(editor: EditPoint) {
+    div("card control") { +editor.displayId() }
 }
 
 fun RDOMBuilder<DIV>.repeatBlock(editPoint: EditPoint, onEdit: (Seq) -> Unit) {
@@ -77,46 +51,34 @@ fun RDOMBuilder<DIV>.repeatBlock(editPoint: EditPoint, onEdit: (Seq) -> Unit) {
     }
 }
 
-private class SequenceEditor(props: Props) : RComponent<SequenceEditor.Props, RState>(props) {
-    interface Props : RProps {
-        var elements: List<EditPoint>
-        var onEdit: (Seq) -> Unit
-    }
-    
-    override fun RBuilder.render() {
-        div("cardsequence") {
-            props.elements
-                .splitAfter { it.node is Repeat }
-                .forEach { row -> cardRow(row) }
+fun RBuilder.cardSequence(elements: List<EditPoint>, onEdit: (Seq) -> Unit) {
+    fun RDOMBuilder<DIV>.cardRowElement(editPoint: EditPoint) {
+        val node = editPoint.node
+        when (node) {
+            is Action -> actionCard(editPoint)
+            is Repeat -> repeatBlock(editPoint, onEdit)
+            else -> TODO()
         }
     }
     
-    private fun RDOMBuilder<DIV>.cardRow(row: List<EditPoint>) {
+    fun RDOMBuilder<DIV>.cardRow(row: List<EditPoint>) {
         div("cardrow") {
             row.forEach { editPoint -> cardRowElement(editPoint) }
             
             // TODO - handle empty lists with a mandatory "add first element" cursor
             row.lastOrNull()?.let {
                 if (it.node !is Repeat) {
-                    extensionSpace(row.last(), props.onEdit)
+                    extensionSpace(row.last(), onEdit)
                 }
             }
         }
     }
     
-    private fun RDOMBuilder<DIV>.cardRowElement(editPoint: EditPoint) {
-        val node = editPoint.node
-        when (node) {
-            is Action -> actionCard(editPoint)
-            is Repeat -> repeatBlock(editPoint, props.onEdit)
-            else -> TODO()
-        }
+    div("cardsequence") {
+        elements
+            .splitAfter { it.node is Repeat }
+            .forEach { row -> cardRow(row) }
     }
-}
-
-fun RBuilder.cardSequence(elements: List<EditPoint>, onEdit: (Seq) -> Unit) = child(SequenceEditor::class) {
-    attrs.elements = elements
-    attrs.onEdit = onEdit
 }
 
 private class ProgramEditor(props: Props) : RComponent<ProgramEditor.Props, ProgramEditor.State>(props) {

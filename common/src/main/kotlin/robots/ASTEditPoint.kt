@@ -5,14 +5,19 @@ class EditPoint(
     val path: ASTPath,
     val node: AST
 ) {
-    fun remove(): Seq = program.removeAt(path)
+    operator fun contains(that: EditPoint) =
+        this.path.contains(that.path)
     
-    fun replaceWith(newAST: AST): Seq = program.replaceAt(path, newAST)
-    fun insertBefore(newAST: AST): Seq = program.insertBefore(path, newAST)
-    fun insertAfter(newAST: AST): Seq = program.insertAfter(path, newAST)
+    fun remove(): Seq =
+        program.removeAt(path)
+    fun replaceWith(newAST: AST): Seq =
+        program.replaceAt(path, newAST)
+    fun insertBefore(newAST: AST): Seq =
+        program.insertBefore(path, newAST)
+    fun insertAfter(newAST: AST): Seq =
+        program.insertAfter(path, newAST)
     fun moveTo(destination: EditPoint, splice: Seq.(ASTPath, AST) -> Seq) =
         program.move(path, destination.path, splice)
-    
 }
 
 fun Seq.editPoints(): List<EditPoint> =

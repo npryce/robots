@@ -115,6 +115,26 @@ open class ASTPathTest {
         assertEquals(actual = program.insertAfter(pathOf(0, 2, 0, 1), x), expected = Seq(a, b, Repeat(3, c, d, x), e))
     }
     
+    @Test
+    fun can_move_subgraph_forward_within_program() {
+        val src = pathOf(0, 1)
+        val dst = pathOf(0, 2, 0, 1)
+        
+        assertEquals(
+            actual = program.move(from = src, to = dst, splice = Seq::insertAfter),
+            expected = Seq(a, Repeat(3, c, d, b), e))
+    }
+    
+    @Test
+    fun can_move_subgraph_backward_within_program() {
+        val src = pathOf(0, 2, 0, 1)
+        val dst = pathOf(0, 1)
+        
+        assertEquals(
+            actual = program.move(from = src, to = dst, splice = Seq::insertBefore),
+            expected = Seq(a, d, b, Repeat(3, c), e))
+    }
+    
     open fun assertEquals(actual: Seq, expected: Seq) {
         kotlin.test.assertEquals(actual, expected)
     }

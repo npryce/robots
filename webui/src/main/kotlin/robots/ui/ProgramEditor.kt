@@ -33,6 +33,10 @@ fun RBuilder.extensionSpace(editor: EditPoint, onEdit: (Seq) -> Unit) {
     }
 }
 
+fun RBuilder.startingSpace() {
+    div("cursor required") {}
+}
+
 
 fun RBuilder.actionCard(editor: EditPoint) {
     draggable(dataProvider = { editor }) {
@@ -65,9 +69,9 @@ fun RBuilder.cardSequence(elements: List<EditPoint>, onEdit: (Seq) -> Unit) {
         div("cardrow") {
             row.forEach { editPoint -> cardRowElement(editPoint) }
             
-            // TODO - handle empty lists with a mandatory "add first element" cursor
-            row.lastOrNull()?.let {
-                if (it.node !is Repeat) {
+            val last = row.lastOrNull()
+            if (last != null) {
+                if (last.node !is Repeat) {
                     extensionSpace(row.last(), onEdit)
                 }
             }
@@ -75,11 +79,16 @@ fun RBuilder.cardSequence(elements: List<EditPoint>, onEdit: (Seq) -> Unit) {
     }
     
     div("cardsequence") {
-        elements
-            .splitAfter { it.node is Repeat }
-            .forEach { row -> cardRow(row) }
+        if (elements.isEmpty()) {
+            startingSpace()
+        } else {
+            elements
+                .splitAfter { it.node is Repeat }
+                .forEach { row -> cardRow(row) }
+        }
     }
 }
+
 
 private class ProgramEditor(props: Props) : RComponent<ProgramEditor.Props, ProgramEditor.State>(props) {
     interface Props : RProps {

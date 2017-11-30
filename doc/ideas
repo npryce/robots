@@ -1,0 +1,56 @@
+
+2D Text Syntax
+==============
+
+a, b, 3 * c, d, 2 * e
+                2 * f
+      2 * g, h
+
+
+
+Failure handling
+================
+
+[3] [a] [b] [?] [x] [y]
+            [c] [d]
+
+3•[a, b, ?[x, y]:[c, d]]
+
+ = ... try [x,y] on failure abort and do [c, d]
+
+Event handling
+==============
+
+[3] [x] [y] [H] [a] [d]
+            [P] [x] [y]
+            [a] [b] [c]
+
+Compact syntax:
+
+3•[x,y, H![a, d]:P![x, y]:[a, b, c]]
+
+
+3 times do
+    x
+    y
+    during
+        a
+        b
+        c
+    if hit (H) do
+        a
+        d
+        then continue what you were doing
+    if proximity (P) do
+        x
+        y
+        then continue what you were doing
+    end during block
+end 3 times block
+
+so event handlers act like interrupts, adding the handler code to the head of the code being executed
+
+e.g. an event with handler [x, y, z] changes program [a, b, c] into [[x, y, z], [a, b, c]]
+
+Drawback -- cannot *stop* what the robot is currently in the process of doing.
+  -- add "fail" and "catch failure" cards?

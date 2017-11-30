@@ -16,16 +16,31 @@ import robots.Repeat
 import robots.Seq
 import robots.children
 import robots.editPoints
+import robots.insertAfter
 import robots.splitAfter
 
 
 fun RBuilder.extensionSpace(editor: EditPoint, onEdit: (Seq) -> Unit) {
     fun canAccept(dragged: Any) =
-        dragged is AST
+        when (dragged) {
+            is AST -> true
+            is EditPoint -> editor !in dragged
+            else -> false
+        }
     
     fun accept(dropped: Any) {
-        val newProgram = editor.insertAfter(dropped as AST)
-        onEdit(newProgram)
+        when (dropped) {
+            is AST -> {
+                val newProgram = editor.insertAfter(dropped)
+                onEdit(newProgram)
+            }
+            is EditPoint -> {
+                if (editor !in dropped) {
+                    val newProgram = dropped.moveTo(editor, Seq::insertAfter)
+                    onEdit(newProgram)
+                }
+            }
+        }
     }
     
     dropTarget(::canAccept, ::accept) {
@@ -81,7 +96,8 @@ fun RBuilder.cardSequence(elements: List<EditPoint>, onEdit: (Seq) -> Unit) {
     div("cardsequence") {
         if (elements.isEmpty()) {
             startingSpace()
-        } else {
+        }
+        else {
             elements
                 .splitAfter { it.node is Repeat }
                 .forEach { row -> cardRow(row) }

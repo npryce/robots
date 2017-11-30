@@ -1,6 +1,5 @@
 package robots
 
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -68,15 +67,19 @@ open class ASTEditPointTest {
     }
     
     @Test
-    @Ignore
-    fun can_move_from_one_point_to_another() {
+    fun can_move_subgraph_forward_within_program() {
         val src = editPoints[1]
         val dst = editPoints[2].children()[1]
-        
-        val result = dst.replaceWith(src)
-        
-        assertEquals(actual = result,
-            expected = Seq(a, Repeat(3, c, d, b), e))
+    
+        assertEquals(actual = src.moveTo(dst, Seq::insertAfter), expected = Seq(a, Repeat(3, c, d, b), e))
+    }
+    
+    @Test
+    fun can_move_subgraph_backward_within_program() {
+        val src = editPoints[2].children()[1]
+        val dst = editPoints[1]
+    
+        assertEquals(actual = src.moveTo(dst, Seq::insertBefore), expected = Seq(a, d, b, Repeat(3, c), e))
     }
 }
 

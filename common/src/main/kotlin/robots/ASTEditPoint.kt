@@ -11,16 +11,13 @@ class EditPoint(
     fun insertBefore(newAST: AST): Seq = program.insertBefore(path, newAST)
     fun insertAfter(newAST: AST): Seq = program.insertAfter(path, newAST)
     
-    fun replaceWith(moveSrc: EditPoint): Seq {
-        TODO("not implemented")
-    }
-    
-    fun insertBefore(moveSrc: EditPoint): Seq {
-        TODO("not implemented")
-    }
-    
-    fun insertAfter(moveSrc: EditPoint): Seq {
-        TODO("not implemented")
+    fun moveTo(destination: EditPoint, splice: Seq.(ASTPath, AST) -> Seq): Seq {
+        val srcNode = program[path] ?: return program
+        
+        return if (this.path < destination.path)
+            program.splice(destination.path, srcNode).removeAt(path)
+        else
+            program.removeAt(path).splice(destination.path, srcNode)
     }
 }
 

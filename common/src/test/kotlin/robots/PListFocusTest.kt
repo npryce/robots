@@ -16,13 +16,13 @@ open class PListFocusTest {
     @Test
     fun modifying() {
         val xs = pListOf(1,2,3,4,5,6)
-        val munged = xs.focusHead()?.next()?.next()?.remove()?.replaceWith(99)?.toPList()
+        val munged = xs.focusHead()?.next()?.next()?.remove()?.replaceWith(99).toPList()
         
         assertEquals(actual = munged, expected = pListOf(1, 2, 99, 5, 6))
     }
     
     @Test
-    fun remove_last_shifts_zipper_backwards() {
+    fun remove_last_shifts_focus_backwards() {
         val xs = pListOf(1, 2, 3, 4)
         
         val afterRemoval = xs.focusHead()?.next()?.next()?.next()?.remove() ?: fail("no zipper")
@@ -32,7 +32,7 @@ open class PListFocusTest {
     }
     
     @Test
-    fun remove_first_shifts_zipper_forward() {
+    fun remove_first_shifts_focus_forward() {
         val xs = pListOf(1, 2, 3, 4)
         
         val afterRemoval = xs.focusHead()?.remove() ?: fail("no zipper")
@@ -42,7 +42,7 @@ open class PListFocusTest {
     }
     
     @Test
-    fun remove_middle_shifts_zipper_forwards() {
+    fun remove_middle_shifts_focus_forwards() {
         val xs = pListOf(1, 2, 3, 4)
         
         val afterRemoval = xs.focusHead()?.next()?.remove() ?: fail("no zipper")

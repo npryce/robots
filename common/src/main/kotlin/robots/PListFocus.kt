@@ -7,6 +7,19 @@ data class PListFocus<T>(private val back: PList<T>, val current: T, private val
     fun next(): PListFocus<T>? =
         forth.notEmpty { (head, tail) -> PListFocus(Cons(current, back), head, tail) }
     
+    fun next(n: Int): PListFocus<T>? =
+        if (n > 0) {
+            val next = next()
+            if (next == null) {
+                null
+            } else {
+                next.next(n - 1)
+            }
+        }
+        else {
+            this
+        }
+    
     fun hasPrev(): Boolean =
         back.isNotEmpty()
     
@@ -29,5 +42,14 @@ data class PListFocus<T>(private val back: PList<T>, val current: T, private val
 fun <T> PList<T>.focusHead(): PListFocus<T>? =
     this.notEmpty { (head, tail) -> PListFocus(Empty, head, tail) }
 
+fun <T> PList<T>.focusNth(n: Int): PListFocus<T>? =
+    focusHead()?.next(n)
+
 fun PList<AST>.focusElements(): List<PListFocus<AST>> =
     generateSequence(focusHead(), { it.next() }).toList()
+
+fun <T> PListFocus<T>?.toPList(): PList<T> =
+    when(this) {
+        null -> emptyPList()
+        else -> this.toPList()
+    }

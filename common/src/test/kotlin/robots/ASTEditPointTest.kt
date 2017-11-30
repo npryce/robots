@@ -1,5 +1,6 @@
 package robots
 
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -64,6 +65,18 @@ open class ASTEditPointTest {
             actual = editPoints[2].children()[1].insertAfter(x),
             expected = Seq(a, b, Repeat(3, c, d, x), e),
             message = "can insert after element of subtree")
+    }
+    
+    @Test
+    @Ignore
+    fun can_move_from_one_point_to_another() {
+        val src = editPoints[1]
+        val dst = editPoints[2].children()[1]
+        
+        val result = dst.replaceWith(src)
+        
+        assertEquals(actual = result,
+            expected = Seq(a, Repeat(3, c, d, b), e))
     }
 }
 

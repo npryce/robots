@@ -1,65 +1,40 @@
 package robots
 
-interface EditPoint {
-    val parent: EditPoint?
+class EditPoint(
+    val program: Seq,
+    val path: ASTPath,
     val node: AST
+) {
+    fun remove(): Seq = program.removeAt(path)
     
-    fun remove(): Seq
-    fun replaceWith(newAST: AST): Seq
-    fun insertBefore(newAST: AST): Seq
-    fun insertAfter(newAST: AST): Seq
+    fun replaceWith(newAST: AST): Seq = program.replaceAt(path, newAST)
+    fun insertBefore(newAST: AST): Seq = program.insertBefore(path, newAST)
+    fun insertAfter(newAST: AST): Seq = program.insertAfter(path, newAST)
+    
+    fun replaceWith(moveSrc: EditPoint): Seq {
+        TODO("not implemented")
+    }
+    
+    fun insertBefore(moveSrc: EditPoint): Seq {
+        TODO("not implemented")
+    }
+    
+    fun insertAfter(moveSrc: EditPoint): Seq {
+        TODO("not implemented")
+    }
 }
-
-abstract class AbstractEditPoint: EditPoint {
-    protected abstract val focus: PListFocus<AST>
-    override val node: AST get() = focus.current
-    
-    override fun remove() = applyModifier { it.remove() }
-    override fun replaceWith(newAST: AST) = applyModifier { it.replaceWith(newAST) }
-    override fun insertBefore(newAST: AST) = applyModifier { it.insertBefore(newAST) }
-    override fun insertAfter(newAST: AST) = applyModifier { it.insertAfter(newAST) }
-    
-    private fun applyModifier(modifier: (PListFocus<AST>) -> PListFocus<AST>?) =
-        splice(modifier(focus)?.toPList() ?: emptyPList())
-    
-    protected abstract fun splice(newSteps: PList<AST>): Seq
-}
-
-class TopLevelEditPoint(
-    private val program: Seq,
-    override val focus: PListFocus<AST>
-) : AbstractEditPoint() {
-    
-    override val parent = null
-    
-    override fun splice(newSteps: PList<AST>) =
-        program.copy(steps = newSteps)
-}
-
-class InternalEditPoint(
-    override val parent: EditPoint,
-    override val focus: PListFocus<AST>,
-    private val replaceChildren: (PList<AST>) -> AST
-) : AbstractEditPoint() {
-    
-    override fun splice(newSteps: PList<AST>) =
-        parent.replaceWith(replaceChildren(newSteps))
-}
-
 
 fun Seq.editPoints(): List<EditPoint> =
-    steps.focusElements()
-        .map { focus -> TopLevelEditPoint(this, focus) }
+    steps.mapIndexed { index, node -> EditPoint(this, pathOf(0, index), node) }
 
 fun EditPoint.children(): List<EditPoint> {
     val node = this.node
     return when (node) {
         is Action -> emptyList()
-        is Repeat -> node.repeated.editPoints(this, { node.copy(repeated = it) })
-        is Seq -> node.steps.editPoints(this, { node.copy(steps = it) })
+        is Repeat -> this.childEditPoints(0, node.repeated)
+        is Seq -> this.childEditPoints(0, node.steps)
     }
 }
 
-private fun PList<AST>.editPoints(parent: EditPoint, replaceInParent: (PList<AST>) -> AST): List<EditPoint> =
-    focusElements()
-        .map { zipper -> InternalEditPoint(parent, zipper, replaceInParent) }
+private fun EditPoint.childEditPoints(branchIndex: Int, children: PList<AST>): List<EditPoint> =
+    children.mapIndexed { index, node -> EditPoint(program, path + ChildRef(branchIndex, index), node) }

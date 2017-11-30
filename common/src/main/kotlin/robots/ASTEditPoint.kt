@@ -10,15 +10,9 @@ class EditPoint(
     fun replaceWith(newAST: AST): Seq = program.replaceAt(path, newAST)
     fun insertBefore(newAST: AST): Seq = program.insertBefore(path, newAST)
     fun insertAfter(newAST: AST): Seq = program.insertAfter(path, newAST)
+    fun moveTo(destination: EditPoint, splice: Seq.(ASTPath, AST) -> Seq) =
+        program.move(path, destination.path, splice)
     
-    fun moveTo(destination: EditPoint, splice: Seq.(ASTPath, AST) -> Seq): Seq {
-        val srcNode = program[path] ?: return program
-        
-        return if (this.path < destination.path)
-            program.splice(destination.path, srcNode).removeAt(path)
-        else
-            program.removeAt(path).splice(destination.path, srcNode)
-    }
 }
 
 fun Seq.editPoints(): List<EditPoint> =

@@ -84,6 +84,14 @@ fun Seq.insertBefore(path: ASTPath, newElement: AST): Seq {
     return applyAt(path) { it.insertBefore(newElement) }
 }
 
+fun Seq.move(from: ASTPath, to: ASTPath, splice: Seq.(ASTPath, AST) -> Seq): Seq {
+    val srcNode = this[from] ?: return this
+    return if (from < to)
+        splice(to, srcNode).removeAt(from)
+    else
+        removeAt(from).splice(to, srcNode)
+}
+
 private operator fun AST.get(childRef: ChildRef): PListFocus<AST>? =
     branch(childRef.branch)?.focusNth(childRef.element)
 

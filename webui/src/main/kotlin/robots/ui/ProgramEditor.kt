@@ -15,6 +15,8 @@ import robots.children
 import robots.editPoints
 import robots.insertAfter
 import robots.isEmpty
+import robots.pListOf
+import robots.replaceBranch
 import robots.splitAfter
 import robots.withSteps
 
@@ -47,8 +49,31 @@ fun RBuilder.extensionSpace(editor: EditPoint, onEdit: (Seq) -> Unit) {
     }
 }
 
-fun RBuilder.startingSpace() {
-    div("cursor required") {}
+fun RBuilder.startingSpace(editor: EditPoint, branch: Int, onEdit: (Seq) -> Unit) {
+    fun canAccept(dragged: Any) =
+        when (dragged) {
+            is AST -> true
+            is EditPoint -> editor !in dragged
+            else -> false
+        }
+    
+    fun accept(dropped: Any) {
+        when (dropped) {
+            is AST -> {
+                val newProgram = editor.replaceWith(editor.node.replaceBranch(0, pListOf(dropped)))
+                onEdit(newProgram)
+            }
+            is EditPoint -> {
+                if (editor !in dropped) {
+                    TODO("dropping an existing card not supported yet")
+                }
+            }
+        }
+    }
+    
+    dropTarget(::canAccept, ::accept) {
+        div("cursor required") {}
+    }
 }
 
 
@@ -65,7 +90,15 @@ fun RBuilder.controlCard(editor: EditPoint) {
 fun RDOMBuilder<DIV>.repeatBlock(editPoint: EditPoint, onEdit: (Seq) -> Unit) {
     div("cardblock") {
         controlCard(editPoint)
-        cardSequence(editPoint.children(), onEdit)
+        
+        val childEditPoints = editPoint.children()
+        
+        if (childEditPoints.isEmpty()) {
+            startingSpace(editPoint, 0, onEdit)
+        }
+        else {
+            cardSequence(childEditPoints, onEdit)
+        }
     }
 }
 
@@ -93,14 +126,9 @@ fun RBuilder.cardSequence(elements: List<EditPoint>, onEdit: (Seq) -> Unit) {
     }
     
     div("cardsequence") {
-        if (elements.isEmpty()) {
-            startingSpace()
-        }
-        else {
-            elements
-                .splitAfter { it.node is Repeat }
-                .forEach { row -> cardRow(row) }
-        }
+        elements
+            .splitAfter { it.node is Repeat }
+            .forEach { row -> cardRow(row) }
     }
 }
 

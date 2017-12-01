@@ -123,8 +123,6 @@ button[disabled] {
     justify-content: flex-start;
     align-items: flex-start;
     align-content: flex-start;
-    flex-grow: 1;
-    flex-shrink: 1;
 }
 
 .card-sequence, .cardrow {

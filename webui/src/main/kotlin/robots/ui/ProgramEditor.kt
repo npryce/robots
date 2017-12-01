@@ -14,6 +14,8 @@ import robots.Seq
 import robots.children
 import robots.editPoints
 import robots.insertAfter
+import robots.isEmpty
+import robots.pListOf
 import robots.splitAfter
 
 
@@ -102,6 +104,26 @@ fun RBuilder.cardSequence(elements: List<EditPoint>, onEdit: (Seq) -> Unit) {
     }
 }
 
+fun RBuilder.firstElementSpace(program: Seq, onEdit: (Seq) -> Unit) {
+    fun canAccept(dragged: Any) =
+        dragged is AST
+    
+    fun accept(dropped: Any) {
+        if (dropped is AST) onEdit(program.copy(steps = pListOf(dropped)))
+    }
+    
+    dropTarget(canAccept = ::canAccept, accept = ::accept) {
+        div("cursor required") {}
+    }
+}
+
 fun RBuilder.programEditor(program: Seq, onEdit: (Seq) -> Unit) {
-    cardSequence(program.editPoints(), onEdit = onEdit)
+    div("program") {
+        if (program.steps.isEmpty()) {
+            firstElementSpace(program, onEdit)
+        }
+        else {
+            cardSequence(program.editPoints(), onEdit)
+        }
+    }
 }

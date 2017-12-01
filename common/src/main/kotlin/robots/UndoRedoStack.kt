@@ -1,17 +1,16 @@
 package robots
 
 
-data class UndoRedoStack<T>(
-    private val undoStack: PList<T> = emptyPList(),
-    private val redoStack: PList<T> = emptyPList()) {
-    
-    fun havingDone(state: T) =
-        copy(undoStack = Cons(state, undoStack), redoStack = emptyPList())
-    
-    fun undo() =
-        undoStack.notEmpty { (head, tail) -> copy(undoStack = tail, redoStack = Cons(head, redoStack)) } ?: this
-    
-    fun redo() =
-        redoStack.notEmpty { (head, tail) -> copy(undoStack = Cons(head, undoStack), redoStack = tail) } ?: this
-}
+typealias UndoRedoStack<T> = PListFocus<T>
 
+fun <T> UndoRedoStack(initialState: T) =
+    PListFocus(Empty, initialState, Empty)
+
+fun <T> UndoRedoStack<T>.havingDone(nextState: T) =
+    copy(Cons(current, back), nextState, Empty)
+
+fun <T> UndoRedoStack<T>.canUndo() = hasPrev()
+fun <T> UndoRedoStack<T>.undo() = prev() ?: this
+
+fun <T> UndoRedoStack<T>.canRedo() = hasNext()
+fun <T> UndoRedoStack<T>.redo() = next() ?: this

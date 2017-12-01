@@ -69,6 +69,15 @@ body {
     flex-shrink: 1;
 }
 
+.header {
+    flex-grow: 0;
+    flex-shrink: 0;
+    border-bottom: #DDDDDD 1px solid;
+    padding-bottom: 0.25em;
+    margin-bottom: 0.25em;
+    font-size: 75%;
+}
+
 .controls {
     flex-grow: 0;
     flex-shrink: 0;

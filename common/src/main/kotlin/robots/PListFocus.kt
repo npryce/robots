@@ -1,6 +1,6 @@
 package robots
 
-data class PListFocus<T>(private val back: PList<T>, val current: T, private val forth: PList<T>) {
+data class PListFocus<T>(internal val back: PList<T>, val current: T, internal val forth: PList<T>) {
     fun hasNext(): Boolean =
         forth.isNotEmpty()
     

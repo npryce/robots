@@ -1,8 +1,9 @@
 {
   "dependencies": {
+    "emoji-mart": "^2.2.1",
     "react": "^16.1.1",
-    "react-dom": "^16.1.1",
-    "react-beautiful-dnd": "^2.6.3"
+    "react-beautiful-dnd": "^2.6.3",
+    "react-dom": "^16.1.1"
   },
   "devDependencies": {
     "source-map-loader": "^0.2.3",

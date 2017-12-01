@@ -4,9 +4,6 @@ import dnd.draggable
 import dnd.dropTarget
 import kotlinx.html.DIV
 import react.RBuilder
-import react.RComponent
-import react.RProps
-import react.RState
 import react.dom.RDOMBuilder
 import react.dom.div
 import robots.AST
@@ -105,28 +102,6 @@ fun RBuilder.cardSequence(elements: List<EditPoint>, onEdit: (Seq) -> Unit) {
     }
 }
 
-
-private class ProgramEditor(props: Props) : RComponent<ProgramEditor.Props, ProgramEditor.State>(props) {
-    interface Props : RProps {
-        var initialProgram: Seq
-    }
-    
-    data class State(val program: Seq) : RState
-    
-    init {
-        state = State(props.initialProgram)
-    }
-    
-    override fun RBuilder.render() {
-        cardSequence(state.program.editPoints(), onEdit = ::programEdited)
-    }
-    
-    private fun programEdited(newProgramState: Seq) {
-        setState({ State(program = newProgramState) })
-    }
-}
-
-
-fun RBuilder.programEditor(edited: Seq) = child(ProgramEditor::class) {
-    attrs.initialProgram = edited
+fun RBuilder.programEditor(program: Seq, onEdit: (Seq) -> Unit) {
+    cardSequence(program.editPoints(), onEdit = onEdit)
 }

@@ -1,45 +1,45 @@
 @import "normalize.css";
 
 @font-face {
-  font-family: 'Gameplay';
-  font-style: normal;
-  font-weight: 400;
-  src: url(Comfortaa-Bold.ttf) format('truetype');
+    font-family: 'Gameplay';
+    font-style: normal;
+    font-weight: 400;
+    src: url(Comfortaa-Bold.ttf) format('truetype');
 }
 
 /* iPhone */
-@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
-	body {
-		font-size: 16px;
-	}
+@media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
+    body {
+        font-size: 16px;
+    }
 }
 
 /* iPad */
-@media only screen and (min-device-width : 768px) and (max-device-width : 1024px)  {
-	body {
-		font-size: 32px;
-	}
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+    body {
+        font-size: 32px;
+    }
 }
 
 /* Laptop */
-@media only screen and (min-device-width : 1024px) {
-	body {
-		font-size: 40px;
-	}
+@media only screen and (min-device-width: 1024px) {
+    body {
+        font-size: 40px;
+    }
 }
 
 * {
-	user-select: none;
-	-webkit-touch-callout: none;
+    user-select: none;
+    -webkit-touch-callout: none;
 }
 
 html, body {
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	padding: 0;
-	margin: 0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0;
+    margin: 0;
 }
 
 body {
@@ -76,42 +76,41 @@ body {
     padding-top: 0.1em;
 }
 
-
 button {
-	border-radius: 0.25em;
-	border-width: 0.1em;
-	font-size: 65%;
-	font-family: inherit;
-	min-width: 4.5em;
-	min-height: 2em;
-	background-color: #CCCCCC;
-	color: black;
+    border-radius: 0.25em;
+    border-width: 0.1em;
+    font-size: 65%;
+    font-family: inherit;
+    min-width: 4.5em;
+    min-height: 2em;
+    background-color: #CCCCCC;
+    color: black;
 }
 
 button[disabled] {
-	color: #AAAAAA;
+    color: #AAAAAA;
 }
 
 .cardsequence, .cardrow, .cardblock {
-	flex-flow: row wrap;
-	justify-content: flex-start;
-	align-items: flex-start;
-	align-content: flex-start;
-	flex-grow: 1;
-	flex-shrink: 1;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    align-content: flex-start;
+    flex-grow: 1;
+    flex-shrink: 1;
 }
 
 .card-sequence, .cardrow {
-	display: flex;
+    display: flex;
 }
 
 .cardblock {
-	display: inline-flex;
+    display: inline-flex;
 }
 
 /* for debugging */
 .cardrow {
-	/* background-color: rgba(0,0,0, 0.1); */
+    /* background-color: rgba(0,0,0, 0.1); */
 }
 
 .stacks {
@@ -125,68 +124,68 @@ button[disabled] {
 }
 
 .stackrow {
-	display: flex;
-	flex: initial;
-	flex-direction: row;
-	justify-content: flex-start;
-	align-content: flex-start;
-	align-items: flex-start;
+    display: flex;
+    flex: initial;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-content: flex-start;
+    align-items: flex-start;
 }
 
 .card, .cursor {
-	display: inline-flex;
-	position: relative;
-	flex: initial;
+    display: inline-flex;
+    position: relative;
+    flex: initial;
     width: 1.5em;
-    height:  1.5em;
-	color: #111111;
-	border-radius: 0.25em;
-	margin: 0.125em;
+    height: 1.5em;
+    color: #111111;
+    border-radius: 0.25em;
+    margin: 0.125em;
     text-align: center;
-	overflow: hidden;
-	font-family: inherit;
-	font-size: inherit;
-	cursor: default;
-	
-	flex-direction: column;
-	justify-content: center;
-	align-content: center;
-	align-items: center;
+    overflow: hidden;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: default;
+
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
 }
 
 .card img {
-	display: block;
-	width: 100%;
-	height: 100%;
-	margin: 0;
-	padding: 0.1em;
-	border: 0;
-	flex-shrink: 1;
-	flex-grow: 1;
-	pointer-events: none;
+    display: block;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0.1em;
+    border: 0;
+    flex-shrink: 1;
+    flex-grow: 1;
+    pointer-events: none;
 }
 
 .card {
-	box-shadow: 1px 1px 6px rgba(0,0,0,0.8);
+    box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.8);
 }
 
 .program .card {
-	animation-name: slip;
-	animation-direction: reverse;
-	animation-duration: 0.125s;
-	animation-iteration-count: 1;
-	animation-fill-mode: backwards;
-	transform-origin: 50% 50%;
+    animation-name: slip;
+    animation-direction: reverse;
+    animation-duration: 0.125s;
+    animation-iteration-count: 1;
+    animation-fill-mode: backwards;
+    transform-origin: 50% 50%;
 }
 
 .card.control {
-	background-color: #AAAAFF;
-	border-color: #6666CC;
+    background-color: #AAAAFF;
+    border-color: #6666CC;
 }
 
 .card.action {
-	background-color: #FFFFAA;
-	border-color: #CCCC66;
+    background-color: #FFFFAA;
+    border-color: #CCCC66;
 }
 
 .dragging {
@@ -198,98 +197,98 @@ button[disabled] {
 
 .dragging .card {
     display: flex;
-	animation-name: slip;
-	animation-direction: normal;
-	animation-duration: 0.125s;
-	animation-iteration-count: 1;
-	animation-fill-mode: forwards;
-	transform-origin: 50% 50%;
+    animation-name: slip;
+    animation-direction: normal;
+    animation-duration: 0.125s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+    transform-origin: 50% 50%;
 }
 
 .dragging.disappearing .card {
-	animation-name: slip-away;
+    animation-name: slip-away;
 }
 
 .cursor {
-	border-style: dotted;
-	border-color: rgba(0,0,0,0.4);
+    border-style: dotted;
+    border-color: rgba(0, 0, 0, 0.4);
     box-shadow: none;
-	background-color: transparent;
+    background-color: transparent;
 }
 
 .cursor.required {
-	animation-name: pulse;
-	animation-direction: normal;
-	animation-duration: 1s;
-	animation-iteration-count: infinite;
-	transform-origin: 50% 50%;
+    animation-name: pulse;
+    animation-direction: normal;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    transform-origin: 50% 50%;
 }
 
 .annotation {
     background: red;
-	color: white;
-	font-size: 60%;
+    color: white;
+    font-size: 60%;
     width: 1em;
     height: 1em;
     position: absolute;
-	top: -0.25em;
-	right: -0.25em;
+    top: -0.25em;
+    right: -0.25em;
     text-align: center;
-	z-index: 0;
+    z-index: 0;
 }
 
 @keyframes slip {
-	to {
-		transform: scale(1.1) rotate(-6deg);
-	}
+    to {
+        transform: scale(1.1) rotate(-6deg);
+    }
 }
 
 @keyframes slip-away {
-	from {
-		transform:  scale(1.1) rotate(-6deg);
-		opacity: 0.9;
-	}
-	to {
-		transform: scale(1.5) rotate(-6deg);
-		opacity: 0;
-	}
+    from {
+        transform: scale(1.1) rotate(-6deg);
+        opacity: 0.9;
+    }
+    to {
+        transform: scale(1.5) rotate(-6deg);
+        opacity: 0;
+    }
 }
 
 @keyframes jiggle {
-	0% {
-		transform: rotate(0deg);
-	}
-	25% {
-		transform: rotate(6deg);
-	}
-	50% {
-		transform: rotate(0deg);
-	}
-	75% {
-		transform: rotate(-6deg);
-	}
-	100% {
-		transform: rotate(0deg);
-	}
+    0% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(6deg);
+    }
+    50% {
+        transform: rotate(0deg);
+    }
+    75% {
+        transform: rotate(-6deg);
+    }
+    100% {
+        transform: rotate(0deg);
+    }
 }
 
 @keyframes pulse {
-	0% {
-		transform: scale(1);
-	}
-	60% {
-		transform: scale(1);
-	}
-	70% {
-		transform: scale(1.05);
-	}
-	80% {
-		transform: scale(1);
-	}
-	90% {
-		transform: scale(1.05);
-	}
-	100% {
-		transform: scale(1);
-	}
+    0% {
+        transform: scale(1);
+    }
+    60% {
+        transform: scale(1);
+    }
+    70% {
+        transform: scale(1.05);
+    }
+    80% {
+        transform: scale(1);
+    }
+    90% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
 }

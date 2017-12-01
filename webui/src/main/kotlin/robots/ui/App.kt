@@ -57,7 +57,7 @@ fun RBuilder.header(undoStack: UndoRedoStack<Seq>, update: (UndoRedoStack<Seq>) 
     div("header") {
         span("score") {
             +"Cost: "
-            span("cost") { +"£${undoStack.current.cost()}" }
+            span("cost") { +"¢${undoStack.current.cost()}" }
         }
         
         undoRedoButtons(undoStack, update)

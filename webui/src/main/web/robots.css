@@ -127,15 +127,15 @@ button[disabled] {
 
 .card-sequence, .cardrow {
     display: flex;
+    flex-wrap: nowrap;
 }
 
 .cardblock {
     display: inline-flex;
 }
 
-/* for debugging */
 .cardrow {
-    /* background-color: rgba(0,0,0, 0.1); */
+    flex-wrap: nowrap;
 }
 
 .stacks {
@@ -176,6 +176,8 @@ button[disabled] {
     justify-content: center;
     align-content: center;
     align-items: center;
+    flex-shrink: 0;
+    flex-grow: 0;
 }
 
 .card img {
@@ -249,17 +251,12 @@ button[disabled] {
     transform-origin: 50% 50%;
 }
 
-.annotation {
-    background: red;
-    color: white;
-    font-size: 60%;
-    width: 1em;
-    height: 1em;
-    position: absolute;
-    top: -0.25em;
-    right: -0.25em;
-    text-align: center;
-    z-index: 0;
+.tip {
+    display: inline-flex;
+    align-self: center;
+    flex-wrap: nowrap;
+    font-size: 75%;
+    flex-shrink: 1;
 }
 
 @keyframes slip {

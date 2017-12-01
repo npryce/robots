@@ -11,3 +11,5 @@ data class Seq(val steps: PList<robots.AST>) : robots.AST() {
 
 val nop = robots.Seq(Empty)
 
+fun Seq.withSteps(vararg steps: AST) = copy(steps = pListOf(*steps))
+

@@ -15,8 +15,8 @@ import robots.children
 import robots.editPoints
 import robots.insertAfter
 import robots.isEmpty
-import robots.pListOf
 import robots.splitAfter
+import robots.withSteps
 
 
 fun RBuilder.extensionSpace(editor: EditPoint, onEdit: (Seq) -> Unit) {
@@ -109,11 +109,18 @@ fun RBuilder.firstElementSpace(program: Seq, onEdit: (Seq) -> Unit) {
         dragged is AST
     
     fun accept(dropped: Any) {
-        if (dropped is AST) onEdit(program.copy(steps = pListOf(dropped)))
+        if (dropped is AST) onEdit(program.withSteps(dropped))
     }
     
     dropTarget(canAccept = ::canAccept, accept = ::accept) {
-        div("cursor required") {}
+        div("cardsequence") {
+            div("cardrow") {
+                div("cursor required") {}
+                div("tip") {
+                    +"👈 Drag a card from the stacks below and drop it onto here"
+                }
+            }
+        }
     }
 }
 

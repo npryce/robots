@@ -70,12 +70,30 @@ body {
 }
 
 .header {
+    display: flex;
+    flex-direction: row;
     flex-grow: 0;
     flex-shrink: 0;
     border-bottom: #DDDDDD 1px solid;
     padding-bottom: 0.25em;
     margin-bottom: 0.25em;
     font-size: 75%;
+}
+
+.header .score {
+    flex-grow: 1;
+    flex-shrink: 0;
+}
+
+.header .edit-controls {
+    flex-grow: 0;
+    flex-shrink: 0;
+    align-self: flex-end;
+    text-align: right;
+}
+
+.header .edit-controls button {
+    margin-left: 0.25em
 }
 
 .controls {

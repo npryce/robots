@@ -42,7 +42,7 @@ private fun RBuilder.cardStackRow(vararg instructions: AST) {
 
 fun RBuilder.cardStacks() {
     div("stacks") {
-        cardStackRow(Action("a"), Action("b"), Action("c"), Action("d"), Action("e"))
+        cardStackRow(Action("⬆️"), Action("⬇️"), Action("⬅️"), Action("➡️️"), Action("💩"), Action("💬"), Action("🥊"))
         cardStackRow((2..10).map { n -> Repeat(n) })
     }
 }

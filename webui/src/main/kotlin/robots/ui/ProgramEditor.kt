@@ -126,9 +126,15 @@ fun RBuilder.cardSequence(elements: List<EditPoint>, onEdit: (Seq) -> Unit) {
     }
     
     div("cardsequence") {
-        elements
-            .splitAfter { it.node is Repeat }
-            .forEach { row -> cardRow(row) }
+        val rows = elements.splitAfter { it.node is Repeat }
+        rows.forEach { row -> cardRow(row) }
+    
+        val last = rows.last().last()
+        if (last.node is Repeat) {
+            div("cardrow") {
+                extensionSpace(last, onEdit)
+            }
+        }
     }
 }
 

@@ -30,13 +30,13 @@ class ActionCardPack(private val cards: List<CardStyle>) : Iterable<CardStyle> b
 
 
 private fun basicActionCards() = ActionCardPack(
-    CardStyle(face = "⬆️", value = Action("step forwards")),
-    CardStyle(face = "⬇️", value = Action("step backwards")),
-    CardStyle(face = "⬅️", value = Action("turn to your left")),
-    CardStyle(face = "➡️️", value = Action("turn to your right")),
-    CardStyle(face = "👏", value = Action("clap")),
-    CardStyle(face = "💩", value = Action("poop")),
-    CardStyle(face = "🥊", value = Action("hit it"))
+    CardStyle(face = "⬆️", value = Action("Step forwards")),
+    CardStyle(face = "⬇️", value = Action("Step backwards")),
+    CardStyle(face = "⬅️", value = Action("Turn to your left")),
+    CardStyle(face = "➡️️", value = Action("Turn to your right")),
+    CardStyle(face = "👏", value = Action("Clap")),
+    CardStyle(face = "💩", value = Action("Poop")),
+    CardStyle(face = "🥊", value = Action("Hit it"))
 )
 
 

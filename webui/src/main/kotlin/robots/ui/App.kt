@@ -1,12 +1,12 @@
 package robots.ui
 
-import kotlinx.html.DIV
+import browser.SpeechSynthesisUtterance
+import browser.speechSynthesis
 import kotlinx.html.js.onClickFunction
 import react.RBuilder
 import react.RComponent
 import react.RProps
 import react.RState
-import react.dom.RDOMBuilder
 import react.dom.button
 import react.dom.div
 import react.dom.span
@@ -17,6 +17,7 @@ import robots.canUndo
 import robots.cost
 import robots.havingDone
 import robots.redo
+import robots.reduceToAction
 import robots.undo
 
 
@@ -54,6 +55,10 @@ fun RBuilder.app(cards: Deck, initialProgram: Seq = Seq()) = child(App::class) {
     attrs.cards = cards
 }
 
+inline fun RBuilder.controlGroup(contents: RBuilder.() -> Unit) {
+    span("control-group", contents)
+}
+
 fun RBuilder.header(undoStack: UndoRedoStack<Seq>, update: (UndoRedoStack<Seq>) -> Unit) {
     div("header") {
         span("score") {
@@ -62,17 +67,38 @@ fun RBuilder.header(undoStack: UndoRedoStack<Seq>, update: (UndoRedoStack<Seq>) 
         }
         
         undoRedoButtons(undoStack, update)
+        
+        controlGroup {
+            button(classes = "run") {
+                attrs.onClickFunction = { runNextAction(undoStack, update) }
+                +"Run"
+            }
+        }
     }
 }
 
-private fun RDOMBuilder<DIV>.undoRedoButtons(undoStack: UndoRedoStack<Seq>, update: (UndoRedoStack<Seq>) -> Unit) {
-    span("edit-controls") {
-        button {
+fun runNextAction(undoStack: UndoRedoStack<Seq>, update: (UndoRedoStack<Seq>) -> Unit) {
+    val (action, future) = undoStack.current.reduceToAction()
+    if (action != null) {
+        speechSynthesis.speak(SpeechSynthesisUtterance(action.name).apply {
+            onend = {
+                if (future != null) {
+                    update(undoStack.havingDone(future))
+                }
+            }
+        })
+    }
+}
+
+
+private fun RBuilder.undoRedoButtons(undoStack: UndoRedoStack<Seq>, update: (UndoRedoStack<Seq>) -> Unit) {
+    controlGroup {
+        button(classes = "undo") {
             attrs.onClickFunction = { update(undoStack.undo()) }
             attrs.disabled = !undoStack.canUndo()
             +"Undo"
         }
-        button {
+        button(classes = "redo") {
             attrs.onClickFunction = { update(undoStack.redo()) }
             attrs.disabled = !undoStack.canRedo()
             +"Redo"

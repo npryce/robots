@@ -92,8 +92,18 @@ body {
     text-align: right;
 }
 
-.header .edit-controls button {
-    margin-left: 0.25em
+.header .control-group {
+    margin-left: 0.25em;
+}
+
+.header .undo {
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.header .redo {
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
 }
 
 .controls {
@@ -143,9 +153,8 @@ button[disabled] {
 }
 
 .stacks .card {
-    border-width: 0;
+    border: 0 solid;
     border-bottom-width: 0.1em;
-    border-style: solid;
 }
 
 .stackrow {
@@ -237,8 +246,7 @@ button[disabled] {
 }
 
 .cursor {
-    border-style: dotted;
-    border-color: rgba(0, 0, 0, 0.4);
+    border: 0.05em dotted rgba(0, 0, 0, 0.4);
     box-shadow: none;
     background-color: transparent;
 }

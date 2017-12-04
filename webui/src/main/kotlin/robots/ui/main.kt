@@ -10,7 +10,7 @@ fun main(args: Array<String>) {
     
     val containerDiv = document.getElementById("app") ?: throw IllegalStateException("no element called 'app")
     render(containerDiv) {
-        app()
+        app(Deck())
     }
 }
 

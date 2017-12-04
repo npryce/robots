@@ -77,19 +77,19 @@ fun RBuilder.startingSpace(editor: EditPoint, branch: Int, onEdit: (Seq) -> Unit
 }
 
 
-fun RBuilder.actionCard(editor: EditPoint) {
+fun RBuilder.actionCard(deck: Deck, editor: EditPoint) {
     draggable(dataProvider = { editor }) {
-        div("card action") { +editor.displayId() }
+        div("card action") { +deck.cardFace(editor.node) }
     }
 }
 
-fun RBuilder.controlCard(editor: EditPoint) {
-    div("card control") { +editor.displayId() }
+fun RBuilder.controlCard(deck: Deck, editor: EditPoint) {
+    div("card control") { +deck.cardFace(editor.node) }
 }
 
-fun RDOMBuilder<DIV>.repeatBlock(editPoint: EditPoint, onEdit: (Seq) -> Unit) {
+fun RDOMBuilder<DIV>.repeatBlock(deck: Deck, editPoint: EditPoint, onEdit: (Seq) -> Unit) {
     div("cardblock") {
-        controlCard(editPoint)
+        controlCard(deck, editPoint)
         
         val childEditPoints = editPoint.children()
         
@@ -97,17 +97,17 @@ fun RDOMBuilder<DIV>.repeatBlock(editPoint: EditPoint, onEdit: (Seq) -> Unit) {
             startingSpace(editPoint, 0, onEdit)
         }
         else {
-            cardSequence(childEditPoints, onEdit)
+            cardSequence(deck, childEditPoints, onEdit)
         }
     }
 }
 
-fun RBuilder.cardSequence(elements: List<EditPoint>, onEdit: (Seq) -> Unit) {
+fun RBuilder.cardSequence(deck: Deck, elements: List<EditPoint>, onEdit: (Seq) -> Unit) {
     fun RDOMBuilder<DIV>.cardRowElement(editPoint: EditPoint) {
         val node = editPoint.node
         when (node) {
-            is Action -> actionCard(editPoint)
-            is Repeat -> repeatBlock(editPoint, onEdit)
+            is Action -> actionCard(deck, editPoint)
+            is Repeat -> repeatBlock(deck, editPoint, onEdit)
             else -> TODO()
         }
     }
@@ -128,7 +128,7 @@ fun RBuilder.cardSequence(elements: List<EditPoint>, onEdit: (Seq) -> Unit) {
     div("cardsequence") {
         val rows = elements.splitAfter { it.node is Repeat }
         rows.forEach { row -> cardRow(row) }
-    
+        
         val last = rows.last().last()
         if (last.node is Repeat) {
             div("cardrow") {
@@ -158,13 +158,13 @@ fun RBuilder.firstElementSpace(program: Seq, onEdit: (Seq) -> Unit) {
     }
 }
 
-fun RBuilder.programEditor(program: Seq, onEdit: (Seq) -> Unit) {
+fun RBuilder.programEditor(deck: Deck, program: Seq, onEdit: (Seq) -> Unit) {
     div("program") {
         if (program.steps.isEmpty()) {
             firstElementSpace(program, onEdit)
         }
         else {
-            cardSequence(program.editPoints(), onEdit)
+            cardSequence(deck, program.editPoints(), onEdit)
         }
     }
 }

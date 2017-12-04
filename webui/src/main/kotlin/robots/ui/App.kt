@@ -22,6 +22,7 @@ import robots.undo
 
 external interface AppProps : RProps {
     var program: Seq
+    var cards: Deck
 }
 
 external interface AppState : RState {
@@ -35,8 +36,8 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
     
     override fun RBuilder.render() {
         header(state.undo, update = ::updateUndoRedoStack)
-        programEditor(state.undo.current, onEdit = ::pushUndoRedoState)
-        controlPanel()
+        programEditor(props.cards, state.undo.current, onEdit = ::pushUndoRedoState)
+        controlPanel(props.cards)
     }
     
     private fun pushUndoRedoState(newProgram: Seq) {
@@ -48,9 +49,9 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
     }
 }
 
-
-fun RBuilder.app(initialProgram: Seq = Seq()) = child(App::class) {
+fun RBuilder.app(cards: Deck, initialProgram: Seq = Seq()) = child(App::class) {
     attrs.program = initialProgram
+    attrs.cards = cards
 }
 
 fun RBuilder.header(undoStack: UndoRedoStack<Seq>, update: (UndoRedoStack<Seq>) -> Unit) {
@@ -79,8 +80,8 @@ private fun RDOMBuilder<DIV>.undoRedoButtons(undoStack: UndoRedoStack<Seq>, upda
     }
 }
 
-private fun RBuilder.controlPanel() {
+private fun RBuilder.controlPanel(style: Deck) {
     div("controls") {
-        cardStacks()
+        cardStacks(style)
     }
 }

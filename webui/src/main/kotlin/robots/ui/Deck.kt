@@ -4,35 +4,39 @@ import robots.AST
 import robots.Action
 import robots.Repeat
 import robots.Seq
+import robots.ui.CardCategory.action
+import robots.ui.CardCategory.control
+import robots.ui.CardCategory.invisible
 
-fun cardCategoryClass(instruction: AST) =
-    when (instruction) {
-        is Action -> "action"
-        is Repeat -> "control"
-        is Seq -> "invisible"
-    }
+enum class CardCategory {
+    action,
+    control,
+    invisible
+}
 
+data class CardStyle(val face: String, val category: CardCategory, val explanation: String, val value: AST) {
+    constructor(face: String, value: Action): this(face, action, value.name, value)
+    constructor(value: Repeat): this("${value.times}×", control, "Repeat ${value.times} times", value)
+}
 
-data class StyledAction(val face: String, val action: Action)
-
-class ActionCardPack(private val cards: List<StyledAction>) : Iterable<StyledAction> by cards {
-    private val byValue = cards.associateBy { it.action }
+class ActionCardPack(private val cards: List<CardStyle>) : Iterable<CardStyle> by cards {
+    private val byValue = cards.associateBy { it.value }
     
-    constructor(vararg cards: StyledAction) : this(cards.toList())
+    constructor(vararg cards: CardStyle) : this(cards.toList())
     
-    fun styleFor(action: Action): StyledAction =
-        byValue[action] ?: StyledAction(face = "?", action = action)
+    fun styleFor(action: Action): CardStyle =
+        byValue[action] ?: CardStyle(face = "?", value = action)
 }
 
 
 private fun basicActionCards() = ActionCardPack(
-    StyledAction(face = "⬆️", action = Action("step forwards")),
-    StyledAction(face = "⬇️", action = Action("step backwards")),
-    StyledAction(face = "⬅️", action = Action("turn to your left")),
-    StyledAction(face = "➡️️", action = Action("turn to your right")),
-    StyledAction(face = "👏", action = Action("clap")),
-    StyledAction(face = "💩", action = Action("poop")),
-    StyledAction(face = "🥊", action = Action("hit it"))
+    CardStyle(face = "⬆️", value = Action("step forwards")),
+    CardStyle(face = "⬇️", value = Action("step backwards")),
+    CardStyle(face = "⬅️", value = Action("turn to your left")),
+    CardStyle(face = "➡️️", value = Action("turn to your right")),
+    CardStyle(face = "👏", value = Action("clap")),
+    CardStyle(face = "💩", value = Action("poop")),
+    CardStyle(face = "🥊", value = Action("hit it"))
 )
 
 
@@ -40,10 +44,10 @@ class Deck {
     val actionCards = basicActionCards()
     val repeatCards = (2..10).map { n -> Repeat(n) }
     
-    fun cardFace(value: AST) =
+    fun styleFor(value: AST): CardStyle =
         when (value) {
-            is Action -> actionCards.styleFor(value).face
-            is Repeat -> "${value.times}×"
-            is Seq -> "[]"
+            is Action -> actionCards.styleFor(value)
+            is Repeat -> CardStyle(value)
+            is Seq -> CardStyle("", invisible, "", value)
         }
 }

@@ -3,6 +3,7 @@ package robots.ui
 import dnd.draggable
 import dnd.dropTarget
 import kotlinx.html.DIV
+import kotlinx.html.title
 import react.RBuilder
 import react.dom.RDOMBuilder
 import react.dom.div
@@ -76,15 +77,26 @@ fun RBuilder.startingSpace(editor: EditPoint, branch: Int, onEdit: (Seq) -> Unit
     }
 }
 
+private fun RBuilder.cardFace(deck: Deck, editor: EditPoint) {
+    cardFace(deck, editor.node)
+}
+
+fun RBuilder.cardFace(deck: Deck, value: AST) {
+    val style = deck.styleFor(value)
+    div("card ${style.category}") {
+        attrs.title = style.explanation
+        +style.face
+    }
+}
 
 fun RBuilder.actionCard(deck: Deck, editor: EditPoint) {
     draggable(dataProvider = { editor }) {
-        div("card action") { +deck.cardFace(editor.node) }
+        cardFace(deck, editor)
     }
 }
 
 fun RBuilder.controlCard(deck: Deck, editor: EditPoint) {
-    div("card control") { +deck.cardFace(editor.node) }
+    cardFace(deck, editor)
 }
 
 fun RDOMBuilder<DIV>.repeatBlock(deck: Deck, editPoint: EditPoint, onEdit: (Seq) -> Unit) {

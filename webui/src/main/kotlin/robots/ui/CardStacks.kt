@@ -8,9 +8,7 @@ import robots.AST
 
 fun RBuilder.cardStack(deck: Deck, value: AST) {
     draggable(dataProvider = { value }) {
-        div("card ${cardCategoryClass(value)}") {
-            +deck.cardFace(value)
-        }
+        cardFace(deck, value)
     }
 }
 
@@ -23,7 +21,7 @@ private fun RBuilder.cardStackRow(deck: Deck, instructions: Iterable<AST>) {
 
 fun RBuilder.cardStacks(deck: Deck) {
     div("stacks") {
-        cardStackRow(deck, deck.actionCards.map { it.action })
+        cardStackRow(deck, deck.actionCards.map { it.value })
         cardStackRow(deck, deck.repeatCards)
     }
 }

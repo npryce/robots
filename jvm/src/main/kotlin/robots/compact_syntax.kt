@@ -32,7 +32,7 @@ private fun PList<AST>.toCompactString(): String {
 }
 
 private fun AST.toCompactString(): String = when (this) {
-    is Action -> name
+    is Action -> text
     is Repeat -> times.toString() + multiply + begin + repeated.toCompactString() + end
     is Seq -> begin + steps.toCompactString() + end
 }

@@ -80,7 +80,7 @@ fun RBuilder.header(undoStack: UndoRedoStack<Seq>, update: (UndoRedoStack<Seq>) 
 fun runNextAction(undoStack: UndoRedoStack<Seq>, update: (UndoRedoStack<Seq>) -> Unit) {
     val (action, future) = undoStack.current.reduceToAction()
     if (action != null) {
-        speechSynthesis.speak(SpeechSynthesisUtterance(action.name).apply {
+        speechSynthesis.speak(SpeechSynthesisUtterance(action.text).apply {
             onend = {
                 if (future != null) {
                     update(undoStack.havingDone(future))

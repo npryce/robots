@@ -54,7 +54,7 @@ private fun readCommand(latest: () -> Trace): String? {
     
     val trace = latest()
     if (trace.action != null || trace.next != null) {
-        println("(" + (trace.action?.name ?: " ") + ") " + (trace.next?.toCompactString() ?: ""))
+        println("(" + (trace.action?.text ?: " ") + ") " + (trace.next?.toCompactString() ?: ""))
     }
     
     System.out.print("> ")

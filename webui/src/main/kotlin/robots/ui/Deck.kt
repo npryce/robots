@@ -15,7 +15,7 @@ enum class CardCategory {
 }
 
 data class CardStyle(val face: String, val category: CardCategory, val explanation: String, val value: AST) {
-    constructor(face: String, value: Action): this(face, action, value.name, value)
+    constructor(face: String, value: Action): this(face, action, value.text, value)
     constructor(value: Repeat): this("${value.times}×", control, "Repeat ${value.times} times", value)
 }
 

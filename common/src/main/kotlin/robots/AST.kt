@@ -1,7 +1,7 @@
 package robots
 
 sealed class AST
-data class Action(val name: String) : robots.AST()
+data class Action(val text: String) : robots.AST()
 data class Repeat(val times: Int, val repeated: PList<robots.AST>) : robots.AST() {
     constructor(times: Int, vararg steps: robots.AST) : this(times, pListOf(*steps))
 }

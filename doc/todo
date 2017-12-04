@@ -1,4 +1,6 @@
 * Dropping an existing card from program onto starting point
+* Dead-zone for dragging
+* Typing - treat card stacks as buttons, track active input space
 * Removal of cards
 * Replacement of cards
 * Insertion of cards

@@ -10,6 +10,7 @@ import react.RState
 import react.dom.button
 import react.dom.div
 import react.dom.span
+import robots.Reduction
 import robots.Seq
 import robots.UndoRedoStack
 import robots.canRedo
@@ -17,6 +18,7 @@ import robots.canUndo
 import robots.cost
 import robots.havingDone
 import robots.redo
+import robots.reduce
 import robots.reduceToAction
 import robots.undo
 
@@ -70,23 +72,39 @@ fun RBuilder.header(undoStack: UndoRedoStack<Seq>, update: (UndoRedoStack<Seq>) 
         
         controlGroup {
             button(classes = "run") {
-                attrs.onClickFunction = { runNextAction(undoStack, update) }
+                attrs.onClickFunction = { ev: dynamic -> // is this the only way to access event properties?
+                    if (ev.altKey) {
+                        console.log("slo-mo")
+                        run(Seq::reduce, undoStack, update)
+                    }
+                    else {
+                        run(Seq::reduceToAction, undoStack, update)
+                    }
+                    ev.preventDefault()
+                }
                 +"Run"
             }
         }
     }
 }
 
-fun runNextAction(undoStack: UndoRedoStack<Seq>, update: (UndoRedoStack<Seq>) -> Unit) {
-    val (action, future) = undoStack.current.reduceToAction()
+
+fun run(performStep: Seq.() -> Reduction, undoStack: UndoRedoStack<Seq>, update: (UndoRedoStack<Seq>) -> Unit) {
+    val (action, future) = undoStack.current.performStep()
+    
+    fun done() {
+        if (future != null) {
+            update(undoStack.havingDone(future))
+        }
+    }
+    
     if (action != null) {
         speechSynthesis.speak(SpeechSynthesisUtterance(action.text).apply {
-            onend = {
-                if (future != null) {
-                    update(undoStack.havingDone(future))
-                }
-            }
+            onend = { done() }
         })
+    }
+    else {
+        done()
     }
 }
 

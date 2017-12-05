@@ -5,11 +5,13 @@
 * Removal of cards
 * Replacement of cards
 * Insertion of cards
-* Merging of cards into control group
+* Merging of cards to form a control group (multitouch?)
+* Change repeat count
 * Execution (reduction, play speech)
   * Cannot edit while action is being executed
   * Can go back to program before run was pressed
   * Run vs edit modes?  E.g. cannot edit while in run mode.
+  * Execution history -- how to integrate with undo/redo?
 * Add your own actions
 * Save state
   * to local storage

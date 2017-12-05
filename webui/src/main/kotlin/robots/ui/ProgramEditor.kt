@@ -138,7 +138,7 @@ fun RBuilder.cardSequence(deck: Deck, elements: List<EditPoint>, onEdit: (Seq) -
     }
     
     div("cardsequence") {
-        val rows = elements.splitAfter { it.node is Repeat }
+        val rows = elements.toRows()
         rows.forEach { row -> cardRow(row) }
         
         val last = rows.last().last()
@@ -149,6 +149,13 @@ fun RBuilder.cardSequence(deck: Deck, elements: List<EditPoint>, onEdit: (Seq) -
         }
     }
 }
+
+private fun List<EditPoint>.toRows() =
+    flattenImmediateSequences()
+        .splitAfter { it.node is Repeat }
+
+fun List<EditPoint>.flattenImmediateSequences(): List<EditPoint> =
+    flatMap { if (it.node is Seq) it.children() else listOf(it) }
 
 fun RBuilder.firstElementSpace(program: Seq, onEdit: (Seq) -> Unit) {
     fun canAccept(dragged: Any) =

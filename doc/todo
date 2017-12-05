@@ -1,11 +1,19 @@
 * Dropping an existing card from program onto starting point
+* Fade out dragged card while dragging
 * Dead-zone for dragging
 * Typing - treat card stacks as buttons, track active input space
 * Removal of cards
 * Replacement of cards
 * Insertion of cards
+* Merging of cards into control group
 * Execution (reduction, play speech)
+  * Cannot edit while action is being executed
+  * Can go back to program before run was pressed
+  * Run vs edit modes?  E.g. cannot edit while in run mode.
 * Add your own actions
+* Save state
+  * to local storage
+  * to cloud storage
 * Super-power modes
   * X-Ray vision (graph view of program)
   * Slow down time (step through intermediate reductions)

@@ -8,8 +8,8 @@ import react.RBuilder
 import react.dom.RDOMBuilder
 import react.dom.div
 import robots.AST
+import robots.ASTEditPoint
 import robots.Action
-import robots.EditPoint
 import robots.Repeat
 import robots.Seq
 import robots.children
@@ -22,11 +22,11 @@ import robots.splitAfter
 import robots.withSteps
 
 
-fun RBuilder.extensionSpace(editor: EditPoint, onEdit: (Seq) -> Unit) {
+fun RBuilder.extensionSpace(editor: ASTEditPoint, onEdit: (Seq) -> Unit) {
     fun canAccept(dragged: Any) =
         when (dragged) {
             is AST -> true
-            is EditPoint -> editor !in dragged
+            is ASTEditPoint -> editor !in dragged
             else -> false
         }
     
@@ -36,7 +36,7 @@ fun RBuilder.extensionSpace(editor: EditPoint, onEdit: (Seq) -> Unit) {
                 val newProgram = editor.insertAfter(dropped)
                 onEdit(newProgram)
             }
-            is EditPoint -> {
+            is ASTEditPoint -> {
                 if (editor !in dropped) {
                     val newProgram = dropped.moveTo(editor, Seq::insertAfter)
                     onEdit(newProgram)
@@ -50,11 +50,11 @@ fun RBuilder.extensionSpace(editor: EditPoint, onEdit: (Seq) -> Unit) {
     }
 }
 
-fun RBuilder.startingSpace(editor: EditPoint, branch: Int, onEdit: (Seq) -> Unit) {
+fun RBuilder.startingSpace(editor: ASTEditPoint, branch: Int, onEdit: (Seq) -> Unit) {
     fun canAccept(dragged: Any) =
         when (dragged) {
             is AST -> true
-            is EditPoint -> editor !in dragged
+            is ASTEditPoint -> editor !in dragged
             else -> false
         }
     
@@ -64,7 +64,7 @@ fun RBuilder.startingSpace(editor: EditPoint, branch: Int, onEdit: (Seq) -> Unit
                 val newProgram = editor.replaceWith(editor.node.replaceBranch(0, pListOf(dropped)))
                 onEdit(newProgram)
             }
-            is EditPoint -> {
+            is ASTEditPoint -> {
                 if (editor !in dropped) {
                     TODO("dropping an existing card not supported yet")
                 }
@@ -77,7 +77,7 @@ fun RBuilder.startingSpace(editor: EditPoint, branch: Int, onEdit: (Seq) -> Unit
     }
 }
 
-private fun RBuilder.cardFace(deck: Deck, editor: EditPoint) {
+private fun RBuilder.cardFace(deck: Deck, editor: ASTEditPoint) {
     cardFace(deck, editor.node)
 }
 
@@ -89,17 +89,17 @@ fun RBuilder.cardFace(deck: Deck, value: AST) {
     }
 }
 
-fun RBuilder.actionCard(deck: Deck, editor: EditPoint) {
+fun RBuilder.actionCard(deck: Deck, editor: ASTEditPoint) {
     draggable(dataProvider = { editor }) {
         cardFace(deck, editor)
     }
 }
 
-fun RBuilder.controlCard(deck: Deck, editor: EditPoint) {
+fun RBuilder.controlCard(deck: Deck, editor: ASTEditPoint) {
     cardFace(deck, editor)
 }
 
-fun RDOMBuilder<DIV>.repeatBlock(deck: Deck, editPoint: EditPoint, onEdit: (Seq) -> Unit) {
+fun RDOMBuilder<DIV>.repeatBlock(deck: Deck, editPoint: ASTEditPoint, onEdit: (Seq) -> Unit) {
     draggable(dataProvider = {editPoint}) {
         div("cardblock") {
             controlCard(deck, editPoint)
@@ -116,8 +116,8 @@ fun RDOMBuilder<DIV>.repeatBlock(deck: Deck, editPoint: EditPoint, onEdit: (Seq)
     }
 }
 
-fun RBuilder.cardSequence(deck: Deck, elements: List<EditPoint>, onEdit: (Seq) -> Unit) {
-    fun RDOMBuilder<DIV>.cardRowElement(editPoint: EditPoint) {
+fun RBuilder.cardSequence(deck: Deck, elements: List<ASTEditPoint>, onEdit: (Seq) -> Unit) {
+    fun RDOMBuilder<DIV>.cardRowElement(editPoint: ASTEditPoint) {
         val node = editPoint.node
         when (node) {
             is Action -> actionCard(deck, editPoint)
@@ -126,7 +126,7 @@ fun RBuilder.cardSequence(deck: Deck, elements: List<EditPoint>, onEdit: (Seq) -
         }
     }
     
-    fun RDOMBuilder<DIV>.cardRow(row: List<EditPoint>) {
+    fun RDOMBuilder<DIV>.cardRow(row: List<ASTEditPoint>) {
         div("cardrow") {
             row.forEach { editPoint -> cardRowElement(editPoint) }
             
@@ -152,11 +152,11 @@ fun RBuilder.cardSequence(deck: Deck, elements: List<EditPoint>, onEdit: (Seq) -
     }
 }
 
-private fun List<EditPoint>.toRows() =
+private fun List<ASTEditPoint>.toRows() =
     flattenImmediateSequences()
         .splitAfter { it.node is Repeat }
 
-fun List<EditPoint>.flattenImmediateSequences(): List<EditPoint> =
+fun List<ASTEditPoint>.flattenImmediateSequences(): List<ASTEditPoint> =
     flatMap { if (it.node is Seq) it.children() else listOf(it) }
 
 fun RBuilder.firstElementSpace(program: Seq, onEdit: (Seq) -> Unit) {

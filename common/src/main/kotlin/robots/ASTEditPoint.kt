@@ -1,11 +1,11 @@
 package robots
 
-class EditPoint(
+class ASTEditPoint(
     val program: Seq,
     val path: ASTPath,
     val node: AST
 ) {
-    operator fun contains(that: EditPoint) =
+    operator fun contains(that: ASTEditPoint) =
         this.path.contains(that.path)
     
     fun remove(): Seq =
@@ -16,14 +16,14 @@ class EditPoint(
         program.insertBefore(path, newAST)
     fun insertAfter(newAST: AST): Seq =
         program.insertAfter(path, newAST)
-    fun moveTo(destination: EditPoint, splice: Seq.(ASTPath, AST) -> Seq) =
+    fun moveTo(destination: ASTEditPoint, splice: Seq.(ASTPath, AST) -> Seq) =
         program.move(path, destination.path, splice)
 }
 
-fun Seq.editPoints(): List<EditPoint> =
-    steps.mapIndexed { index, node -> EditPoint(this, pathOf(0, index), node) }
+fun Seq.editPoints(): List<ASTEditPoint> =
+    steps.mapIndexed { index, node -> ASTEditPoint(this, pathOf(0, index), node) }
 
-fun EditPoint.children(): List<EditPoint> {
+fun ASTEditPoint.children(): List<ASTEditPoint> {
     val node = this.node
     return when (node) {
         is Action -> emptyList()
@@ -32,5 +32,5 @@ fun EditPoint.children(): List<EditPoint> {
     }
 }
 
-private fun EditPoint.childEditPoints(branchIndex: Int, children: PList<AST>): List<EditPoint> =
-    children.mapIndexed { index, node -> EditPoint(program, path + ChildRef(branchIndex, index), node) }
+private fun ASTEditPoint.childEditPoints(branchIndex: Int, children: PList<AST>): List<ASTEditPoint> =
+    children.mapIndexed { index, node -> ASTEditPoint(program, path + ChildRef(branchIndex, index), node) }

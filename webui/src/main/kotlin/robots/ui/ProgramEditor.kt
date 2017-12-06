@@ -12,7 +12,6 @@ import robots.ASTEditPoint
 import robots.Action
 import robots.Repeat
 import robots.Seq
-import robots.children
 import robots.editPoints
 import robots.insertAfter
 import robots.isEmpty
@@ -60,15 +59,13 @@ fun RBuilder.startingSpace(editor: ASTEditPoint, branch: Int, onEdit: (Seq) -> U
     fun accept(dropped: Any) {
         when (dropped) {
             is AST -> {
-                val branchIndex = 0
-                val newBranch = pListOf(dropped)
-    
-                val newProgram = editor.replaceBranch(branchIndex, newBranch)
+                val newProgram = editor.replaceBranch(0, pListOf(dropped))
                 onEdit(newProgram)
             }
             is ASTEditPoint -> {
                 if (editor !in dropped) {
-                    TODO("dropping an existing card not supported yet")
+                    val newProgram = dropped.moveToNewBranch(editor, 0)
+                    onEdit(newProgram)
                 }
             }
         }

@@ -80,9 +80,6 @@ fun Seq.insertAfter(path: ASTPath, newElement: AST): Seq =
 fun Seq.insertBefore(path: ASTPath, newElement: AST): Seq =
     applyAt(path) { it.insertBefore(newElement) }
 
-fun Seq.replaceBranchAt(path: ASTPath, branchIndex: Int, newBranch: PList<AST>):Seq =
-    applyAt(path) { it.replaceWith(it.current.replaceBranch(branchIndex, newBranch)) }
-
 fun Seq.move(from: ASTPath, to: ASTPath, splice: Seq.(ASTPath, AST) -> Seq): Seq {
     val srcNode = this[from] ?: return this
     return if (from < to)
@@ -90,6 +87,12 @@ fun Seq.move(from: ASTPath, to: ASTPath, splice: Seq.(ASTPath, AST) -> Seq): Seq
     else
         removeAt(from).splice(to, srcNode)
 }
+
+fun Seq.replaceBranchAt(path: ASTPath, branchIndex: Int, newBranch: PList<AST>): Seq =
+    applyAt(path) { it.replaceWith(it.current.replaceBranch(branchIndex, newBranch)) }
+
+fun Seq.moveToNewBranch(from: ASTPath, to: ASTPath, toBranchIndex: Int): Seq =
+    move(from, to, { path, node -> replaceBranchAt(path, toBranchIndex, pListOf(node)) })
 
 private operator fun AST.get(childRef: ChildRef): PListFocus<AST>? =
     branch(childRef.branch)?.focusNth(childRef.element)
@@ -113,14 +116,15 @@ private inline fun Seq.applyAt(path: ASTPath, modifyBranch: (PListFocus<AST>) ->
     // Eugh!  This can be made more elegant
     return if (stitches.isEmpty()) {
         this.replaceBranch(childRef.branch, modifyBranch(childFocus).toPList())
-    } else {
+    }
+    else {
         val lowestStitch = stitches.first()
         val newLowestBranch = modifyBranch(lowestStitch.childFocus)
         val modifiedLeaf = lowestStitch.parent.replaceBranch(lowestStitch.childRef.branch, newLowestBranch.toPList())
-    
+        
         val newChild: AST = stitch(modifiedLeaf, stitches.drop(1))
         val newBranch = childFocus.replaceWith(newChild).toPList()
-    
+        
         this.replaceBranch(childRef.branch, newBranch)
     }
 }

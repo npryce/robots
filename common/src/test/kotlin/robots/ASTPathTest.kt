@@ -135,6 +135,29 @@ open class ASTPathTest {
             expected = Seq(a, d, b, Repeat(3, c), e))
     }
     
+    @Test
+    fun can_replace_a_branch() {
+        assertEquals(
+            actual = program.replaceBranchAt(pathOf(0, 2), 0, pListOf(x, x, x)),
+            expected = Seq(a, b, Repeat(3, x, x, x), e))
+    }
+    
+    @Test
+    fun can_move_a_branch_forwards() {
+        val program = Seq(a, Repeat(2, b, c), Repeat(3, d, e))
+        assertEquals(
+            actual = program.moveToNewBranch(from = pathOf(0, 1, 0, 0), to = pathOf(0, 2), toBranchIndex = 0),
+            expected = Seq(a, Repeat(2, c), Repeat(3, b)))
+    }
+    
+    @Test
+    fun can_move_a_branch_backwards() {
+        val program = Seq(a, Repeat(2, b, c), Repeat(3, d, e))
+        assertEquals(
+            actual = program.moveToNewBranch(from = pathOf(0, 2, 0, 0), to = pathOf(0, 1), toBranchIndex = 0),
+            expected = Seq(a, Repeat(2, d), Repeat(3, e)))
+    }
+    
     open fun assertEquals(actual: Seq, expected: Seq) {
         kotlin.test.assertEquals(actual, expected)
     }

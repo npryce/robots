@@ -100,16 +100,18 @@ fun RBuilder.controlCard(deck: Deck, editor: EditPoint) {
 }
 
 fun RDOMBuilder<DIV>.repeatBlock(deck: Deck, editPoint: EditPoint, onEdit: (Seq) -> Unit) {
-    div("cardblock") {
-        controlCard(deck, editPoint)
+    draggable(dataProvider = {editPoint}) {
+        div("cardblock") {
+            controlCard(deck, editPoint)
         
-        val childEditPoints = editPoint.children()
+            val childEditPoints = editPoint.children()
         
-        if (childEditPoints.isEmpty()) {
-            startingSpace(editPoint, 0, onEdit)
-        }
-        else {
-            cardSequence(deck, childEditPoints, onEdit)
+            if (childEditPoints.isEmpty()) {
+                startingSpace(editPoint, 0, onEdit)
+            }
+            else {
+                cardSequence(deck, childEditPoints, onEdit)
+            }
         }
     }
 }

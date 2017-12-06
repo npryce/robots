@@ -241,6 +241,10 @@ button[disabled] {
     transform-origin: 50% 50%;
 }
 
+.dragging .cursor {
+    display: none;
+}
+
 .dragging.disappearing .card {
     animation-name: slip-away;
 }

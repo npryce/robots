@@ -138,12 +138,9 @@ object DragAndDrop {
             draggedElement.remove()
         }
         else {
-            fun removeDraggedElement(ev: Event) {
-                (ev.target as? Element)?.remove()
+            listOf("animationend", "animationcancel", "transitionend", "transitioncancel").forEach { eventName ->
+                draggedElement.addEventListener(eventName, {draggedElement.remove()})
             }
-            
-            draggedElement.addEventListener("transitionend", ::removeDraggedElement)
-            draggedElement.addEventListener("animationend", ::removeDraggedElement)
             
             draggedElement.classList.add("disappearing")
         }
@@ -230,7 +227,6 @@ object DragAndDrop {
         body.addEventListener("touchcancel", ::bodyTouchEnd)
     }
 }
-
 
 
 internal inline fun <reified T> Event.detail(): T? =

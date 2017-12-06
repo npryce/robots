@@ -11,11 +11,14 @@ import react.RState
 import react.dom.div
 import kotlin.browser.window
 
-interface DraggableProps : RProps {
+external interface DraggableProps : RProps {
     var dataProvider: () -> Any
 }
 
-class Draggable(props: DraggableProps) : RComponent<DraggableProps, RState>(props) {
+external interface DraggableState: RState {
+}
+
+class Draggable(props: DraggableProps) : RComponent<DraggableProps, DraggableState>(props) {
     private var draggableElement: Element? = null
     
     override fun RBuilder.render() {
@@ -41,6 +44,8 @@ class Draggable(props: DraggableProps) : RComponent<DraggableProps, RState>(prop
         detail.element = sourceElement
         detail.elementOrigin = sourceElement.pageOrigin()
         detail.data = (props.dataProvider)()
+        
+        ev.stopPropagation()
     }
     
     private fun Element.pageOrigin(): Point {

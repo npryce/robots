@@ -68,21 +68,20 @@ private fun Repeat.branch(index: Int) = repeated.takeIf { index == 0 }
 private fun Repeat.replaceBranch(n: Int, newBranch: PList<AST>): Repeat =
     if (n == 0) copy(repeated = newBranch) else this
 
-fun Seq.removeAt(path: ASTPath): Seq {
-    return applyAt(path) { it.remove() }
-}
+fun Seq.removeAt(path: ASTPath): Seq =
+    applyAt(path) { it.remove() }
 
-fun Seq.replaceAt(path: ASTPath, newElement: AST): Seq {
-    return applyAt(path) { it.replaceWith(newElement) }
-}
+fun Seq.replaceAt(path: ASTPath, newElement: AST): Seq =
+    applyAt(path) { it.replaceWith(newElement) }
 
-fun Seq.insertAfter(path: ASTPath, newElement: AST): Seq {
-    return applyAt(path) { it.insertAfter(newElement) }
-}
+fun Seq.insertAfter(path: ASTPath, newElement: AST): Seq =
+    applyAt(path) { it.insertAfter(newElement) }
 
-fun Seq.insertBefore(path: ASTPath, newElement: AST): Seq {
-    return applyAt(path) { it.insertBefore(newElement) }
-}
+fun Seq.insertBefore(path: ASTPath, newElement: AST): Seq =
+    applyAt(path) { it.insertBefore(newElement) }
+
+fun Seq.replaceBranchAt(path: ASTPath, branchIndex: Int, newBranch: PList<AST>):Seq =
+    applyAt(path) { it.replaceWith(it.current.replaceBranch(branchIndex, newBranch)) }
 
 fun Seq.move(from: ASTPath, to: ASTPath, splice: Seq.(ASTPath, AST) -> Seq): Seq {
     val srcNode = this[from] ?: return this

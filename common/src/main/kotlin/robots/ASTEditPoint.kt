@@ -16,9 +16,14 @@ class ASTEditPoint(
         program.insertBefore(path, newAST)
     fun insertAfter(newAST: AST): Seq =
         program.insertAfter(path, newAST)
-    fun moveTo(destination: ASTEditPoint, splice: Seq.(ASTPath, AST) -> Seq) =
+    
+    fun replaceBranch(branchIndex: Int, newBranch: PList<AST>): Seq =
+        program.replaceBranchAt(path, branchIndex, newBranch)
+    
+    fun moveTo(destination: ASTEditPoint, splice: Seq.(ASTPath, AST) -> Seq): Seq =
         program.move(path, destination.path, splice)
 }
+
 
 fun Seq.editPoints(): List<ASTEditPoint> =
     steps.mapIndexed { index, node -> ASTEditPoint(this, pathOf(0, index), node) }

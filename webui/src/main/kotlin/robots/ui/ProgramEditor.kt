@@ -17,7 +17,6 @@ import robots.editPoints
 import robots.insertAfter
 import robots.isEmpty
 import robots.pListOf
-import robots.replaceBranch
 import robots.splitAfter
 import robots.withSteps
 
@@ -61,7 +60,10 @@ fun RBuilder.startingSpace(editor: ASTEditPoint, branch: Int, onEdit: (Seq) -> U
     fun accept(dropped: Any) {
         when (dropped) {
             is AST -> {
-                val newProgram = editor.replaceWith(editor.node.replaceBranch(0, pListOf(dropped)))
+                val branchIndex = 0
+                val newBranch = pListOf(dropped)
+    
+                val newProgram = editor.replaceBranch(branchIndex, newBranch)
                 onEdit(newProgram)
             }
             is ASTEditPoint -> {

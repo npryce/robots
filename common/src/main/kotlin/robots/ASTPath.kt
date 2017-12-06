@@ -44,7 +44,7 @@ private tailrec fun AST.get(path: ASTPath, pathIndex: Int, maxPathIndex: Int = p
     }
 }
 
-fun AST.branch(index: Int): PList<AST>? =
+private fun AST.branch(index: Int): PList<AST>? =
     when (this) {
         is Action -> null
         is Seq -> branch(index)
@@ -58,14 +58,14 @@ fun AST.replaceBranch(index: Int, newBranch: PList<AST>): AST =
         is Repeat -> replaceBranch(index, newBranch)
     }
 
-fun Seq.branch(index: Int) = steps.takeIf { index == 0 }
+private fun Seq.branch(index: Int) = steps.takeIf { index == 0 }
 
-fun Seq.replaceBranch(n: Int, newBranch: PList<AST>): Seq =
+private fun Seq.replaceBranch(n: Int, newBranch: PList<AST>): Seq =
     if (n == 0) copy(steps = newBranch) else this
 
-fun Repeat.branch(index: Int) = repeated.takeIf { index == 0 }
+private fun Repeat.branch(index: Int) = repeated.takeIf { index == 0 }
 
-fun Repeat.replaceBranch(n: Int, newBranch: PList<AST>): Repeat =
+private fun Repeat.replaceBranch(n: Int, newBranch: PList<AST>): Repeat =
     if (n == 0) copy(repeated = newBranch) else this
 
 fun Seq.removeAt(path: ASTPath): Seq {
@@ -103,19 +103,10 @@ private inline fun Seq.applyAt(path: ASTPath, modifyBranch: (PListFocus<AST>) ->
     
     val stitches = generateSequence(0 to Stitch(this, childRef, childFocus)) { (lastPathIndex, lastStitch) ->
         val nextPathIndex = lastPathIndex + 1
-        
-        val nextChildRef = path.getOrNull(nextPathIndex)
-        if (nextChildRef == null) {
-            null
-        }
-        else {
+        path.getOrNull(nextPathIndex)?.let { childRef ->
             val nextParent = lastStitch.childFocus.current
-            val nextChildFocus = nextParent[nextChildRef]
-            if (nextChildFocus == null) {
-                null
-            }
-            else {
-                nextPathIndex to Stitch(nextParent, nextChildRef, nextChildFocus)
+            nextParent[childRef]?.let { childFocus ->
+                nextPathIndex to Stitch(nextParent, childRef, childFocus)
             }
         }
     }.map { it.second }.toList().reversed().dropLast(1)

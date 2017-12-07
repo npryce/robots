@@ -128,14 +128,23 @@ button[disabled] {
     color: #AAAAAA;
 }
 
-.cardsequence, .cardrow, .cardblock {
-    flex-flow: row wrap;
+.cardrow, .cardblock {
+    flex-direction: row;
+    flex-wrap: nowrap;
     justify-content: flex-start;
     align-items: flex-start;
     align-content: flex-start;
 }
 
-.card-sequence, .cardrow {
+.cardrows {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-content: stretch;
+}
+
+.cardrow {
     display: flex;
     flex-wrap: nowrap;
 }

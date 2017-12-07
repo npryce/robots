@@ -12,13 +12,11 @@ fun Trace.next(reduce: (Seq) -> Reduction = Seq::reduceToAction) = when (next) {
     else -> reduce(next).let { (action, future) -> Trace(action, future, this) }
 }
 
-tailrec fun Trace.run(reduce: (Seq) -> Reduction = Seq::reduceToAction): Trace {
-    return if (isFinished()) this else next(reduce).run(reduce)
-}
+tailrec fun Trace.run(reduce: (Seq) -> Reduction = Seq::reduceToAction): Trace =
+    if (isFinished()) this else next(reduce).run(reduce)
 
-fun Trace.toSeq(): Seq {
-    return Seq(actionsThen(next?.steps ?: Empty))
-}
+fun Trace.toSeq(): Seq =
+    Seq(actionsThen(next?.steps ?: Empty))
 
 private tailrec fun Trace.actionsThen(tail: PList<AST>): PList<AST> {
     val longerTail = if (action != null) Cons(action, tail) else tail

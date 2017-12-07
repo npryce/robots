@@ -64,7 +64,7 @@ fun RBuilder.startingSpace(editor: ASTEditPoint, branch: Int, onEdit: (Seq) -> U
             }
             is ASTEditPoint -> {
                 if (editor !in dropped) {
-                    val newProgram = dropped.moveToNewBranch(editor, 0)
+                    val newProgram = dropped.moveToNewBranch(editor, branch)
                     onEdit(newProgram)
                 }
             }
@@ -98,13 +98,13 @@ fun RBuilder.controlCard(deck: Deck, editor: ASTEditPoint) {
     cardFace(deck, editor)
 }
 
-fun RDOMBuilder<DIV>.repeatBlock(deck: Deck, editPoint: ASTEditPoint, onEdit: (Seq) -> Unit) {
+fun RBuilder.repeatBlock(deck: Deck, editPoint: ASTEditPoint, onEdit: (Seq) -> Unit) {
     draggable(dataProvider = {editPoint}) {
         div("cardblock") {
             controlCard(deck, editPoint)
-        
+            
             val childEditPoints = editPoint.children()
-        
+            
             if (childEditPoints.isEmpty()) {
                 startingSpace(editPoint, 0, onEdit)
             }
@@ -116,7 +116,7 @@ fun RDOMBuilder<DIV>.repeatBlock(deck: Deck, editPoint: ASTEditPoint, onEdit: (S
 }
 
 fun RBuilder.cardSequence(deck: Deck, elements: List<ASTEditPoint>, onEdit: (Seq) -> Unit) {
-    fun RDOMBuilder<DIV>.cardRowElement(editPoint: ASTEditPoint) {
+    fun RBuilder.cardRowElement(editPoint: ASTEditPoint) {
         val node = editPoint.node
         when (node) {
             is Action -> actionCard(deck, editPoint)

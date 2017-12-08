@@ -134,15 +134,15 @@ object DragAndDrop {
                 false
             }
         
+        listOf("animationend", "animationcancel", "transitionend", "transitioncancel").forEach { eventName ->
+            draggedElement.addEventListener(eventName, {draggedElement.remove()})
+        }
+        
         if (dropIsAccepted) {
             draggedElement.remove()
         }
         else {
-            listOf("animationend", "animationcancel", "transitionend", "transitioncancel").forEach { eventName ->
-                draggedElement.addEventListener(eventName, {draggedElement.remove()})
-            }
-            
-            draggedElement.classList.add("disappearing")
+            draggedElement.classList.add("rejected")
         }
         
         this.dragState = null

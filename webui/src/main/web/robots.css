@@ -214,14 +214,6 @@ button[disabled] {
     box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.8);
 }
 
-.program .card {
-    animation-name: slip;
-    animation-direction: reverse;
-    animation-duration: 0.125s;
-    animation-iteration-count: 1;
-    animation-fill-mode: backwards;
-    transform-origin: 50% 50%;
-}
 
 .card.control {
     background-color: #AAAAFF;
@@ -254,9 +246,19 @@ button[disabled] {
     display: none;
 }
 
-.dragging.disappearing .card {
+.dragging.rejected .card {
     animation-name: slip-away;
 }
+
+.dragging.accepted .card {
+    animation-name: slip;
+    animation-direction: reverse;
+    animation-duration: 0.125s;
+    animation-iteration-count: 1;
+    animation-fill-mode: backwards;
+    transform-origin: 50% 50%;
+}
+
 
 .cursor {
     border: 0.05em dotted rgba(0, 0, 0, 0.4);

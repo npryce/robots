@@ -4,6 +4,7 @@ import org.w3c.dom.Element
 import org.w3c.dom.events.Event
 import react.RBuilder
 import react.RComponent
+import react.RElementBuilder
 import react.RProps
 import react.RState
 import react.dom.div
@@ -71,7 +72,7 @@ class DropTarget(props: DropTargetProps) : RComponent<DropTargetProps, DropTarge
     }
 }
 
-fun RBuilder.dropTarget(canAccept: (Any) -> Boolean, accept: (Any) -> Unit, children: RBuilder.() -> Unit) =
+fun RBuilder.dropTarget(canAccept: (Any) -> Boolean, accept: (Any) -> Unit, children: RElementBuilder<RProps>.() -> Unit) =
     child(DropTarget::class) {
         attrs.canAccept = canAccept
         attrs.accept = accept

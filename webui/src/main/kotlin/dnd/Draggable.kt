@@ -6,6 +6,7 @@ import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.Event
 import react.RBuilder
 import react.RComponent
+import react.RElementBuilder
 import react.RProps
 import react.RState
 import react.dom.div
@@ -54,7 +55,7 @@ class Draggable(props: DraggableProps) : RComponent<DraggableProps, DraggableSta
     }
 }
 
-fun RBuilder.draggable(dataProvider: () -> Any, contents: RBuilder.()->Unit) = child(Draggable::class) {
+fun RBuilder.draggable(dataProvider: () -> Any, contents: RElementBuilder<RProps>.()->Unit) = child(Draggable::class) {
     attrs.dataProvider = dataProvider
     contents()
 }

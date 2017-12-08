@@ -1,5 +1,6 @@
 buildscript {
     ext.kotlin_version = '1.2.0'
+    ext.kotlin_react_version = '16.0.0-pre.13-kotlin-1.2.0'
 
     repositories {
         maven { url "https://plugins.gradle.org/m2/" }
@@ -49,8 +50,8 @@ configure(project(':webui')) {
         expectedBy project(':common')
 
         compile "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
-        compile 'org.jetbrains:kotlin-react:16.0.0-pre.8-kotlin-1.1.51'
-        compile 'org.jetbrains:kotlin-react-dom:16.0.0-pre.8-kotlin-1.1.51'
+        compile "org.jetbrains:kotlin-react:$kotlin_react_version"
+        compile "org.jetbrains:kotlin-react-dom:$kotlin_react_version"
         testCompile "org.jetbrains.kotlin:kotlin-test-js:$kotlin_version"
         testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     }

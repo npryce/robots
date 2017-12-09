@@ -9,7 +9,7 @@ fun Trace.isFinished() =
 
 fun Trace.next(reduce: (Seq) -> Reduction = Seq::reduceToAction) = when (next) {
     null -> this
-    else -> reduce(next).let { (action, future) -> Trace(action, future, this) }
+    else -> reduce(next).let { (_, action, future) -> Trace(action, future, this) }
 }
 
 tailrec fun Trace.run(reduce: (Seq) -> Reduction = Seq::reduceToAction): Trace =

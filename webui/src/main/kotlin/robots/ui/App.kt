@@ -17,8 +17,8 @@ import robots.canRedo
 import robots.canUndo
 import robots.cost
 import robots.havingDone
+import robots.nop
 import robots.redo
-import robots.reduce
 import robots.reduceToAction
 import robots.undo
 
@@ -38,9 +38,34 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
     }
     
     override fun RBuilder.render() {
-        header(state.undo, update = ::updateUndoRedoStack)
+        header()
         programEditor(props.cards, state.undo.current, onEdit = ::pushUndoRedoState)
         controlPanel(props.cards)
+    }
+    
+    fun RBuilder.header() {
+        div("header") {
+            span("score") {
+                +"Cost: "
+                span("cost") { +"¢${state.undo.current.cost()}" }
+            }
+            
+            controlGroup {
+                undoRedoButtons(state.undo, { updateUndoRedoStack(it) })
+            }
+            
+            controlGroup {
+                button(classes = "run") {
+                    // Dynamic appears to be the only way to access event properties in kotlin-react!
+                    attrs.onClickFunction = { ev: dynamic ->
+                        if (ev.altKey) runSingleStep() else runNextAction()
+                        ev.preventDefault()
+                    }
+                    
+                    +"Run"
+                }
+            }
+        }
     }
     
     private fun pushUndoRedoState(newProgram: Seq) {
@@ -49,6 +74,30 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
     
     private fun updateUndoRedoStack(newState: UndoRedoStack<Seq>) {
         setState({ it.apply { undo = newState } })
+    }
+    
+    private fun runNextAction() {
+        run(Seq::reduceToAction, { updateUndoRedoStack(it) })
+    }
+    
+    private fun runSingleStep() {
+        run(Seq::reduceToAction, { updateUndoRedoStack(it) })
+    }
+    
+    fun run(performStep: Seq.() -> Reduction, updatex: (UndoRedoStack<Seq>) -> Unit) {
+        val (prev, action, next) = state.undo.current.performStep()
+        
+        if (action != null) {
+            pushUndoRedoState(prev)
+            speechSynthesis.speak(SpeechSynthesisUtterance(action.text).apply {
+                onend = {
+                    updateUndoRedoStack(state.undo.undo().havingDone(next?:nop))
+                }
+            })
+        }
+        else {
+            updateUndoRedoStack(state.undo.havingDone(next ?: nop))
+        }
     }
 }
 
@@ -61,66 +110,17 @@ inline fun RBuilder.controlGroup(contents: RBuilder.() -> Unit) {
     span("control-group", contents)
 }
 
-fun RBuilder.header(undoStack: UndoRedoStack<Seq>, update: (UndoRedoStack<Seq>) -> Unit) {
-    div("header") {
-        span("score") {
-            +"Cost: "
-            span("cost") { +"¢${undoStack.current.cost()}" }
-        }
-        
-        undoRedoButtons(undoStack, update)
-        
-        controlGroup {
-            button(classes = "run") {
-                attrs.onClickFunction = { ev: dynamic -> // is this the only way to access event properties?
-                    if (ev.altKey) {
-                        console.log("slo-mo")
-                        run(Seq::reduce, undoStack, update)
-                    }
-                    else {
-                        run(Seq::reduceToAction, undoStack, update)
-                    }
-                    ev.preventDefault()
-                }
-                +"Run"
-            }
-        }
-    }
-}
-
-
-fun run(performStep: Seq.() -> Reduction, undoStack: UndoRedoStack<Seq>, update: (UndoRedoStack<Seq>) -> Unit) {
-    val (action, future) = undoStack.current.performStep()
-    
-    fun done() {
-        if (future != null) {
-            update(undoStack.havingDone(future))
-        }
-    }
-    
-    if (action != null) {
-        speechSynthesis.speak(SpeechSynthesisUtterance(action.text).apply {
-            onend = { done() }
-        })
-    }
-    else {
-        done()
-    }
-}
-
 
 private fun RBuilder.undoRedoButtons(undoStack: UndoRedoStack<Seq>, update: (UndoRedoStack<Seq>) -> Unit) {
-    controlGroup {
-        button(classes = "undo") {
-            attrs.onClickFunction = { update(undoStack.undo()) }
-            attrs.disabled = !undoStack.canUndo()
-            +"Undo"
-        }
-        button(classes = "redo") {
-            attrs.onClickFunction = { update(undoStack.redo()) }
-            attrs.disabled = !undoStack.canRedo()
-            +"Redo"
-        }
+    button(classes = "undo") {
+        attrs.onClickFunction = { update(undoStack.undo()) }
+        attrs.disabled = !undoStack.canUndo()
+        +"Undo"
+    }
+    button(classes = "redo") {
+        attrs.onClickFunction = { update(undoStack.redo()) }
+        attrs.disabled = !undoStack.canRedo()
+        +"Redo"
     }
 }
 

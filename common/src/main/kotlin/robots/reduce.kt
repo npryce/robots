@@ -1,23 +1,26 @@
 package robots
 
-data class Reduction(val action: Action?, val future: Seq?)
+data class Reduction(val prev: Seq, val action: Action?, val next: Seq?)
 
-tailrec fun Seq.reduceToAction(): Reduction {
+tailrec fun Seq.reduceUntil(p: (Reduction)->Boolean): Reduction {
     val r = reduce()
-    return if (r.action != null || r.future == null) r else r.future.reduceToAction()
+    return if (p(r) || r.next == null) r else r.next.reduceUntil(p)
 }
+
+fun Seq.reduceToAction() =
+    reduceUntil { it.action != null }
 
 fun Seq.reduce(): Reduction =
     when (steps) {
-        Empty -> Reduction(null, null)
+        Empty -> Reduction(this, null, null)
         is Cons<AST> -> reduceHead(steps.head, steps.tail)
     }
 
-private fun reduceHead(head: AST, tail: PList<AST>) = when (head) {
+private fun Seq.reduceHead(head: AST, tail: PList<AST>) = when (head) {
     is Action ->
-        Reduction(head, Seq(tail))
+        Reduction(this, head, Seq(tail))
     is Repeat ->
-        Reduction(null,
+        Reduction(this, null,
             if (head.times > 1) {
                 Seq(Cons(Seq(head.repeated), Cons(head.remainingIterations(), tail)))
             }
@@ -28,7 +31,7 @@ private fun reduceHead(head: AST, tail: PList<AST>) = when (head) {
                 Seq(tail)
             })
     is Seq ->
-        Reduction(null,
+        Reduction(this, null,
             when (head.steps) {
                 Empty -> Seq(tail)
                 is Cons<AST> -> {

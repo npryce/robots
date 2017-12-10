@@ -56,6 +56,8 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
             
             controlGroup {
                 button(classes = "run") {
+                    attrs.disabled = state.undo.current == nop
+                    
                     // Dynamic appears to be the only way to access event properties in kotlin-react!
                     attrs.onClickFunction = { ev: dynamic ->
                         if (ev.altKey) runSingleStep() else runNextAction()

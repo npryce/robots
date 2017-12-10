@@ -17,8 +17,10 @@ import robots.canRedo
 import robots.canUndo
 import robots.cost
 import robots.havingDone
+import robots.isRunnable
 import robots.nop
 import robots.redo
+import robots.reduce
 import robots.reduceToAction
 import robots.undo
 
@@ -39,7 +41,7 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
     
     override fun RBuilder.render() {
         header()
-        programEditor(props.cards, state.undo.current, onEdit = ::pushUndoRedoState)
+        programEditor(props.cards, currentProgram, onEdit = ::pushUndoRedoState)
         controlPanel(props.cards)
     }
     
@@ -47,7 +49,7 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
         div("header") {
             span("score") {
                 +"Cost: "
-                span("cost") { +"¢${state.undo.current.cost()}" }
+                span("cost") { +"¢${currentProgram.cost()}" }
             }
             
             controlGroup {
@@ -56,7 +58,7 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
             
             controlGroup {
                 button(classes = "run") {
-                    attrs.disabled = state.undo.current == nop
+                    attrs.disabled = !currentProgram.isRunnable()
                     
                     // Dynamic appears to be the only way to access event properties in kotlin-react!
                     attrs.onClickFunction = { ev: dynamic ->
@@ -79,15 +81,15 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
     }
     
     private fun runNextAction() {
-        run(Seq::reduceToAction, { updateUndoRedoStack(it) })
+        run(Seq::reduceToAction)
     }
     
     private fun runSingleStep() {
-        run(Seq::reduceToAction, { updateUndoRedoStack(it) })
+        run(Seq::reduce)
     }
     
-    fun run(performStep: Seq.() -> Reduction, updatex: (UndoRedoStack<Seq>) -> Unit) {
-        val (prev, action, next) = state.undo.current.performStep()
+    fun run(performStep: Seq.() -> Reduction) {
+        val (prev, action, next) = currentProgram.performStep()
         
         if (action != null) {
             pushUndoRedoState(prev)
@@ -101,6 +103,8 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
             updateUndoRedoStack(state.undo.havingDone(next ?: nop))
         }
     }
+    
+    private val currentProgram get() = state.undo.current
 }
 
 fun RBuilder.app(cards: Deck, initialProgram: Seq = Seq()) = child(App::class) {

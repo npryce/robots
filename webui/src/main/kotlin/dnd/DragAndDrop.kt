@@ -33,12 +33,16 @@ class DropDetail(
 )
 
 internal const val DND_DRAG_START = "dnd-drag-start"
+internal const val DND_DRAG_STOP = "dnd-drag-stop"
 internal const val DND_DRAG_IN = "dnd-drag-in"
 internal const val DND_DRAG_OUT = "dnd-drag-out"
 internal const val DND_DROP = "dnd-drop"
 
 @Suppress("FunctionName")
 fun DragStartEvent(detail: DragStartDetail) = CustomEvent(DND_DRAG_START, CustomEventInit(bubbles = true, detail = detail))
+
+@Suppress("FunctionName")
+fun DragStopEvent() = Event(DND_DRAG_STOP, EventInit(bubbles = true))
 
 @Suppress("FunctionName")
 fun DragInEvent(detail: DragInDetail) = CustomEvent(DND_DRAG_IN, CustomEventInit(bubbles = true, detail = detail))
@@ -55,8 +59,11 @@ private fun ElementCSSInlineStyle.setPosition(p: Point) {
     style.top = "${p.y}px"
 }
 
+private val animationEndEvents = listOf("animationend", "animationcancel", "transitionend", "transitioncancel")
+
 private class DragState(
     val data: Any,
+    val sourceElement: Element,
     val draggedElement: HTMLElement,
     val draggedElementOrigin: Point,
     val gestureOrigin: Point,
@@ -65,7 +72,7 @@ private class DragState(
     var dropTarget: Element? = null
 )
 
-private inline fun <reified T : Node> T.deepClone() = cloneNode(true) as T
+internal inline fun <reified T : Node> T.deepClone() = cloneNode(true) as T
 
 object DragAndDrop {
     private var dragState: DragState? = null
@@ -79,16 +86,17 @@ object DragAndDrop {
         val dragDetail = DragStartDetail()
         target.dispatchEvent(DragStartEvent(dragDetail))
         val draggedData = dragDetail.data ?: return false
-        val sourceElement = dragDetail.element ?: return false
+        val draggedElement = dragDetail.element ?: return false
         val sourcePos = dragDetail.elementOrigin ?: return false
         
-        val draggedElement = sourceElement.deepClone().apply {
+        draggedElement.apply {
             classList.add("dragging")
             setPosition(sourcePos)
         }
         
         dragState = DragState(
             data = draggedData,
+            sourceElement = target,
             draggedElement = draggedElement,
             draggedElementOrigin = sourcePos,
             gestureOrigin = startPosition,
@@ -142,7 +150,7 @@ object DragAndDrop {
                 false
             }
         
-        listOf("animationend", "animationcancel", "transitionend", "transitioncancel").forEach { eventName ->
+        animationEndEvents.forEach { eventName ->
             draggedElement.addEventListener(eventName, {draggedElement.remove()})
         }
         
@@ -152,6 +160,8 @@ object DragAndDrop {
         else {
             draggedElement.classList.add("rejected")
         }
+        
+        dragState.sourceElement.dispatchEvent(DragStopEvent())
         
         this.dragState = null
     }

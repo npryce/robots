@@ -271,6 +271,9 @@ button[disabled] {
     transform-origin: 50% 50%;
 }
 
+.program .draggable.dragged {
+    opacity: 0.1;
+}
 
 .cursor {
     border: 0.05em dotted rgba(0, 0, 0, 0.4);

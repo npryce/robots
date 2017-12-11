@@ -181,12 +181,12 @@ fun RBuilder.firstElementSpace(program: Seq, onEdit: (Seq) -> Unit) {
         if (dropped is AST) onEdit(program.withSteps(dropped))
     }
     
-    dropTarget(canAccept = ::canAccept, accept = ::accept) {
-        div("cardsequence") {
-            div("cardrow") {
+    div("cardsequence") {
+        div("cardrow") {
+            dropTarget(canAccept = { canAccept(it) }, accept = { accept(it) }) {
                 div("cursor required") {}
-                tip("Drag a card from the stacks below and drop it onto here")
             }
+            tip("Drag a card from the stacks below and drop it onto here")
         }
     }
 }

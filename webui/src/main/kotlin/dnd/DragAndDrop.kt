@@ -37,10 +37,18 @@ internal const val DND_DRAG_IN = "dnd-drag-in"
 internal const val DND_DRAG_OUT = "dnd-drag-out"
 internal const val DND_DROP = "dnd-drop"
 
+@Suppress("FunctionName")
 fun DragStartEvent(detail: DragStartDetail) = CustomEvent(DND_DRAG_START, CustomEventInit(bubbles = true, detail = detail))
+
+@Suppress("FunctionName")
 fun DragInEvent(detail: DragInDetail) = CustomEvent(DND_DRAG_IN, CustomEventInit(bubbles = true, detail = detail))
+
+@Suppress("FunctionName")
 fun DragOutEvent() = Event(DND_DRAG_OUT, EventInit(bubbles = true))
+
+@Suppress("FunctionName")
 fun DropEvent(detail: DropDetail) = CustomEvent(DND_DROP, CustomEventInit(bubbles = true, detail = detail))
+
 
 private fun ElementCSSInlineStyle.setPosition(p: Point) {
     style.left = "${p.x}px"
@@ -71,10 +79,10 @@ object DragAndDrop {
         val dragDetail = DragStartDetail()
         target.dispatchEvent(DragStartEvent(dragDetail))
         val draggedData = dragDetail.data ?: return false
-        val source_element = dragDetail.element ?: return false
+        val sourceElement = dragDetail.element ?: return false
         val sourcePos = dragDetail.elementOrigin ?: return false
         
-        val draggedElement = source_element.deepClone().apply {
+        val draggedElement = sourceElement.deepClone().apply {
             classList.add("dragging")
             setPosition(sourcePos)
         }
@@ -187,11 +195,11 @@ object DragAndDrop {
     private fun bodyTouchStart(ev: Event) {
         ev as TouchEvent
         
-        val touch = ev.changedTouches[0];
-        
+        val touch = ev.changedTouches[0]
+    
         if (startDragging(touch.target, touch.pageX, touch.pageY, touch.identifier)) {
-            ev.preventDefault();
-            document.body?.addEventListener("touchmove", ::bodyTouchDrag, true);
+            ev.preventDefault()
+            document.body?.addEventListener("touchmove", ::bodyTouchDrag, true)
         }
     }
     
@@ -201,8 +209,8 @@ object DragAndDrop {
         val touchId = dragState.touchId ?: return
         val touch = ev.changedTouches.touchWithId(touchId) ?: return
         
-        ev.preventDefault();
-        dragTo(touch.pageX, touch.pageY);
+        ev.preventDefault()
+        dragTo(touch.pageX, touch.pageY)
     }
     
     private fun bodyTouchEnd(ev: Event) {
@@ -211,9 +219,9 @@ object DragAndDrop {
         val touchId = dragState.touchId ?: return
         
         if (ev.changedTouches.containsTouchWithId(touchId)) {
-            ev.preventDefault();
-            document.body?.removeEventListener("touchmove", ::bodyTouchDrag, true);
-            drop();
+            ev.preventDefault()
+            document.body?.removeEventListener("touchmove", ::bodyTouchDrag, true)
+            drop()
         }
     }
     

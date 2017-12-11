@@ -8,7 +8,6 @@ import browser.get
 import org.w3c.dom.CustomEvent
 import org.w3c.dom.CustomEventInit
 import org.w3c.dom.Element
-import org.w3c.dom.EventInit
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.Node
 import org.w3c.dom.css.ElementCSSInlineStyle
@@ -38,20 +37,22 @@ internal const val DND_DRAG_IN = "dnd-drag-in"
 internal const val DND_DRAG_OUT = "dnd-drag-out"
 internal const val DND_DROP = "dnd-drop"
 
-@Suppress("FunctionName")
-fun DragStartEvent(detail: DragStartDetail) = CustomEvent(DND_DRAG_START, CustomEventInit(bubbles = true, detail = detail))
+private fun eventInit(detail: Any?) = CustomEventInit(bubbles = true, cancelable = true, detail = detail)
 
 @Suppress("FunctionName")
-fun DragStopEvent() = Event(DND_DRAG_STOP, EventInit(bubbles = true))
+fun DragStartEvent(detail: DragStartDetail) = CustomEvent(DND_DRAG_START, eventInit(detail))
 
 @Suppress("FunctionName")
-fun DragInEvent(detail: DragInDetail) = CustomEvent(DND_DRAG_IN, CustomEventInit(bubbles = true, detail = detail))
+fun DragStopEvent() = Event(DND_DRAG_STOP, eventInit(null))
 
 @Suppress("FunctionName")
-fun DragOutEvent() = Event(DND_DRAG_OUT, EventInit(bubbles = true))
+fun DragInEvent(detail: DragInDetail) = CustomEvent(DND_DRAG_IN, eventInit(detail))
 
 @Suppress("FunctionName")
-fun DropEvent(detail: DropDetail) = CustomEvent(DND_DROP, CustomEventInit(bubbles = true, detail = detail))
+fun DragOutEvent() = Event(DND_DRAG_OUT, eventInit(true))
+
+@Suppress("FunctionName")
+fun DropEvent(detail: DropDetail) = CustomEvent(DND_DROP, eventInit(detail))
 
 
 private fun ElementCSSInlineStyle.setPosition(p: Point) {

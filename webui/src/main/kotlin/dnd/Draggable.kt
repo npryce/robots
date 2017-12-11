@@ -49,17 +49,21 @@ class Draggable(props: DraggableProps) : RComponent<DraggableProps, DraggableSta
     }
     
     private fun startDrag(ev: Event) {
-        ev as CustomEvent
-        val sourceElement = ev.currentTarget as HTMLElement
-        val detail = ev.detail as DragStartDetail
-        
-        detail.element = sourceElement.deepClone()
-        detail.elementOrigin = sourceElement.pageOrigin()
-        detail.data = props.dataProvider()
-        
-        setState { isBeingDragged = true }
-        
-        ev.stopPropagation()
+        if (!ev.defaultPrevented) {
+            console.log(ev)
+            ev as CustomEvent
+            val sourceElement = ev.currentTarget as HTMLElement
+            val detail = ev.detail as DragStartDetail
+    
+            detail.element = sourceElement.deepClone()
+            detail.elementOrigin = sourceElement.pageOrigin()
+            detail.data = props.dataProvider()
+    
+            setState { isBeingDragged = true }
+    
+            ev.preventDefault()
+        }
+//        ev.stopPropagation()
     }
     
     private fun stopDrag(ev: Event) {

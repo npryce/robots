@@ -9,6 +9,7 @@ import react.RProps
 import react.RState
 import react.dom.button
 import react.dom.div
+import react.dom.header
 import react.dom.span
 import robots.Reduction
 import robots.Seq
@@ -51,7 +52,7 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
     }
     
     fun RBuilder.header() {
-        div("header") {
+        header {
             span("score") {
                 +"Cost: "
                 span("cost") { +"¢${currentProgram.cost()}" }

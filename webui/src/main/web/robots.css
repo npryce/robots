@@ -69,7 +69,7 @@ body {
     flex-shrink: 1;
 }
 
-.header {
+header {
     display: flex;
     flex-direction: row;
     flex-grow: 0;
@@ -80,28 +80,28 @@ body {
     font-size: 75%;
 }
 
-.header .score {
+header .score {
     flex-grow: 1;
     flex-shrink: 0;
 }
 
-.header .edit-controls {
+header .edit-controls {
     flex-grow: 0;
     flex-shrink: 0;
     align-self: flex-end;
     text-align: right;
 }
 
-.header .control-group {
+header .control-group {
     margin-left: 0.25em;
 }
 
-.header .undo {
+header .undo {
     border-bottom-right-radius: 0;
     border-top-right-radius: 0;
 }
 
-.header .redo {
+header .redo {
     border-bottom-left-radius: 0;
     border-top-left-radius: 0;
 }

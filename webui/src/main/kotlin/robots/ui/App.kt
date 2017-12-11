@@ -32,11 +32,13 @@ external interface AppProps : RProps {
 
 external interface AppState : RState {
     var undo: UndoRedoStack<Seq>
+    var isRunning: Boolean
 }
 
 class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
     init {
         state.undo = UndoRedoStack(props.program)
+        state.isRunning = false
     }
     
     override fun RBuilder.render() {
@@ -53,7 +55,10 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
             }
             
             controlGroup {
-                undoRedoButtons(state.undo, { updateUndoRedoStack(it) })
+                undoRedoButtons(
+                    undoStack = state.undo,
+                    update = { updateUndoRedoStack(it) },
+                    disabled = state.isRunning)
             }
             
             controlGroup {
@@ -93,9 +98,11 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
         
         if (action != null) {
             pushUndoRedoState(prev)
+            setState({it.apply { isRunning = true }})
             speechSynthesis.speak(SpeechSynthesisUtterance(action.text).apply {
                 onend = {
                     updateUndoRedoStack(state.undo.undo().havingDone(next?:nop))
+                    setState({it.apply { isRunning = false }})
                 }
             })
         }
@@ -117,15 +124,15 @@ inline fun RBuilder.controlGroup(contents: RBuilder.() -> Unit) {
 }
 
 
-private fun RBuilder.undoRedoButtons(undoStack: UndoRedoStack<Seq>, update: (UndoRedoStack<Seq>) -> Unit) {
+private fun RBuilder.undoRedoButtons(undoStack: UndoRedoStack<Seq>, update: (UndoRedoStack<Seq>) -> Unit, disabled: Boolean = false) {
     button(classes = "undo") {
         attrs.onClickFunction = { update(undoStack.undo()) }
-        attrs.disabled = !undoStack.canUndo()
+        attrs.disabled = disabled || !undoStack.canUndo()
         +"Undo"
     }
     button(classes = "redo") {
         attrs.onClickFunction = { update(undoStack.redo()) }
-        attrs.disabled = !undoStack.canRedo()
+        attrs.disabled = disabled || !undoStack.canRedo()
         +"Redo"
     }
 }

@@ -185,9 +185,7 @@ fun RBuilder.firstElementSpace(program: Seq, onEdit: (Seq) -> Unit) {
         div("cardsequence") {
             div("cardrow") {
                 div("cursor required") {}
-                div("tip") {
-                    +"👈 Drag a card from the stacks below and drop it onto here"
-                }
+                tip("Drag a card from the stacks below and drop it onto here")
             }
         }
     }
@@ -201,5 +199,11 @@ fun RBuilder.programEditor(deck: Deck, program: Seq, onEdit: (Seq) -> Unit) {
         else {
             cardRows(deck, program.editPoints(), onEdit)
         }
+    }
+}
+
+fun RBuilder.tip(text: String) {
+    div("tip") {
+        +"Drag a card from the stacks below and drop it onto here"
     }
 }

@@ -291,8 +291,16 @@ button[disabled] {
     align-self: center;
     flex-wrap: nowrap;
     font-size: 75%;
+    color: #444444;
     flex-shrink: 1;
 }
+
+.tip:before {
+    content: "\1F448"; /* hand pointing left */
+    padding-right: 0.25em;
+    align-self: center;
+}
+
 
 @keyframes slip {
     to {

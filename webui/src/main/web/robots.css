@@ -107,11 +107,42 @@ body {
 }
 
 .controls {
+    display: flex;
+    flex-direction: row;
     flex-grow: 0;
     flex-shrink: 0;
+    align-content: stretch;
     border-top: #DDDDDD 1px solid;
     padding-top: 0.1em;
 }
+
+.stacks {
+    padding: 0.125em;
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.stacks .card {
+    border: 0 solid;
+    border-bottom-width: 0.1em;
+}
+
+.stackrow {
+    display: flex;
+    flex: initial;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-content: flex-start;
+    align-items: flex-start;
+}
+
+.trashcan {
+    flex-grow: 0;
+    flex-shrink: 0;
+    font-size: 200%;
+}
+
+
 
 button {
     border-radius: 0.25em;
@@ -157,24 +188,6 @@ button[disabled] {
     flex-wrap: nowrap;
 }
 
-.stacks {
-    padding: 0.125em;
-}
-
-.stacks .card {
-    border: 0 solid;
-    border-bottom-width: 0.1em;
-}
-
-.stackrow {
-    display: flex;
-    flex: initial;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-content: flex-start;
-    align-items: flex-start;
-}
-
 .card, .cursor {
     display: inline-flex;
     position: relative;
@@ -213,7 +226,6 @@ button[disabled] {
 .card {
     box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.8);
 }
-
 
 .card.control {
     background-color: #AAAAFF;

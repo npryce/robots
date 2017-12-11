@@ -44,7 +44,10 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
     override fun RBuilder.render() {
         header()
         programEditor(props.cards, currentProgram, onEdit = ::pushUndoRedoState)
-        controlPanel(props.cards)
+        div("controls") {
+            cardStacks(props.cards)
+            trashCan(onEdit = ::pushUndoRedoState)
+        }
     }
     
     fun RBuilder.header() {
@@ -98,11 +101,11 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
         
         if (action != null) {
             pushUndoRedoState(prev)
-            setState({it.apply { isRunning = true }})
+            setState({ it.apply { isRunning = true } })
             speechSynthesis.speak(SpeechSynthesisUtterance(action.text).apply {
                 onend = {
-                    updateUndoRedoStack(state.undo.undo().havingDone(next?:nop))
-                    setState({it.apply { isRunning = false }})
+                    updateUndoRedoStack(state.undo.undo().havingDone(next ?: nop))
+                    setState({ it.apply { isRunning = false } })
                 }
             })
         }
@@ -137,8 +140,3 @@ private fun RBuilder.undoRedoButtons(undoStack: UndoRedoStack<Seq>, update: (Und
     }
 }
 
-private fun RBuilder.controlPanel(style: Deck) {
-    div("controls") {
-        cardStacks(style)
-    }
-}

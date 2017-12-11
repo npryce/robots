@@ -15,7 +15,6 @@ fun RBuilder.cardStack(deck: Deck, value: AST) {
     }
 }
 
-
 private fun RBuilder.cardStackRow(deck: Deck, instructions: Iterable<AST>) {
     div("stackrow") {
         instructions.forEach { i -> cardStack(deck, i) }

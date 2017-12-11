@@ -203,7 +203,5 @@ fun RBuilder.programEditor(deck: Deck, program: Seq, onEdit: (Seq) -> Unit) {
 }
 
 fun RBuilder.tip(text: String) {
-    div("tip") {
-        +"Drag a card from the stacks below and drop it onto here"
-    }
+    div("tip") { +text }
 }

@@ -1,21 +1,29 @@
-* Dropping an existing card from program onto starting point
-* Fade out dragged card while dragging
-* Dead-zone for dragging
-* Typing - treat card stacks as buttons, track active input space
-* Removal of cards
+Better editing
 * Replacement of cards
 * Insertion of cards
+* Typing - treat card stacks as buttons,
+  * Dead-zone for dragging
+  * Track active input space
 * Merging of cards to form a control group (multitouch?)
-* Change repeat count
-* Execution (reduction, play speech)
-  * Cannot edit while action is being executed
+* User can change repeat count of card on the table
+
+Execution (reduction, play speech)
+  * Cannot edit or undo/redo while action is being executed
+  * Animate active action card
   * Can go back to program before run was pressed
-  * Run vs edit modes?  E.g. cannot edit while in run mode.
+  * Run vs edit modes?  E.g. editing while in run mode switches back to edit mode.
   * Execution history -- how to integrate with undo/redo?
+
+Configuration
 * Add your own actions
+* Select voice
+
 * Save state
   * to local storage
   * to cloud storage
+
+Comprehensibility
 * Super-power modes
   * X-Ray vision (graph view of program)
   * Slow down time (step through intermediate reductions)
+

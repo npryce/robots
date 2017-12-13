@@ -3,14 +3,11 @@ package robots.ui
 import dnd.draggable
 import react.RBuilder
 import react.dom.div
-import react.key
 import robots.AST
 
 
 fun RBuilder.cardStack(deck: Deck, value: AST) {
     draggable(dataProvider = { value }) {
-        attrs.key = value.toString()
-        
         cardFace(deck, value)
     }
 }

@@ -74,13 +74,11 @@ fun RBuilder.startingSpace(editor: ASTEditPoint, branch: Int, onEdit: (Seq) -> U
     fun accept(dropped: Any) {
         when (dropped) {
             is AST -> {
-                val newProgram = editor.replaceBranch(0, pListOf(dropped))
-                onEdit(newProgram)
+                onEdit(editor.replaceBranch(0, pListOf(dropped)))
             }
             is ASTEditPoint -> {
                 if (editor !in dropped) {
-                    val newProgram = dropped.moveToNewBranch(editor, branch)
-                    onEdit(newProgram)
+                    onEdit(dropped.moveToNewBranch(editor, branch))
                 }
             }
         }

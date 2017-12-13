@@ -40,33 +40,30 @@ class Draggable(props: DraggableProps) : RComponent<DraggableProps, DraggableSta
     
     override fun componentDidMount() {
         draggableElement?.addEventListener(DND_DRAG_START, ::startDrag)
-        draggableElement?.addEventListener(DND_DRAG_STOP, ::stopDrag)
     }
     
     override fun componentWillUnmount() {
         draggableElement?.removeEventListener(DND_DRAG_START, ::startDrag)
-        draggableElement?.removeEventListener(DND_DRAG_STOP, ::stopDrag)
     }
     
     private fun startDrag(ev: Event) {
         if (!ev.defaultPrevented) {
-            console.log(ev)
             ev as CustomEvent
             val sourceElement = ev.currentTarget as HTMLElement
             val detail = ev.detail as DragStartDetail
-    
+            
             detail.element = sourceElement.deepClone()
             detail.elementOrigin = sourceElement.pageOrigin()
             detail.data = props.dataProvider()
-    
+            detail.notifyDragStop = { stopDrag() }
+            
             setState { isBeingDragged = true }
-    
+            
             ev.preventDefault()
         }
-//        ev.stopPropagation()
     }
     
-    private fun stopDrag(ev: Event) {
+    private fun stopDrag() {
         setState { isBeingDragged = false }
     }
     

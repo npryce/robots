@@ -18,7 +18,8 @@ import kotlin.browser.document
 class DragStartDetail(
     var data: Any? = null,
     var element: HTMLElement? = null,
-    var elementOrigin: Point? = null
+    var elementOrigin: Point? = null,
+    var notifyDragStop: ()->Unit = {}
 )
 
 class DragInDetail(
@@ -32,7 +33,6 @@ class DropDetail(
 )
 
 internal const val DND_DRAG_START = "dnd-drag-start"
-internal const val DND_DRAG_STOP = "dnd-drag-stop"
 internal const val DND_DRAG_IN = "dnd-drag-in"
 internal const val DND_DRAG_OUT = "dnd-drag-out"
 internal const val DND_DROP = "dnd-drop"
@@ -41,9 +41,6 @@ private fun eventInit(detail: Any?) = CustomEventInit(bubbles = true, cancelable
 
 @Suppress("FunctionName")
 fun DragStartEvent(detail: DragStartDetail) = CustomEvent(DND_DRAG_START, eventInit(detail))
-
-@Suppress("FunctionName")
-fun DragStopEvent() = Event(DND_DRAG_STOP, eventInit(null))
 
 @Suppress("FunctionName")
 fun DragInEvent(detail: DragInDetail) = CustomEvent(DND_DRAG_IN, eventInit(detail))
@@ -69,6 +66,7 @@ private class DragState(
     val draggedElementOrigin: Point,
     val gestureOrigin: Point,
     val touchId: TouchId?,
+    val notifyDragStop: () -> Unit,
     
     var dropTarget: Element? = null
 )
@@ -101,7 +99,8 @@ object DragAndDrop {
             draggedElement = draggedElement,
             draggedElementOrigin = sourcePos,
             gestureOrigin = startPosition,
-            touchId = touchId)
+            touchId = touchId,
+            notifyDragStop = dragDetail.notifyDragStop)
         
         document.body?.appendChild(draggedElement)
         
@@ -162,7 +161,7 @@ object DragAndDrop {
             draggedElement.classList.add("rejected")
         }
         
-        dragState.sourceElement.dispatchEvent(DragStopEvent())
+        dragState.notifyDragStop()
         
         this.dragState = null
     }

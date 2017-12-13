@@ -49,25 +49,37 @@ class DropTarget(props: DropTargetProps) : RComponent<DropTargetProps, DropTarge
     }
     
     private fun dragIn(ev: Event) {
-        val detail: DragInDetail = ev.detail() ?: return
-        val canAccept = props.canAccept(detail.data)
-        setState({ it.apply { isDraggedOver = canAccept } })
-        detail.acceptable = canAccept
+        if (!ev.defaultPrevented) {
+            val detail: DragInDetail = ev.detail() ?: return
+            val canAccept = props.canAccept(detail.data)
+            setState({ it.apply { isDraggedOver = canAccept } })
+            detail.acceptable = canAccept
+            
+            ev.preventDefault()
+        }
     }
     
     private fun dragOut(@Suppress("UNUSED_PARAMETER") ev: Event) {
-        setState({ it.apply { isDraggedOver = false } })
+        if (!ev.defaultPrevented) {
+            setState({ it.apply { isDraggedOver = false } })
+            
+            ev.preventDefault()
+        }
     }
     
     private fun drop(ev: Event) {
-        val detail: DropDetail = ev.detail() ?: return
-        
-        if (props.canAccept(detail.data)) {
-            props.accept(detail.data)
-            detail.accepted = true
-        }
-        else {
-            detail.accepted = false
+        if (!ev.defaultPrevented) {
+            val detail: DropDetail = ev.detail() ?: return
+    
+            if (props.canAccept(detail.data)) {
+                props.accept(detail.data)
+                detail.accepted = true
+            }
+            else {
+                detail.accepted = false
+            }
+            
+            ev.preventDefault()
         }
     }
 }

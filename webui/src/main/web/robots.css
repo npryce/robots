@@ -1,4 +1,6 @@
 @import "normalize.css";
+@import "emoji-mart.css";
+@import "devices.css";
 
 @font-face {
     font-family: 'Gameplay';
@@ -7,30 +9,8 @@
     src: url(Comfortaa-Bold.ttf) format('truetype');
 }
 
-/* iPhone */
-@media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
-    body {
-        font-size: 16px;
-    }
-}
-
-/* iPad */
-@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
-    body {
-        font-size: 32px;
-    }
-}
-
-/* Laptop */
-@media only screen and (min-device-width: 1024px) {
-    body {
-        font-size: 40px;
-    }
-}
-
 * {
     user-select: none;
-    -webkit-touch-callout: none;
 }
 
 html, body {
@@ -39,15 +19,22 @@ html, body {
     left: 0;
     right: 0;
     padding: 0;
-    margin: 0;
 }
 
 body {
+    font-family: Gameplay, sans-serif;
+}
+
+body.game {
     position: static;
+    margin: 0;
     flex-direction: column;
     justify-content: flex-start;
     align-items: stretch;
-    font-family: Gameplay, sans-serif;
+}
+
+body.docs {
+    margin: 2em;
 }
 
 #app {
@@ -67,6 +54,7 @@ body {
 .program {
     flex-grow: 1;
     flex-shrink: 1;
+    overflow: scroll;
 }
 
 header {
@@ -125,6 +113,7 @@ header .redo {
 .stacks .card {
     border: 0 solid;
     border-bottom-width: 0.1em;
+    line-height: 100%;
 }
 
 .stackrow {

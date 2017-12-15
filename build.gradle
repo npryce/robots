@@ -62,6 +62,7 @@ configure(project(':webui')) {
 
     task assembleStaticAssets(type: Sync) {
         from 'src/main/web'
+        from 'node_modules/emoji-mart/css'
         into webDir
         preserve {
             // Don't copy robots.js into the output folder because webpack will generate the final version

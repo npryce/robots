@@ -3,14 +3,17 @@ package robots.ui
 import browser.SpeechSynthesisUtterance
 import browser.speechSynthesis
 import kotlinx.html.js.onClickFunction
+import kotlinx.html.role
 import react.RBuilder
 import react.RComponent
 import react.RProps
 import react.RState
+import react.dom.a
 import react.dom.button
 import react.dom.div
 import react.dom.header
 import react.dom.span
+import react.setState
 import robots.Reduction
 import robots.Seq
 import robots.UndoRedoStack
@@ -24,35 +27,52 @@ import robots.redo
 import robots.reduce
 import robots.reduceToAction
 import robots.undo
+import vendor.ariaModal
+import kotlin.browser.document
 
 
 external interface AppProps : RProps {
     var program: Seq
-    var cards: Deck
+    var initialCards: Deck
 }
 
 external interface AppState : RState {
     var undo: UndoRedoStack<Seq>
     var isRunning: Boolean
+    var configurationShowing: Boolean
+    var cards: Deck
 }
 
 class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
     init {
         state.undo = UndoRedoStack(props.program)
         state.isRunning = false
+        state.configurationShowing = false
+        state.cards = props.initialCards
     }
     
     override fun RBuilder.render() {
         header()
-        programEditor(props.cards, currentProgram, onEdit = ::pushUndoRedoState)
+        if (state.configurationShowing) {
+            configurationDialog()
+        }
+        programEditor(state.cards, currentProgram, onEdit = ::pushUndoRedoState)
         div("controls") {
-            cardStacks(props.cards)
+            cardStacks(state.cards)
             trashCan(onEdit = ::pushUndoRedoState)
         }
     }
     
     fun RBuilder.header() {
         header {
+            controlGroup {
+                a {
+                    attrs.role = "button"
+                    attrs.onClickFunction = { showConfigurationDialog(!state.configurationShowing) }
+                    +"🛠"
+                }
+            }
+            
             span("score") {
                 +"Cost: "
                 span("cost") { +"¢${currentProgram.cost()}" }
@@ -78,6 +98,25 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
                     +"Run"
                 }
             }
+        }
+    }
+    
+    private fun showConfigurationDialog(isShowing: Boolean) {
+        setState { configurationShowing = isShowing }
+    }
+    
+    private fun RBuilder.configurationDialog() {
+        ariaModal {
+            attrs.getApplicationNode = { document.getElementById("app") }
+            attrs.titleText = "Configure the game"
+            attrs.onExit = { showConfigurationDialog(false) }
+            actionsConfiguration()
+        }
+    }
+    
+    private fun RBuilder.actionsConfiguration() {
+        actionsConfiguration(state.cards.actionCards) { newActionCards ->
+            setState { cards = cards.copy(actionCards = newActionCards) }
         }
     }
     
@@ -120,7 +159,7 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
 
 fun RBuilder.app(cards: Deck, initialProgram: Seq = Seq()) = child(App::class) {
     attrs.program = initialProgram
-    attrs.cards = cards
+    attrs.initialCards = cards
 }
 
 inline fun RBuilder.controlGroup(contents: RBuilder.() -> Unit) {

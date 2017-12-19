@@ -35,3 +35,6 @@ fun <T> Sequence<T>.takeUntil(p: (T) -> Boolean): Sequence<T> = object : Sequenc
             }
     }
 }
+
+fun <T> List<T>.replace(index: Int, newValue: T): List<T> =
+    slice(0 until index) + newValue + slice(index+1 until size)

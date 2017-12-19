@@ -69,6 +69,7 @@ header {
 }
 
 header .score {
+    margin-left: 0.5em;
     flex-grow: 1;
     flex-shrink: 0;
 }
@@ -293,6 +294,12 @@ button[disabled] {
     align-self: center;
 }
 
+div[role="dialog"] {
+    padding: 1em;
+    border-radius: 0.5em;
+    margin: 1em;
+    background: white;
+}
 
 @keyframes slip {
     to {

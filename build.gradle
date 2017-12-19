@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.2.0'
+    ext.kotlin_version = '1.2.10'
     ext.kotlin_react_version = '16.2.0-pre.15-kotlin-1.2.0'
 
     repositories {
@@ -44,6 +44,7 @@ configure(project(':webui')) {
     compileKotlin2Js {
         kotlinOptions.moduleKind = "commonjs"
         kotlinOptions.sourceMap = true
+        kotlinOptions.sourceMapEmbedSources = "always"
     }
 
     dependencies {

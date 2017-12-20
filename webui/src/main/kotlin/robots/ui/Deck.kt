@@ -60,9 +60,8 @@ private fun basicActionCards() = ActionCardPack(
     CardStyle(face = "⬇", value = Action("Step backwards")),
     CardStyle(face = "«", value = Action("Turn to your left")),
     CardStyle(face = "»", value = Action("Turn to your right")),
-    CardStyle(face = "👏", value = Action("Clap")),
-    CardStyle(face = "💩", value = Action("Poop")),
-    CardStyle(face = "🥊", value = Action("Hit it"))
+    CardStyle(face = "☝️", value = Action("Pick up")),
+    CardStyle(face = "👇", value = Action("Put down"))
 )
 
 data class Deck(

@@ -20,7 +20,7 @@ private fun RBuilder.cardStackRow(deck: Deck, instructions: Iterable<AST>) {
 
 fun RBuilder.cardStacks(deck: Deck) {
     div("stacks") {
-        cardStackRow(deck, deck.actionCards.map { it.value })
-        cardStackRow(deck, deck.repeatCards)
+        cardStackRow(deck, deck.actionCards.values)
+        cardStackRow(deck, deck.repeatCards.values)
     }
 }

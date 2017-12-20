@@ -37,25 +37,35 @@ class RepeatCardStyle(override val value: Repeat) : CardStyle {
 }
 
 
-data class ActionCardPack(private val cards: List<ActionCardStyle>) : Iterable<ActionCardStyle> by cards {
+data class CardSuit<Style: CardStyle>(private val cards: List<Style>) : Iterable<Style> by cards {
     private val byValue = cards.associateBy { it.value }
     
-    constructor(vararg cards: ActionCardStyle) : this(cards.toList())
+    constructor(vararg cards: Style) : this(cards.toList())
     
-    fun styleFor(action: Action): ActionCardStyle =
-        byValue[action] ?: CardStyle(face = "?", value = action)
+    operator fun get(action: AST) = byValue[action]
     
-    fun replace(index: Int, replacement: ActionCardStyle) =
+    val values: Iterable<AST> get() = cards.map { it.value }
+    
+    fun replace(index: Int, replacement: Style) =
         copy(cards = cards.replace(index, replacement))
     
-    fun remove(action: ActionCardStyle) =
+    fun remove(action: Style) =
         copy(cards = cards - action)
     
-    fun add(newAction: ActionCardStyle) =
+    fun add(newAction: Style) =
         copy(cards = cards + newAction)
 }
 
-private fun basicActionCards() = ActionCardPack(
+typealias ActionCardSuit = CardSuit<ActionCardStyle>
+typealias RepeatCardSuit = CardSuit<RepeatCardStyle>
+
+fun ActionCardSuit.styleFor(action: Action): ActionCardStyle =
+    get(action) ?: CardStyle(face = "?", value = action)
+
+fun RepeatCardSuit.styleFor(repeat: Repeat): RepeatCardStyle =
+    get(repeat) ?: CardStyle(repeat)
+
+private fun basicActionCards() = ActionCardSuit(
     CardStyle(face = "⬆", value = Action("Step forwards")),
     CardStyle(face = "⬇", value = Action("Step backwards")),
     CardStyle(face = "«", value = Action("Turn to your left")),
@@ -64,9 +74,13 @@ private fun basicActionCards() = ActionCardPack(
     CardStyle(face = "👇", value = Action("Put down"))
 )
 
+private fun basicRepeatCards() =
+    RepeatCardSuit((2..10).map { n -> CardStyle(Repeat(n)) })
+
+
 data class Deck(
-    val actionCards: ActionCardPack = basicActionCards(),
-    val repeatCards: List<Repeat> = (2..10).map { n -> Repeat(n) }
+    val actionCards: ActionCardSuit = basicActionCards(),
+    val repeatCards: RepeatCardSuit = basicRepeatCards()
 ) {
     fun replaceAction(index: Int, replacement: ActionCardStyle) =
         copy(actionCards = actionCards.replace(index, replacement))
@@ -80,7 +94,8 @@ data class Deck(
     fun styleFor(value: AST): CardStyle =
         when (value) {
             is Action -> actionCards.styleFor(value)
-            is Repeat -> CardStyle(value)
+            is Repeat -> repeatCards.styleFor(value)
             is Seq -> throw IllegalArgumentException("Seq is not displayed as a card")
         }
 }
+

@@ -21,8 +21,8 @@ import react.dom.thead
 import react.dom.tr
 import react.setState
 import robots.Action
-import robots.ui.ActionCardPack
 import robots.ui.ActionCardStyle
+import robots.ui.ActionCardSuit
 import robots.ui.handler
 import robots.ui.newValue
 
@@ -69,8 +69,8 @@ fun RBuilder.actionCardEditor(
 }
 
 interface ActionsConfigurationProps : RProps {
-    var actions: ActionCardPack
-    var updateActions: (ActionCardPack) -> Unit
+    var actions: ActionCardSuit
+    var updateActions: (ActionCardSuit) -> Unit
 }
 
 interface ActionsConfigurationState : RState {
@@ -129,7 +129,7 @@ class ActionsConfiguration : RComponent<ActionsConfigurationProps, ActionsConfig
     }
 }
 
-fun RBuilder.actionsConfiguration(actions: ActionCardPack, updateActions: (ActionCardPack) -> Unit) =
+fun RBuilder.actionsConfiguration(actions: ActionCardSuit, updateActions: (ActionCardSuit) -> Unit) =
     child(ActionsConfiguration::class) {
         attrs.actions = actions
         attrs.updateActions = updateActions

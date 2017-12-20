@@ -11,6 +11,7 @@ import react.RComponent
 import react.RProps
 import react.RState
 import react.dom.button
+import react.dom.div
 import react.dom.input
 import react.dom.table
 import react.dom.tbody
@@ -87,7 +88,7 @@ class ActionsConfiguration : RComponent<ActionsConfigurationProps, ActionsConfig
                     th { }
                 }
             }
-            tbody {
+            tbody("action-editors") {
                 props.actions.forEachIndexed { i, a ->
                     tr {
                         actionCardEditor(
@@ -99,6 +100,15 @@ class ActionsConfiguration : RComponent<ActionsConfigurationProps, ActionsConfig
                         )
                     }
                 }
+            }
+        }
+        div {
+            button {
+                attrs.onClickFunction = { ev ->
+                    props.updateActions(props.actions.add(ActionCardStyle("?", Action("Change this"))))
+                    ev.stopPropagation()
+                }
+                +"+"
             }
         }
     }

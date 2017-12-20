@@ -68,8 +68,8 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
             controlGroup {
                 a {
                     attrs.role = "button"
-                    attrs.onClickFunction = { showConfigurationDialog(!state.configurationShowing) }
-                    +"🛠"
+                    attrs.onClickFunction = { showConfigurationDialog(true) }
+                    +"⚙"
                 }
             }
             

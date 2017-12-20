@@ -4,6 +4,7 @@ import browser.SpeechSynthesisUtterance
 import browser.speechSynthesis
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.role
+import kotlinx.html.title
 import react.RBuilder
 import react.RComponent
 import react.RProps
@@ -69,6 +70,7 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
             controlGroup {
                 a {
                     attrs.role = "button"
+                    attrs.title = "Configure the game"
                     attrs.onClickFunction = { showConfigurationDialog(true) }
                     +"⚙"
                 }

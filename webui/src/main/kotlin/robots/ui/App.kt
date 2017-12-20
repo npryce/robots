@@ -26,6 +26,7 @@ import robots.nop
 import robots.redo
 import robots.reduce
 import robots.reduceToAction
+import robots.ui.config.actionsConfiguration
 import robots.undo
 import vendor.ariaModal
 import kotlin.browser.document

@@ -1,4 +1,4 @@
-package robots.ui
+package robots.ui.config
 
 import browser.SpeechSynthesisEvent
 import browser.SpeechSynthesisUtterance
@@ -21,6 +21,10 @@ import react.dom.thead
 import react.dom.tr
 import react.setState
 import robots.Action
+import robots.ui.ActionCardPack
+import robots.ui.ActionCardStyle
+import robots.ui.handler
+import robots.ui.newValue
 
 
 fun RBuilder.actionCardEditor(

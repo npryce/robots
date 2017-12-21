@@ -1,7 +1,5 @@
 package robots.ui
 
-import browser.SpeechSynthesisUtterance
-import browser.speechSynthesis
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.role
 import kotlinx.html.title
@@ -22,7 +20,7 @@ import robots.canRedo
 import robots.canUndo
 import robots.cost
 import robots.havingDone
-import robots.isRunnable
+import robots.isNotRunnable
 import robots.nop
 import robots.redo
 import robots.reduce
@@ -40,18 +38,21 @@ external interface AppProps : RProps {
 
 external interface AppState : RState {
     var undo: UndoRedoStack<Seq>
-    var isRunning: Boolean
     var configurationShowing: Boolean
     var cards: Deck
 }
 
 class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
+    val speech: BrowserSpeech = BrowserSpeech {
+        speechChanged()
+    }
+    
     init {
         state.undo = UndoRedoStack(props.program)
-        state.isRunning = false
         state.configurationShowing = false
         state.cards = props.initialCards
     }
+    
     
     override fun RBuilder.render() {
         header()
@@ -85,12 +86,12 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
                 undoRedoButtons(
                     undoStack = state.undo,
                     update = { updateUndoRedoStack(it) },
-                    disabled = state.isRunning)
+                    disabled = speech.isSpeaking)
             }
             
             controlGroup {
                 button(classes = "run") {
-                    attrs.disabled = !currentProgram.isRunnable()
+                    attrs.disabled = currentProgram.isNotRunnable() || speech.isSpeaking
                     
                     // Dynamic appears to be the only way to access event properties in kotlin-react!
                     attrs.onClickFunction = { ev: dynamic ->
@@ -118,7 +119,7 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
     }
     
     private fun RBuilder.actionsConfiguration() {
-        actionsConfiguration(state.cards.actionCards) { newActionCards ->
+        actionsConfiguration(state.cards.actionCards, speech) { newActionCards ->
             setState { cards = cards.copy(actionCards = newActionCards) }
         }
     }
@@ -144,17 +145,15 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
         
         if (action != null) {
             pushUndoRedoState(prev)
-            setState({ it.apply { isRunning = true } })
-            speechSynthesis.speak(SpeechSynthesisUtterance(action.text).apply {
-                onend = {
-                    updateUndoRedoStack(state.undo.undo().havingDone(next ?: nop))
-                    setState({ it.apply { isRunning = false } })
-                }
-            })
+            speech.speak(action.text) { updateUndoRedoStack(state.undo.undo().havingDone(next ?: nop)) }
         }
         else {
             updateUndoRedoStack(state.undo.havingDone(next ?: nop))
         }
+    }
+    
+    private fun speechChanged() {
+        forceUpdate()
     }
     
     private val currentProgram get() = state.undo.current

@@ -1,8 +1,5 @@
 package robots.ui.config
 
-import browser.SpeechSynthesisEvent
-import browser.SpeechSynthesisUtterance
-import browser.speechSynthesis
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import org.w3c.dom.events.InputEvent
@@ -19,18 +16,17 @@ import react.dom.td
 import react.dom.th
 import react.dom.thead
 import react.dom.tr
-import react.setState
 import robots.Action
 import robots.ui.ActionCardStyle
 import robots.ui.ActionCardSuit
+import robots.ui.Speech
 import robots.ui.handler
 import robots.ui.newValue
 
 
 fun RBuilder.actionCardEditor(
     card: ActionCardStyle,
-    preview: (String) -> Unit,
-    isPlaying: Boolean,
+    speech: Speech,
     update: (ActionCardStyle) -> Unit,
     delete: (ActionCardStyle) -> Unit
 ) {
@@ -47,6 +43,7 @@ fun RBuilder.actionCardEditor(
     td {
         input {
             attrs.value = card.explanation
+            attrs.disabled = speech.isSpeaking
             attrs.onChangeFunction = handler<InputEvent> {
                 update(card.copy(value = Action(it.newValue)))
             }
@@ -54,14 +51,14 @@ fun RBuilder.actionCardEditor(
     }
     td {
         button {
-            attrs.disabled = isPlaying
-            attrs.onClickFunction = { preview(card.explanation) }
+            attrs.disabled = speech.isSpeaking
+            attrs.onClickFunction = { speech.speak(card.explanation) }
             +"▶︎"
         }
     }
     td {
         button {
-            attrs.disabled = isPlaying
+            attrs.disabled = speech.isSpeaking
             attrs.onClickFunction = { delete(card) }
             +"-"
         }
@@ -70,18 +67,14 @@ fun RBuilder.actionCardEditor(
 
 interface ActionsConfigurationProps : RProps {
     var actions: ActionCardSuit
+    var speech: Speech
     var updateActions: (ActionCardSuit) -> Unit
 }
 
 interface ActionsConfigurationState : RState {
-    var isPlaying: Boolean
 }
 
 class ActionsConfiguration : RComponent<ActionsConfigurationProps, ActionsConfigurationState>() {
-    init {
-        state.isPlaying = false
-    }
-    
     override fun RBuilder.render() {
         table {
             thead {
@@ -97,8 +90,7 @@ class ActionsConfiguration : RComponent<ActionsConfigurationProps, ActionsConfig
                     tr {
                         actionCardEditor(
                             card = a,
-                            preview = ::preview,
-                            isPlaying = state.isPlaying,
+                            speech = props.speech,
                             update = { props.updateActions(props.actions.replace(i, it)) },
                             delete = { props.updateActions(props.actions.remove(it)) }
                         )
@@ -118,19 +110,13 @@ class ActionsConfiguration : RComponent<ActionsConfigurationProps, ActionsConfig
     }
     
     private fun preview(text: String) {
-        val end = handler<SpeechSynthesisEvent> { setState { isPlaying = false } }
-        
-        speechSynthesis.speak(SpeechSynthesisUtterance(text).apply {
-            onend = end
-            onerror = end
-        })
-        
-        setState { isPlaying = true }
+        props.speech.speak(text)
     }
 }
 
-fun RBuilder.actionsConfiguration(actions: ActionCardSuit, updateActions: (ActionCardSuit) -> Unit) =
+fun RBuilder.actionsConfiguration(actions: ActionCardSuit, speech: Speech, updateActions: (ActionCardSuit) -> Unit) =
     child(ActionsConfiguration::class) {
         attrs.actions = actions
         attrs.updateActions = updateActions
+        attrs.speech = speech
     }

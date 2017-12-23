@@ -52,7 +52,7 @@ fun RBuilder.speechPreview(speech: BrowserSpeech) = child(SpeechPreview::class) 
 
 fun RBuilder.speechConfiguration(speech: BrowserSpeech, languages: Set<String> = preferredLanguages()) {
     fun SpeechSynthesisVoice.isSelectable() =
-        lang in languages || default
+        languages.any { it == lang || lang.startsWith("$it-") } || default
     
     val currentVoice = speech.voice
     

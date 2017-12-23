@@ -333,21 +333,30 @@ div[role="dialog"] {
     min-width: 2em;
 }
 
-span + input {
+label span + input {
     margin-left: 0.25em;
 }
 
-input + span {
+label input + span {
     margin-left: 0.25em;
 }
 
 div[role="radio"] {
-    padding: 0.25em;
+    margin: 0.25em;
     border-radius: 0.25em;
 }
 
-div[role="radio"][aria-checked="true"] {
-    background-color: #36cfff;
+div[role="radio"]::before {
+    display: inline-block;
+    width: 1.5em;
+}
+
+div[role="radio"][aria-checked="false"]::before {
+    content: "\26AA"; /* ⚪ */
+}
+
+div[role="radio"][aria-checked="true"]::before {
+    content: "\1F518"; /* 🔘 */
 }
 
 input[type="text"] {
@@ -375,12 +384,12 @@ input[type="text"] {
     flex-wrap: nowrap;
 }
 
-.button-bar button:first-child {
+.button-bar > *:first-child {
     margin-left: 0;
 }
 
-.button-bar button {
-    margin-left: 0.5em;
+.button-bar *:not(:first-child) {
+    margin-left: 0.75em;
 }
 
 .speech-preview {

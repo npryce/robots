@@ -13,5 +13,4 @@ fun <E: Event> handler(fn: (E)->Unit): (Event)->Unit = { e ->
 }
 
 val InputEvent.newValue: String get() =
-    target.asDynamic().unsafeCast<HTMLInputElement>().value
-
+    target.unsafeCast<HTMLInputElement>().value

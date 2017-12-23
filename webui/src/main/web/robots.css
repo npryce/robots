@@ -14,11 +14,14 @@
 }
 
 html, body {
+    position: absolute;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
     padding: 0;
+    margin: 0;
+    border: 0;
 }
 
 body {
@@ -131,8 +134,6 @@ header .redo {
     flex-shrink: 0;
     font-size: 200%;
 }
-
-
 
 button {
     border-radius: 0.25em;
@@ -294,11 +295,102 @@ button[disabled] {
     align-self: center;
 }
 
+.dialog-underlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
 div[role="dialog"] {
-    padding: 1em;
-    border-radius: 0.5em;
+    position: absolute;
+    display: flex;
+    width: auto;
+    left: 50%;
+    top: 2em;
+    transform: translate(-50%,0);
+    max-width: calc(100% - 2em);
+    max-height: calc(100% - 4em);
     margin: 1em;
+    padding: 1em;
+    box-sizing: border-box;
+    border-radius: 0.5em;
     background: white;
+    flex-direction: column;
+    flex-wrap: nowrap;
+}
+
+.config-panel {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.config-actions-panel .config-items button {
+    min-width: 2em;
+}
+
+span + input {
+    margin-left: 0.25em;
+}
+
+input + span {
+    margin-left: 0.25em;
+}
+
+div[role="radio"] {
+    padding: 0.25em;
+    border-radius: 0.25em;
+}
+
+div[role="radio"][aria-checked="true"] {
+    background-color: #36cfff;
+}
+
+input[type="text"] {
+    border-top: none;
+    border-left:none;
+    border-right: none;
+    border-bottom: solid #AAAAAA 1px;
+}
+
+.config-items {
+    display: block;
+    flex-grow: 1;
+    flex-shrink: 1;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+.button-bar {
+    display: flex;
+    flex-direction: row;
+    margin-top: 1em;
+    flex-grow: 0;
+    flex-shrink: 0;
+    align-self: stretch;
+    flex-wrap: nowrap;
+}
+
+.button-bar button:first-child {
+    margin-left: 0;
+}
+
+.button-bar button {
+    margin-left: 0.5em;
+}
+
+.speech-preview {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-self: stretch;
+    align-content: stretch;
+    align-items: center;
+    text-wrap: none;
 }
 
 @keyframes slip {

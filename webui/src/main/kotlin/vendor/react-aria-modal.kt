@@ -7,13 +7,15 @@ import react.React
 
 
 external interface ModalProps : RProps {
-    //    var underlayProps: {},
-    var dialogId: String                  // 'react-aria-modal-dialog',
-    var underlayClickExits: Boolean       // true,
-    var escapeExits: Boolean              // true,
-    var underlayColor: String             // 'rgba(0,0,0,0.5)',
-    var includeDefaultStyles: Boolean     // true,
-    var focusTrapPaused: Boolean          // false,
+    var alert: Boolean                    // false
+    var dialogClass: String?              // null
+    var dialogId: String?                 // 'react-aria-modal-dialog'
+    var underlayClass: String             // undefined
+    var underlayColor: String             // 'rgba(0,0,0,0.5)'
+    var underlayClickExits: Boolean       // true
+    var escapeExits: Boolean              // true
+    var includeDefaultStyles: Boolean     // true
+    var focusTrapPaused: Boolean          // false
     var scrollDisabled: Boolean           // true
     
     // Either one of these

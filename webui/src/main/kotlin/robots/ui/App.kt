@@ -26,9 +26,9 @@ import robots.redo
 import robots.reduce
 import robots.reduceToAction
 import robots.ui.config.actionsConfiguration
+import robots.ui.config.speechConfiguration
 import robots.undo
 import vendor.ariaModal
-import kotlin.browser.document
 
 
 external interface AppProps : RProps {
@@ -43,16 +43,13 @@ external interface AppState : RState {
 }
 
 class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
-    val speech: BrowserSpeech = BrowserSpeech {
-        speechChanged()
-    }
+    val speech: BrowserSpeech = BrowserSpeech { speechChanged() }
     
     init {
         state.undo = UndoRedoStack(props.program)
         state.configurationShowing = false
         state.cards = props.initialCards
     }
-    
     
     override fun RBuilder.render() {
         header()
@@ -85,8 +82,8 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
             controlGroup {
                 undoRedoButtons(
                     undoStack = state.undo,
-                    update = { updateUndoRedoStack(it) },
-                    disabled = speech.isSpeaking)
+                    disabled = speech.isSpeaking,
+                    update = { updateUndoRedoStack(it) })
             }
             
             controlGroup {
@@ -111,10 +108,12 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
     
     private fun RBuilder.configurationDialog() {
         ariaModal {
-            attrs.getApplicationNode = { document.getElementById("app") }
+            attrs.underlayClass = "dialog-underlay"
+            attrs.includeDefaultStyles = false
             attrs.titleText = "Configure the game"
             attrs.onExit = { showConfigurationDialog(false) }
-            actionsConfiguration()
+//            actionsConfiguration()
+            speechConfiguration(speech)
         }
     }
     
@@ -153,6 +152,7 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
     }
     
     private fun speechChanged() {
+        console.log("speech changed")
         forceUpdate()
     }
     
@@ -169,7 +169,7 @@ inline fun RBuilder.controlGroup(contents: RBuilder.() -> Unit) {
 }
 
 
-private fun RBuilder.undoRedoButtons(undoStack: UndoRedoStack<Seq>, update: (UndoRedoStack<Seq>) -> Unit, disabled: Boolean = false) {
+private fun RBuilder.undoRedoButtons(undoStack: UndoRedoStack<Seq>, disabled: Boolean = false, update: (UndoRedoStack<Seq>) -> Unit) {
     button(classes = "undo") {
         attrs.onClickFunction = { update(undoStack.undo()) }
         attrs.disabled = disabled || !undoStack.canUndo()

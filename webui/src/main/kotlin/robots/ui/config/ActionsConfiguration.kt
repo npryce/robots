@@ -1,20 +1,18 @@
 package robots.ui.config
 
+import kotlinx.html.DIV
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
+import kotlinx.html.title
 import org.w3c.dom.events.InputEvent
 import react.RBuilder
-import react.RComponent
-import react.RProps
-import react.RState
+import react.dom.RDOMBuilder
 import react.dom.button
 import react.dom.div
 import react.dom.input
 import react.dom.table
 import react.dom.tbody
 import react.dom.td
-import react.dom.th
-import react.dom.thead
 import react.dom.tr
 import robots.Action
 import robots.ui.ActionCardStyle
@@ -24,7 +22,46 @@ import robots.ui.handler
 import robots.ui.newValue
 
 
-fun RBuilder.actionCardEditor(
+fun RBuilder.configPanel(configuredThings: String, contents: RDOMBuilder<DIV>.() -> Unit) {
+    div("config-panel config-$configuredThings-panel", contents)
+}
+
+fun RBuilder.buttonBar(contents: RDOMBuilder<DIV>.() -> Unit) {
+    div("button-bar", contents)
+}
+
+val configItemsClass = "config-items"
+
+fun RBuilder.actionsConfiguration(actions: ActionCardSuit, speech: Speech, updateActions: (ActionCardSuit) -> Unit) {
+    configPanel("actions") {
+        table(configItemsClass) {
+            tbody {
+                actions.forEachIndexed { i, card ->
+                    tr {
+                        actionCardEditor(
+                            card = card,
+                            speech = speech,
+                            update = { updateActions(actions.replace(i, it)) },
+                            delete = { updateActions(actions.remove(it)) }
+                        )
+                    }
+                }
+            }
+        }
+        buttonBar {
+            button {
+                attrs.title = "Add new action"
+                attrs.onClickFunction = { ev ->
+                    updateActions(actions.add(ActionCardStyle("?", Action("Change this"))))
+                    ev.stopPropagation()
+                }
+                +"+"
+            }
+        }
+    }
+}
+
+private fun RBuilder.actionCardEditor(
     card: ActionCardStyle,
     speech: Speech,
     update: (ActionCardStyle) -> Unit,
@@ -64,59 +101,3 @@ fun RBuilder.actionCardEditor(
         }
     }
 }
-
-interface ActionsConfigurationProps : RProps {
-    var actions: ActionCardSuit
-    var speech: Speech
-    var updateActions: (ActionCardSuit) -> Unit
-}
-
-interface ActionsConfigurationState : RState {
-}
-
-class ActionsConfiguration : RComponent<ActionsConfigurationProps, ActionsConfigurationState>() {
-    override fun RBuilder.render() {
-        table {
-            thead {
-                tr {
-                    th { +"Emoji" }
-                    th { +"Action" }
-                    th { }
-                    th { }
-                }
-            }
-            tbody("action-editors") {
-                props.actions.forEachIndexed { i, a ->
-                    tr {
-                        actionCardEditor(
-                            card = a,
-                            speech = props.speech,
-                            update = { props.updateActions(props.actions.replace(i, it)) },
-                            delete = { props.updateActions(props.actions.remove(it)) }
-                        )
-                    }
-                }
-            }
-        }
-        div {
-            button {
-                attrs.onClickFunction = { ev ->
-                    props.updateActions(props.actions.add(ActionCardStyle("?", Action("Change this"))))
-                    ev.stopPropagation()
-                }
-                +"+"
-            }
-        }
-    }
-    
-    private fun preview(text: String) {
-        props.speech.speak(text)
-    }
-}
-
-fun RBuilder.actionsConfiguration(actions: ActionCardSuit, speech: Speech, updateActions: (ActionCardSuit) -> Unit) =
-    child(ActionsConfiguration::class) {
-        attrs.actions = actions
-        attrs.updateActions = updateActions
-        attrs.speech = speech
-    }

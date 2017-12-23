@@ -31,12 +31,12 @@ external interface SpeechSynthesisVoice {
 }
 
 external class SpeechSynthesisUtterance(text: String) : EventTarget {
-    val text: String
-    val lang: String
-    val voice: SpeechSynthesisVoice
-    val volume: Double
-    val rate: Double
-    val pitch: Double
+    var text: String
+    var lang: String
+    var voice: SpeechSynthesisVoice?
+    var volume: Double
+    var rate: Double
+    var pitch: Double
     
     var onstart: EventHandler<SpeechSynthesisEvent>
     var onend: EventHandler<SpeechSynthesisEvent>

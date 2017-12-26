@@ -20,13 +20,13 @@ import robots.ui.BrowserSpeech
 import robots.ui.Speech
 import kotlin.browser.window
 
-interface SpeechPreviewProps : RProps {
+private interface SpeechPreviewProps : RProps {
     var speech: Speech
 }
 
 private val defaultSampleText = "The quick brown fox jumps over the lazy dog"
 
-class SpeechPreview(props: SpeechPreviewProps) : RComponent<SpeechPreviewProps, RState>(props) {
+private class SpeechPreview(props: SpeechPreviewProps) : RComponent<SpeechPreviewProps, RState>(props) {
     private var sampleTextInput: HTMLTextAreaElement? = null
     
     override fun RBuilder.render() {
@@ -46,7 +46,7 @@ class SpeechPreview(props: SpeechPreviewProps) : RComponent<SpeechPreviewProps, 
     }
 }
 
-fun RBuilder.speechPreview(speech: BrowserSpeech) = child(SpeechPreview::class) {
+private fun RBuilder.speechPreview(speech: BrowserSpeech) = child(SpeechPreview::class) {
     attrs.speech = speech
 }
 

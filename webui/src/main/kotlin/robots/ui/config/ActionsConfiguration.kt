@@ -1,14 +1,11 @@
 package robots.ui.config
 
-import kotlinx.html.DIV
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.title
 import org.w3c.dom.events.InputEvent
 import react.RBuilder
-import react.dom.RDOMBuilder
 import react.dom.button
-import react.dom.div
 import react.dom.input
 import react.dom.table
 import react.dom.tbody
@@ -21,16 +18,6 @@ import robots.ui.Speech
 import robots.ui.handler
 import robots.ui.newValue
 
-
-fun RBuilder.configPanel(configuredThings: String, contents: RDOMBuilder<DIV>.() -> Unit) {
-    div("config-panel config-$configuredThings-panel", contents)
-}
-
-fun RBuilder.buttonBar(contents: RDOMBuilder<DIV>.() -> Unit) {
-    div("button-bar", contents)
-}
-
-val configItemsClass = "config-items"
 
 fun RBuilder.actionsConfiguration(actions: ActionCardSuit, speech: Speech, updateActions: (ActionCardSuit) -> Unit) {
     configPanel("actions") {
@@ -70,7 +57,6 @@ private fun RBuilder.actionCardEditor(
     td {
         input {
             attrs.width = "2"
-            attrs.maxLength = "1"
             attrs.onChangeFunction = handler<InputEvent> {
                 update(card.copy(face = it.newValue))
             }

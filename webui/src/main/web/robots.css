@@ -310,7 +310,7 @@ div[role="dialog"] {
     width: auto;
     left: 50%;
     top: 2em;
-    transform: translate(-50%,0);
+    transform: translate(-50%, 0);
     max-width: calc(100% - 2em);
     max-height: calc(100% - 4em);
     margin: 1em;
@@ -322,11 +322,50 @@ div[role="dialog"] {
     flex-wrap: nowrap;
 }
 
+.dialog-tabs {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+}
+
+ul[role="tablist"] {
+    display: block;
+    position: relative;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex: 0 0 auto;
+    overflow: visible;
+}
+
+ul[role="tablist"] li[role="tab"] {
+    list-style: none;
+    display: inline-block;
+    padding: 0.25em;
+    margin: 0 0.25em 0 0;
+}
+
+ul[role="tablist"] li[role="tab"][aria-selected="true"] {
+    color: black;
+    border-bottom: 0.125em solid darkorange;
+}
+
+ul[role="tablist"] li[role="tab"][aria-selected="false"] {
+    color: #AAAAAA;
+}
+
+.tab-panels {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    flex: 1 1 auto;
+    overflow: hidden;
+}
+
 .config-panel {
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
-    flex-shrink: 1;
+    flex: 1 1 auto;
 }
 
 .config-actions-panel .config-items button {
@@ -359,27 +398,26 @@ div[role="radio"][aria-checked="true"]::before {
     content: "\1F518"; /* 🔘 */
 }
 
-input[type="text"] {
+input, input[type="text"] {
     border-top: none;
-    border-left:none;
+    border-left: none;
     border-right: none;
     border-bottom: solid #AAAAAA 1px;
 }
 
 .config-items {
     display: block;
-    flex-grow: 1;
-    flex-shrink: 1;
+    flex: 1 1 auto;
     overflow-x: hidden;
     overflow-y: scroll;
+    align-self: stretch;
 }
 
 .button-bar {
     display: flex;
     flex-direction: row;
     margin-top: 1em;
-    flex-grow: 0;
-    flex-shrink: 0;
+    flex: 0 0 auto;
     align-self: stretch;
     flex-wrap: nowrap;
 }

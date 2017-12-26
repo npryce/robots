@@ -25,8 +25,7 @@ import robots.nop
 import robots.redo
 import robots.reduce
 import robots.reduceToAction
-import robots.ui.config.actionsConfiguration
-import robots.ui.config.speechConfiguration
+import robots.ui.config.gameConfiguration
 import robots.undo
 import vendor.ariaModal
 
@@ -112,13 +111,12 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
             attrs.includeDefaultStyles = false
             attrs.titleText = "Configure the game"
             attrs.onExit = { showConfigurationDialog(false) }
-//            actionsConfiguration()
-            speechConfiguration(speech)
+            gameConfiguration()
         }
     }
     
-    private fun RBuilder.actionsConfiguration() {
-        actionsConfiguration(state.cards.actionCards, speech) { newActionCards ->
+    private fun RBuilder.gameConfiguration() {
+        gameConfiguration(state.cards.actionCards, speech) { newActionCards ->
             setState { cards = cards.copy(actionCards = newActionCards) }
         }
     }

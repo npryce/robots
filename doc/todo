@@ -8,22 +8,29 @@ Better editing
 * User can change repeat count of card on the table
 
 Execution (reduction, play speech)
-  * Cannot edit or undo/redo while action is being executed
+  * Cannot edit while action is being executed
   * Animate active action card
   * Can go back to program before run was pressed
   * Run vs edit modes?  E.g. editing while in run mode switches back to edit mode.
   * Execution history -- how to integrate with undo/redo?
 
 Configuration
-* Add your own actions
-* Select voice
+* Integrate emoji-picker into config dialog
 
 * Save state
   * to local storage
   * to cloud storage
 
+* Accessiblity
+  * Keyboard navigation
+    * Style focus nicely
+    * Tab indices
+    * Activate controls with keyboard input
+
+
 Comprehensibility
 * Super-power modes
   * X-Ray vision (graph view of program)
   * Slow down time (step through intermediate reductions)
+* Instructions
 

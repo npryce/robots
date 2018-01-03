@@ -16,6 +16,7 @@ import kotlin.browser.window
 
 external interface DraggableProps : RProps {
     var dataProvider: () -> Any
+    var classes: String
 }
 
 external interface DraggableState : RState {
@@ -30,7 +31,7 @@ class Draggable(props: DraggableProps) : RComponent<DraggableProps, DraggableSta
     }
     
     override fun RBuilder.render() {
-        div("draggable") {
+        div(props.classes) {
             if (state.isBeingDragged) attrs.classes += "dragged"
             
             ref { elt: Element? -> draggableElement = elt }
@@ -73,7 +74,13 @@ class Draggable(props: DraggableProps) : RComponent<DraggableProps, DraggableSta
     }
 }
 
-fun RBuilder.draggable(dataProvider: () -> Any, contents: RElementBuilder<RProps>.() -> Unit) = child(Draggable::class) {
-    attrs.dataProvider = dataProvider
-    contents()
-}
+fun RBuilder.draggable(
+    dataProvider: () -> Any,
+    classes: String = "draggable",
+    contents: RElementBuilder<RProps>.() -> Unit
+) =
+    child(Draggable::class) {
+        attrs.dataProvider = dataProvider
+        attrs.classes = classes
+        contents()
+    }

@@ -12,6 +12,7 @@ import react.dom.div
 external interface DropTargetProps : RProps {
     var canAccept: (Any) -> Boolean
     var accept: (Any) -> Unit
+    var classes: String
 }
 
 external interface DropTargetState : RState {
@@ -26,7 +27,7 @@ class DropTarget(props: DropTargetProps) : RComponent<DropTargetProps, DropTarge
     private var targetElement: Element? = null
     
     override fun RBuilder.render() {
-        div("drop-target") {
+        div(props.classes) {
             ref { elt: Element? -> targetElement = elt }
             children()
         }
@@ -70,7 +71,7 @@ class DropTarget(props: DropTargetProps) : RComponent<DropTargetProps, DropTarge
     private fun drop(ev: Event) {
         if (!ev.defaultPrevented) {
             val detail: DropDetail = ev.detail() ?: return
-    
+            
             if (props.canAccept(detail.data)) {
                 props.accept(detail.data)
                 detail.accepted = true
@@ -84,10 +85,16 @@ class DropTarget(props: DropTargetProps) : RComponent<DropTargetProps, DropTarge
     }
 }
 
-fun RBuilder.dropTarget(canAccept: (Any) -> Boolean, accept: (Any) -> Unit, children: RElementBuilder<RProps>.() -> Unit) =
+fun RBuilder.dropTarget(
+    canAccept: (Any) -> Boolean,
+    accept: (Any) -> Unit,
+    classes: String = "drop-target",
+    children: RElementBuilder<DropTargetProps>.() -> Unit
+) =
     child(DropTarget::class) {
         attrs.canAccept = canAccept
         attrs.accept = accept
+        attrs.classes = classes
         children()
     }
 

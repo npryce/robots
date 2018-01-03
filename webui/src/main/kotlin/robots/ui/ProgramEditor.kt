@@ -20,21 +20,6 @@ import robots.splitAfter
 import robots.withSteps
 
 
-fun RBuilder.trashCan(onEdit: (Seq) -> Unit) {
-    fun canAccept(dragged: Any) = dragged is ASTEditPoint
-    fun accept(dragged: Any) {
-        if (dragged is ASTEditPoint) {
-            onEdit(dragged.remove())
-        }
-    }
-    
-    dropTarget(::canAccept, ::accept) {
-        div("trashcan") {
-            +"🗑"
-        }
-    }
-}
-
 fun RBuilder.extensionSpace(editor: ASTEditPoint, onEdit: (Seq) -> Unit) {
     fun canAccept(dragged: Any) =
         when (dragged) {

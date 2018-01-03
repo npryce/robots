@@ -57,8 +57,7 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
         }
         programEditor(state.cards, currentProgram, onEdit = ::pushUndoRedoState)
         div("controls") {
-            cardStacks(state.cards)
-            trashCan(onEdit = ::pushUndoRedoState)
+            cardStacks(state.cards, onEdit = ::pushUndoRedoState)
         }
     }
     

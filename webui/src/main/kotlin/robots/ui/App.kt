@@ -36,7 +36,7 @@ external interface AppProps : RProps {
 }
 
 external interface AppState : RState {
-    var undo: UndoRedoStack<Seq>
+    var gameState: GameState
     var configurationShowing: Boolean
     var cards: Deck
 }
@@ -45,7 +45,7 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
     val speech: BrowserSpeech = BrowserSpeech { speechChanged() }
     
     init {
-        state.undo = UndoRedoStack(props.program)
+        state.gameState = initialGameState()
         state.configurationShowing = false
         state.cards = props.initialCards
     }
@@ -79,7 +79,7 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
             
             controlGroup {
                 undoRedoButtons(
-                    undoStack = state.undo,
+                    undoStack = state.gameState.editStack,
                     disabled = speech.isSpeaking,
                     update = { updateUndoRedoStack(it) })
             }
@@ -121,11 +121,11 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
     }
     
     private fun pushUndoRedoState(newProgram: Seq) {
-        updateUndoRedoStack(state.undo.havingDone(newProgram))
+        updateUndoRedoStack(state.gameState.editStack.havingDone(newProgram))
     }
     
-    private fun updateUndoRedoStack(newState: UndoRedoStack<Seq>) {
-        setState({ it.apply { undo = newState } })
+    private fun updateUndoRedoStack(newEditStack: UndoRedoStack<Seq>) {
+        setState { gameState = gameState.copy(editStack = newEditStack) }
     }
     
     private fun runNextAction() {
@@ -141,10 +141,10 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
         
         if (action != null) {
             pushUndoRedoState(prev)
-            speech.speak(action.text) { updateUndoRedoStack(state.undo.undo().havingDone(next ?: nop)) }
+            speech.speak(action.text) { updateUndoRedoStack(state.gameState.editStack.undo().havingDone(next ?: nop)) }
         }
         else {
-            updateUndoRedoStack(state.undo.havingDone(next ?: nop))
+            updateUndoRedoStack(state.gameState.editStack.havingDone(next ?: nop))
         }
     }
     
@@ -153,7 +153,7 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
         forceUpdate()
     }
     
-    private val currentProgram get() = state.undo.current
+    private val currentProgram get() = state.gameState.editStack.current
 }
 
 fun RBuilder.app(cards: Deck, initialProgram: Seq = Seq()) = child(App::class) {

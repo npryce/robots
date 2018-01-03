@@ -42,3 +42,6 @@ private fun Seq.reduceHead(head: AST, tail: PList<AST>) = when (head) {
 
 private fun Repeat.remainingIterations() =
     copy(times = times - 1)
+
+fun Reduction.next(stepType: (Seq)->Reduction?) =
+    this.next?.let(stepType)

@@ -43,8 +43,7 @@ fun RBuilder.extensionSpace(editor: ASTEditPoint, onEdit: (Seq) -> Unit) {
         }
     }
     
-    dropTarget(::canAccept, ::accept) {
-        div("cursor") {}
+    dropTarget(::canAccept, ::accept, classes = "cursor") {
     }
 }
 
@@ -69,9 +68,7 @@ fun RBuilder.startingSpace(editor: ASTEditPoint, branch: Int, onEdit: (Seq) -> U
         }
     }
     
-    dropTarget(::canAccept, ::accept) {
-        div("cursor required") {}
-    }
+    dropTarget(::canAccept, ::accept, classes = "cursor required") {}
 }
 
 private fun RBuilder.cardFace(deck: Deck, editor: ASTEditPoint) {
@@ -166,7 +163,7 @@ fun RBuilder.firstElementSpace(program: Seq, onEdit: (Seq) -> Unit) {
     
     div("cardsequence") {
         div("cardrow") {
-            dropTarget(canAccept = { canAccept(it) }, accept = { accept(it) }) {
+            dropTarget(canAccept = { canAccept(it) }, accept = { accept(it) }, classes = "cursor required") {
                 div("cursor required") {}
             }
             tip("Drag a card from the stacks below and drop it onto here")

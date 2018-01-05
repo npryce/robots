@@ -129,12 +129,6 @@ header .redo {
     align-items: flex-start;
 }
 
-.trashcan {
-    flex-grow: 0;
-    flex-shrink: 0;
-    font-size: 200%;
-}
-
 button {
     border-radius: 0.25em;
     border-width: 0.1em;

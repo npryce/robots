@@ -10,9 +10,7 @@ Better editing
 Execution (reduction, play speech)
   * Cannot edit while action is being executed
   * Animate active action card
-  * Can go back to program before run was pressed
-  * Run vs edit modes?  E.g. editing while in run mode switches back to edit mode.
-  * Execution history -- how to integrate with undo/redo?
+  * Can edit fron current point in execution, with action history turned into a seq
 
 Configuration
 * Integrate emoji-picker into config dialog
@@ -27,10 +25,9 @@ Configuration
     * Tab indices
     * Activate controls with keyboard input
 
-
 Comprehensibility
 * Super-power modes
   * X-Ray vision (graph view of program)
   * Slow down time (step through intermediate reductions)
+  * Onion skin (layer execution steps on one another, with translucency)
 * Instructions
-

@@ -57,7 +57,8 @@ body.docs {
 .program {
     flex-grow: 1;
     flex-shrink: 1;
-    overflow: scroll;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 header {
@@ -442,6 +443,25 @@ input, input[type="text"] {
 
 .speech-preview *:not(:first-child) {
     margin-left: 0.75em;
+}
+
+.action-text {
+    text-align: center;
+    margin-bottom: 1em;
+    margin-top: 1em;
+}
+
+.button-bar button {
+    min-width: 8em;
+}
+
+.button-icon{
+    font-size: 150%;
+    margin: 0.5em;
+}
+
+.button-text {
+    font-size: 75%;
 }
 
 @keyframes slip {

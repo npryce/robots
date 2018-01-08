@@ -52,7 +52,7 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
         
         when (game) {
             is Running -> {
-                programEditor(state.cards, game.currentState, onEdit = {})
+                programEditor(state.cards, game.currentState(speech), onEdit = {})
                 runControlPanel(game, speech, ::updateGameState)
             }
             is Editing -> {

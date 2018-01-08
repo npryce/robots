@@ -6,6 +6,7 @@ import kotlinx.html.title
 import org.w3c.dom.events.InputEvent
 import react.RBuilder
 import react.dom.button
+import react.dom.div
 import react.dom.input
 import react.dom.table
 import react.dom.tbody
@@ -15,7 +16,6 @@ import robots.Action
 import robots.ui.ActionCardStyle
 import robots.ui.ActionCardSuit
 import robots.ui.Speech
-import robots.ui.buttonBar
 import robots.ui.handler
 import robots.ui.newValue
 
@@ -36,7 +36,7 @@ fun RBuilder.actionsConfiguration(actions: ActionCardSuit, speech: Speech, updat
                 }
             }
         }
-        buttonBar {
+        div {
             button {
                 attrs.title = "Add new action"
                 attrs.onClickFunction = { ev ->

@@ -26,11 +26,8 @@ fun GameState.startRunning() = when (this) {
     is Running -> this
 }
 
-fun Running.isAtStart() =
-    trace == null
-
 fun Running.hasFinished() =
-    trace != null && trace.current.next == null
+    trace != null && trace.current.next == nop
 
 fun Running.stopRunning() =
     Editing(source)
@@ -48,8 +45,8 @@ fun Running.step(): Running {
     }
 }
 
-val Running.currentState: Seq
-    get() = when (trace) {
-        null -> source.current
-        else -> trace.current.next ?: nop
-    }
+fun Running.currentState(speech: Speech): Seq = when {
+    trace == null -> source.current
+    speech.isSpeaking -> trace.current.prev
+    else -> trace.current.next ?: nop
+}

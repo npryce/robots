@@ -8,25 +8,15 @@ import react.RComponent
 import react.RProps
 import react.RState
 import react.dom.a
-import react.dom.button
 import react.dom.div
 import react.dom.header
 import react.dom.span
 import react.setState
-import robots.Reduction
 import robots.Seq
 import robots.UndoRedoStack
-import robots.canRedo
-import robots.canUndo
 import robots.cost
 import robots.havingDone
-import robots.isNotRunnable
-import robots.nop
-import robots.redo
-import robots.reduce
-import robots.reduceToAction
 import robots.ui.config.gameConfiguration
-import robots.undo
 import vendor.ariaModal
 
 
@@ -36,7 +26,7 @@ external interface AppProps : RProps {
 }
 
 external interface AppState : RState {
-    var gameState: GameState
+    var game: GameState
     var configurationShowing: Boolean
     var cards: Deck
 }
@@ -45,58 +35,63 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
     val speech: BrowserSpeech = BrowserSpeech { speechChanged() }
     
     init {
-        state.gameState = initialGameState()
+        state.game = initialGameState()
         state.configurationShowing = false
         state.cards = props.initialCards
     }
     
     override fun RBuilder.render() {
+        console.log("(re)rendering")
+        val game = state.game
+        
         header()
+        
         if (state.configurationShowing) {
             configurationDialog()
         }
-        programEditor(state.cards, currentProgram, onEdit = ::pushUndoRedoState)
+        
+        when (game) {
+            is Running -> {
+                programEditor(state.cards, game.currentState, onEdit = {})
+                runControlPanel(game, speech, ::updateGameState)
+            }
+            is Editing -> {
+                programEditor(state.cards, currentProgram, onEdit = ::pushUndoRedoState)
+                editControlPanel()
+            }
+        }
+    }
+    
+    private fun RBuilder.editControlPanel() {
         div("controls") {
             cardStacks(state.cards, onEdit = ::pushUndoRedoState)
         }
     }
     
     fun RBuilder.header() {
+        val game = state.game
+        
         header {
-            controlGroup {
-                a {
-                    attrs.role = "button"
-                    attrs.title = "Configure the game"
-                    attrs.onClickFunction = { showConfigurationDialog(true) }
-                    +"⚙"
-                }
-            }
-            
+            controlGroup { configureButton() }
+    
             span("score") {
                 +"Cost: "
-                span("cost") { +"¢${currentProgram.cost()}" }
+                span("cost") { +"¢${game.source.current.cost()}" }
             }
             
-            controlGroup {
-                undoRedoButtons(
-                    undoStack = state.gameState.editStack,
-                    disabled = speech.isSpeaking,
-                    update = { updateUndoRedoStack(it) })
+            when (game) {
+                is Editing -> editHeaderControls(game, speech, ::updateGameState)
+                is Running -> runHeaderControls(game, speech, ::updateGameState)
             }
-            
-            controlGroup {
-                button(classes = "run") {
-                    attrs.disabled = currentProgram.isNotRunnable() || speech.isSpeaking
-                    
-                    // Dynamic appears to be the only way to access event properties in kotlin-react!
-                    attrs.onClickFunction = { ev: dynamic ->
-                        if (ev.altKey) runSingleStep() else runNextAction()
-                        ev.preventDefault()
-                    }
-                    
-                    +"Run"
-                }
-            }
+        }
+    }
+    
+    private fun RBuilder.configureButton() {
+        a {
+            attrs.role = "button"
+            attrs.title = "Configure the game"
+            attrs.onClickFunction = { showConfigurationDialog(true) }
+            +"⚙"
         }
     }
     
@@ -121,40 +116,26 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
     }
     
     private fun pushUndoRedoState(newProgram: Seq) {
-        updateUndoRedoStack(state.gameState.editStack.havingDone(newProgram))
+        updateUndoRedoStack(state.game.source.havingDone(newProgram))
     }
     
     private fun updateUndoRedoStack(newEditStack: UndoRedoStack<Seq>) {
-        setState { gameState = gameState.copy(editStack = newEditStack) }
+        updateGameState(Editing(newEditStack))
     }
     
-    private fun runNextAction() {
-        run(Seq::reduceToAction)
-    }
-    
-    private fun runSingleStep() {
-        run(Seq::reduce)
-    }
-    
-    fun run(performStep: Seq.() -> Reduction) {
-        val (prev, action, next) = currentProgram.performStep()
-        
-        if (action != null) {
-            pushUndoRedoState(prev)
-            speech.speak(action.text) { updateUndoRedoStack(state.gameState.editStack.undo().havingDone(next ?: nop)) }
-        }
-        else {
-            updateUndoRedoStack(state.gameState.editStack.havingDone(next ?: nop))
-        }
+    private fun updateGameState(newState: GameState) {
+        console.log("updating game state")
+        setState { game = newState }
     }
     
     private fun speechChanged() {
-        console.log("speech changed")
         forceUpdate()
     }
     
-    private val currentProgram get() = state.gameState.editStack.current
+    private val currentProgram get() = game.source.current
+    private val game get() = state.game
 }
+
 
 fun RBuilder.app(cards: Deck, initialProgram: Seq = Seq()) = child(App::class) {
     attrs.program = initialProgram
@@ -165,17 +146,4 @@ inline fun RBuilder.controlGroup(contents: RBuilder.() -> Unit) {
     span("control-group", contents)
 }
 
-
-private fun RBuilder.undoRedoButtons(undoStack: UndoRedoStack<Seq>, disabled: Boolean = false, update: (UndoRedoStack<Seq>) -> Unit) {
-    button(classes = "undo") {
-        attrs.onClickFunction = { update(undoStack.undo()) }
-        attrs.disabled = disabled || !undoStack.canUndo()
-        +"Undo"
-    }
-    button(classes = "redo") {
-        attrs.onClickFunction = { update(undoStack.redo()) }
-        attrs.disabled = disabled || !undoStack.canRedo()
-        +"Redo"
-    }
-}
 

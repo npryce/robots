@@ -100,7 +100,7 @@ header .redo {
 
 .controls {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     flex-grow: 0;
     flex-shrink: 0;
     align-content: stretch;
@@ -384,6 +384,14 @@ div[role="radio"]::before {
     width: 1.5em;
 }
 
+div[role="radio"][aria-disabled="true"] {
+    color: #AAAAAA;
+}
+
+div[role="radio"][aria-disabled="true"]::before {
+    opacity: 0.5;
+}
+
 div[role="radio"][aria-checked="false"]::before {
     content: "\26AA"; /* ⚪ */
 }
@@ -405,22 +413,20 @@ input, input[type="text"] {
     overflow-x: hidden;
     overflow-y: scroll;
     align-self: stretch;
+    margin-bottom: 1em;
+    margin-top: 1em;
 }
 
 .button-bar {
     display: flex;
     flex-direction: row;
-    margin-top: 1em;
     flex: 0 0 auto;
     align-self: stretch;
+    justify-content: center;
     flex-wrap: nowrap;
 }
 
-.button-bar > *:first-child {
-    margin-left: 0;
-}
-
-.button-bar *:not(:first-child) {
+.button-bar button:not(:first-child) {
     margin-left: 0.75em;
 }
 
@@ -432,6 +438,10 @@ input, input[type="text"] {
     align-content: stretch;
     align-items: center;
     text-wrap: none;
+}
+
+.speech-preview *:not(:first-child) {
+    margin-left: 0.75em;
 }
 
 @keyframes slip {

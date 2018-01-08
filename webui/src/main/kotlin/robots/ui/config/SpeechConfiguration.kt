@@ -18,6 +18,7 @@ import react.dom.set
 import react.dom.span
 import robots.ui.BrowserSpeech
 import robots.ui.Speech
+import robots.ui.buttonBar
 import kotlin.browser.window
 
 private interface SpeechPreviewProps : RProps {
@@ -65,8 +66,11 @@ fun RBuilder.speechConfiguration(speech: BrowserSpeech, languages: Set<String> =
                     key = voice.name
                     attrs.role = "radio"
                     attrs["aria-checked"] = isSelected.toString()
-                    attrs.onClickFunction = { speech.voice = voice }
-                    attrs.onSelectFunction = { speech.voice = voice }
+                    attrs["aria-disabled"] = speech.isSpeaking.toString()
+                    if (!speech.isSpeaking) {
+                        attrs.onClickFunction = { speech.voice = voice }
+                        attrs.onSelectFunction = { speech.voice = voice }
+                    }
                     
                     +voice.name
                 }

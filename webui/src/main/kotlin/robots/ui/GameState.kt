@@ -4,28 +4,52 @@ import robots.Reduction
 import robots.Seq
 import robots.UndoRedoStack
 import robots.havingDone
-import robots.next
 import robots.nop
 import robots.reduceToAction
 
-data class GameState(val editStack: UndoRedoStack<Seq>, val trace: UndoRedoStack<Reduction>?)
 
-fun initialGameState() =
-    GameState(editStack = UndoRedoStack(nop), trace = null)
+sealed class GameState {
+    abstract val source: UndoRedoStack<Seq>
+}
+
+data class Editing(override val source: UndoRedoStack<Seq>) : GameState()
+data class Running(override val source: UndoRedoStack<Seq>, val trace: UndoRedoStack<Reduction>?) : GameState()
+
+fun initialGameState(): GameState =
+    Editing(UndoRedoStack(nop))
 
 fun GameState.isRunning() =
-    trace != null
+    this is Running
 
-fun GameState.hasFinished() =
-    trace?.current?.next == null
+fun GameState.startRunning() = when (this) {
+    is Editing -> Running(source, null)
+    is Running -> this
+}
 
-fun GameState.startRunning() =
-    copy(trace = UndoRedoStack(editStack.current.reduceToAction()))
+fun Running.isAtStart() =
+    trace == null
 
-fun GameState.stopRunning() =
-    copy(trace = null)
+fun Running.hasFinished() =
+    trace != null && trace.current.next == null
 
-fun GameState.step() =
-    trace?.run {
-        current.next(Seq::reduceToAction)?.let(::havingDone)
-    } ?: this
+fun Running.stopRunning() =
+    Editing(source)
+
+fun Running.step(): Running {
+    val currentState = if (trace == null) source.current else trace.current.next
+    
+    return if (currentState == null) {
+        this
+    }
+    else {
+        val nextState = currentState.reduceToAction()
+        val newTrace = trace?.havingDone(nextState) ?: UndoRedoStack(nextState)
+        copy(trace = newTrace)
+    }
+}
+
+val Running.currentState: Seq
+    get() = when (trace) {
+        null -> source.current
+        else -> trace.current.next ?: nop
+    }

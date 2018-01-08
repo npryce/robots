@@ -9,7 +9,7 @@ data class Seq(val steps: PList<robots.AST>) : robots.AST() {
     constructor(vararg steps: robots.AST) : this(pListOf(*steps))
 }
 
-val nop = robots.Seq(Empty)
+val nop = Seq(Empty)
 
 fun Seq.withSteps(vararg steps: AST) = copy(steps = pListOf(*steps))
 

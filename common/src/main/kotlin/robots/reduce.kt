@@ -1,10 +1,10 @@
 package robots
 
-data class Reduction(val prev: Seq, val action: Action?, val next: Seq?)
+data class Reduction(val prev: Seq, val action: Action?, val next: Seq)
 
 tailrec fun Seq.reduceUntil(p: (Reduction)->Boolean): Reduction {
     val r = reduce()
-    return if (p(r) || r.next == null) r else r.next.reduceUntil(p)
+    return if (p(r) || r.next == nop) r else r.next.reduceUntil(p)
 }
 
 fun Seq.reduceToAction() =
@@ -12,7 +12,7 @@ fun Seq.reduceToAction() =
 
 fun Seq.reduce(): Reduction =
     when (steps) {
-        Empty -> Reduction(this, null, null)
+        Empty -> Reduction(this, null, this)
         is Cons<AST> -> reduceHead(steps.head, steps.tail)
     }
 
@@ -21,14 +21,13 @@ private fun Seq.reduceHead(head: AST, tail: PList<AST>) = when (head) {
         Reduction(this, head, Seq(tail))
     is Repeat ->
         Reduction(this, null,
-            if (head.times > 1) {
-                Seq(Cons(Seq(head.repeated), Cons(head.remainingIterations(), tail)))
-            }
-            else if (head.times == 1) {
-                Seq(Cons(Seq(head.repeated), tail))
-            }
-            else {
-                Seq(tail)
+            when {
+                head.times > 1 ->
+                    Seq(Cons(Seq(head.repeated), Cons(head.remainingIterations(), tail)))
+                head.times == 1 ->
+                    Seq(Cons(Seq(head.repeated), tail))
+                else ->
+                    Seq(tail)
             })
     is Seq ->
         Reduction(this, null,
@@ -44,4 +43,4 @@ private fun Repeat.remainingIterations() =
     copy(times = times - 1)
 
 fun Reduction.next(stepType: (Seq)->Reduction?) =
-    this.next?.let(stepType)
+    stepType(this.next)

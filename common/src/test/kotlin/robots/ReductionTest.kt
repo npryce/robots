@@ -7,7 +7,7 @@ import kotlin.test.fail
 open class ReductionTest {
     @Test
     fun reduce_nop() {
-        nop.reducesTo(null, null)
+        nop.reducesTo(null, nop)
     }
     
     @Test
@@ -49,16 +49,16 @@ open class ReductionTest {
         Seq(Seq(Repeat(10, Seq(a)), b), Seq(c, d)).reducesTo(null, Seq(Repeat(10, Seq(a)), Seq(b), Seq(c, d)))
     }
     
-    private fun Seq.reducesTo(expectedAction: Action?, expectedNext: Seq?) {
+    private fun Seq.reducesTo(expectedAction: Action?, expectedNext: Seq) {
         this reducesTo Reduction(this, expectedAction, expectedNext)
     }
     
     @Test
     fun reduce_to_action_always_returns_action_with_next_state() {
-        var p: Seq? = Seq(Seq(Repeat(10, Seq(a)), b), Seq(c, d))
-        while (p != null) {
+        var p = Seq(Seq(Repeat(10, Seq(a)), b), Seq(c, d))
+        while (p != nop) {
             val (_, action, next) = p.reduceToAction()
-            assertTrue(next == null || action != null, "next: ${next}, action: ${action}")
+            assertTrue(next == nop || action != null, "next: ${next}, action: ${action}")
             
             p = next
         }

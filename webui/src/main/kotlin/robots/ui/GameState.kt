@@ -35,7 +35,7 @@ fun Running.stopRunning() =
 fun Running.step(): Running {
     val currentState = if (trace == null) source.current else trace.current.next
     
-    return if (currentState == null) {
+    return if (currentState == nop) {
         this
     }
     else {
@@ -45,8 +45,3 @@ fun Running.step(): Running {
     }
 }
 
-fun Running.currentState(speech: Speech): Seq = when {
-    trace == null -> source.current
-    speech.isSpeaking -> trace.current.prev
-    else -> trace.current.next ?: nop
-}

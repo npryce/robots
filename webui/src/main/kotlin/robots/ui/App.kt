@@ -52,11 +52,11 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
         
         when (game) {
             is Running -> {
-                programEditor(state.cards, game.currentState(speech), onEdit = {})
+                programEditor(state.cards, game.currentState(), onEdit = {})
                 runControlPanel(game, speech, ::updateGameState)
             }
             is Editing -> {
-                programEditor(state.cards, currentProgram, onEdit = ::pushUndoRedoState)
+                programEditor(state.cards, game.source.current, onEdit = ::pushUndoRedoState)
                 editControlPanel()
             }
         }
@@ -132,8 +132,11 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
         forceUpdate()
     }
     
-    private val currentProgram get() = game.source.current
-    private val game get() = state.game
+    private fun Running.currentState(): Seq = when {
+        trace == null -> source.current
+        speech.isSpeaking && !state.configurationShowing -> trace.current.prev
+        else -> trace.current.next
+    }
 }
 
 

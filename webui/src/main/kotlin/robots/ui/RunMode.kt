@@ -15,12 +15,12 @@ fun RBuilder.runHeaderControls(game: Running, speech: Speech, update: (GameState
     controlGroup {
         button(classes="backwards") {
             attrs.title = "Single-step backwards"
-            attrs.disabled = speech.isSpeaking
+            attrs.disabled = speech.isSpeaking || !game.canStepBackward()
             +"<<"
         }
         button(classes="forwards") {
             attrs.title = "Single-step forwards"
-            attrs.disabled = speech.isSpeaking
+            attrs.disabled = speech.isSpeaking || !game.canStepForward()
             +">>"
         }
     }

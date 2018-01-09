@@ -45,3 +45,8 @@ fun Running.step(): Running {
     }
 }
 
+fun Running.canStepBackward() =
+    trace != null && trace.hasPrev()
+
+fun Running.canStepForward() =
+    trace != null && trace.hasNext()

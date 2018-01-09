@@ -134,11 +134,11 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
     
     private fun Running.currentState(): Seq = when {
         trace == null -> source.current
+        // TODO: the following state should be explicitly represented in the Running type
         speech.isSpeaking && !state.configurationShowing -> trace.current.prev
         else -> trace.current.next
     }
 }
-
 
 fun RBuilder.app(cards: Deck, initialProgram: Seq = Seq()) = child(App::class) {
     attrs.program = initialProgram
@@ -148,5 +148,3 @@ fun RBuilder.app(cards: Deck, initialProgram: Seq = Seq()) = child(App::class) {
 inline fun RBuilder.controlGroup(contents: RBuilder.() -> Unit) {
     span("control-group", contents)
 }
-
-

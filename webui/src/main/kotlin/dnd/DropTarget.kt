@@ -89,7 +89,7 @@ fun RBuilder.dropTarget(
     canAccept: (Any) -> Boolean,
     accept: (Any) -> Unit,
     classes: String = "drop-target",
-    children: RElementBuilder<DropTargetProps>.() -> Unit
+    children: RElementBuilder<DropTargetProps>.() -> Unit = {}
 ) =
     child(DropTarget::class) {
         attrs.canAccept = canAccept

@@ -43,8 +43,7 @@ fun RBuilder.extensionSpace(editor: ASTEditPoint, onEdit: (Seq) -> Unit) {
         }
     }
     
-    dropTarget(::canAccept, ::accept, classes = "cursor") {
-    }
+    dropTarget(::canAccept, ::accept, classes = "cursor")
 }
 
 fun RBuilder.startingSpace(editor: ASTEditPoint, branch: Int, onEdit: (Seq) -> Unit) {
@@ -68,7 +67,7 @@ fun RBuilder.startingSpace(editor: ASTEditPoint, branch: Int, onEdit: (Seq) -> U
         }
     }
     
-    dropTarget(::canAccept, ::accept, classes = "cursor required") {}
+    dropTarget(::canAccept, ::accept, classes = "cursor required")
 }
 
 private fun RBuilder.cardFace(deck: Deck, editor: ASTEditPoint) {

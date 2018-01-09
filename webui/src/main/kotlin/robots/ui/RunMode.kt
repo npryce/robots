@@ -3,7 +3,6 @@ package robots.ui
 import kotlinx.html.DIV
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.title
-import org.w3c.dom.events.Event
 import react.RBuilder
 import react.dom.RDOMBuilder
 import react.dom.button
@@ -14,12 +13,12 @@ import robots.UndoRedoStack
 
 fun RBuilder.runHeaderControls(game: Running, speech: Speech, update: (GameState) -> Unit) {
     controlGroup {
-        button {
+        button(classes="backwards") {
             attrs.title = "Single-step backwards"
             attrs.disabled = speech.isSpeaking
             +"<<"
         }
-        button {
+        button(classes="forwards") {
             attrs.title = "Single-step forwards"
             attrs.disabled = speech.isSpeaking
             +">>"
@@ -67,16 +66,6 @@ private fun RDOMBuilder<DIV>.stepControls(trace: UndoRedoStack<Reduction>, game:
         richButton("Action failed", "Failed", "\uD83D\uDC4E", speech.isSpeaking || true) {
             console.log("failure not implemented yet")
         }
-    }
-}
-
-private fun RDOMBuilder<DIV>.richButton(title: String, visibleText: String, icon: String, isDisabled: Boolean, onClick: (Event) -> Unit) {
-    button {
-        attrs.onClickFunction = onClick
-        attrs.disabled = isDisabled
-        attrs.title = title
-        div("button-icon") { +icon }
-        div("button-text") { +visibleText }
     }
 }
 

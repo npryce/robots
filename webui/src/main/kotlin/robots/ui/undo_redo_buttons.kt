@@ -12,13 +12,13 @@ import robots.redo
 import robots.undo
 
 fun RBuilder.undoRedoButtons(undoStack: UndoRedoStack<Seq>, disabled: Boolean = false, update: (UndoRedoStack<Seq>) -> Unit) {
-    button(classes = "undo") {
+    button(classes = "backwards") {
         attrs.title = "Undo"
         attrs.onClickFunction = { update(undoStack.undo()) }
         attrs.disabled = disabled || !undoStack.canUndo()
         +"Undo"
     }
-    button(classes = "redo") {
+    button(classes = "forwards") {
         attrs.title = "Redo"
         attrs.onClickFunction = { update(undoStack.redo()) }
         attrs.disabled = disabled || !undoStack.canRedo()

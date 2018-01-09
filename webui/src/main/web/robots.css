@@ -89,12 +89,12 @@ header .control-group {
     margin-left: 0.25em;
 }
 
-header .undo {
+.control-group button.backwards {
     border-bottom-right-radius: 0;
     border-top-right-radius: 0;
 }
 
-header .redo {
+.control-group button.forwards {
     border-bottom-left-radius: 0;
     border-top-left-radius: 0;
 }

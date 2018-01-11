@@ -8,11 +8,13 @@ import react.RElementBuilder
 import react.RProps
 import react.RState
 import react.dom.div
+import react.dom.set
 
 external interface DropTargetProps : RProps {
     var canAccept: (Any) -> Boolean
     var accept: (Any) -> Unit
     var classes: String
+    var disabled: Boolean
 }
 
 external interface DropTargetState : RState {
@@ -28,24 +30,29 @@ class DropTarget(props: DropTargetProps) : RComponent<DropTargetProps, DropTarge
     
     override fun RBuilder.render() {
         div(props.classes) {
+            attrs["aria-disabled"] = props.disabled.toString()
             ref { elt: Element? -> targetElement = elt }
             children()
         }
     }
     
     override fun componentDidMount() {
-        targetElement?.apply {
-            addEventListener(DND_DRAG_IN, ::dragIn)
-            addEventListener(DND_DRAG_OUT, ::dragOut)
-            addEventListener(DND_DROP, ::drop)
+        if (!props.disabled) {
+            targetElement?.apply {
+                addEventListener(DND_DRAG_IN, ::dragIn)
+                addEventListener(DND_DRAG_OUT, ::dragOut)
+                addEventListener(DND_DROP, ::drop)
+            }
         }
     }
     
     override fun componentWillUnmount() {
-        targetElement?.apply {
-            removeEventListener(DND_DRAG_IN, ::dragIn)
-            removeEventListener(DND_DRAG_OUT, ::dragOut)
-            removeEventListener(DND_DROP, ::drop)
+        if (!props.disabled) {
+            targetElement?.apply {
+                removeEventListener(DND_DRAG_IN, ::dragIn)
+                removeEventListener(DND_DRAG_OUT, ::dragOut)
+                removeEventListener(DND_DROP, ::drop)
+            }
         }
     }
     
@@ -89,12 +96,14 @@ fun RBuilder.dropTarget(
     canAccept: (Any) -> Boolean,
     accept: (Any) -> Unit,
     classes: String = "drop-target",
+    disabled: Boolean = false,
     children: RElementBuilder<DropTargetProps>.() -> Unit = {}
 ) =
     child(DropTarget::class) {
         attrs.canAccept = canAccept
         attrs.accept = accept
         attrs.classes = classes
+        attrs.disabled = disabled
         children()
     }
 

@@ -52,11 +52,11 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
         
         when (game) {
             is Running -> {
-                programEditor(state.cards, game.currentState(), onEdit = {})
+                programEditor(state.cards, game.currentState(), isEditable = false)
                 runControlPanel(game, speech, ::updateGameState)
             }
             is Editing -> {
-                programEditor(state.cards, game.source.current, onEdit = ::pushUndoRedoState)
+                programEditor(state.cards, game.source.current, isEditable = true, onEdit = ::pushUndoRedoState)
                 editControlPanel()
             }
         }
@@ -73,7 +73,7 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
         
         header {
             controlGroup { configureButton() }
-    
+            
             span("score") {
                 +"Cost: "
                 span("cost") { +"¢${game.source.current.cost()}" }
@@ -133,7 +133,7 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
     }
     
     private fun Running.currentState(): Seq = when {
-        // TODO: the following state should be explicitly represented in the Running type
+    // TODO: the following state should be explicitly represented in the Running type
         speech.isSpeaking && !state.configurationShowing -> trace.current.prev
         else -> trace.current.next
     }

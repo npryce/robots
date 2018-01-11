@@ -82,8 +82,8 @@ fun RBuilder.cardFace(deck: Deck, value: AST) {
     }
 }
 
-fun RBuilder.actionCard(deck: Deck, editor: ASTEditPoint) {
-    draggable(dataProvider = { editor }) {
+fun RBuilder.actionCard(deck: Deck, editor: ASTEditPoint, isEditable: Boolean) {
+    draggable(dataProvider = { editor }, disabled = !isEditable) {
         cardFace(deck, editor)
     }
 }
@@ -92,56 +92,56 @@ fun RBuilder.controlCard(deck: Deck, editor: ASTEditPoint) {
     cardFace(deck, editor)
 }
 
-fun RBuilder.repeatBlock(deck: Deck, editPoint: ASTEditPoint, onEdit: (Seq) -> Unit) {
-    draggable(dataProvider = { editPoint }) {
+fun RBuilder.repeatBlock(deck: Deck, editPoint: ASTEditPoint, isEditable: Boolean, onEdit: (Seq) -> Unit) {
+    draggable(dataProvider = { editPoint }, disabled = !isEditable) {
         div("cardblock") {
             controlCard(deck, editPoint)
             
             val childEditPoints = editPoint.children()
             
-            if (childEditPoints.isEmpty()) {
+            if (childEditPoints.isEmpty() && isEditable) {
                 startingSpace(editPoint, 0, onEdit)
             }
             else {
-                cardRows(deck, childEditPoints, onEdit)
+                cardRows(deck, childEditPoints, isEditable, onEdit)
             }
         }
     }
 }
 
-fun RBuilder.seqBlock(deck: Deck, editPoint: ASTEditPoint, onEdit: (Seq) -> Unit) {
-    cardRows(deck, editPoint.children(), onEdit)
+fun RBuilder.seqBlock(deck: Deck, editPoint: ASTEditPoint, isEditable: Boolean, onEdit: (Seq) -> Unit) {
+    cardRows(deck, editPoint.children(), isEditable, onEdit)
 }
 
-fun RBuilder.cardRowElement(deck: Deck, editPoint: ASTEditPoint, onEdit: (Seq) -> Unit) {
+fun RBuilder.cardRowElement(deck: Deck, editPoint: ASTEditPoint, isEditable: Boolean, onEdit: (Seq) -> Unit) {
     val node = editPoint.node
     when (node) {
-        is Action -> actionCard(deck, editPoint)
-        is Repeat -> repeatBlock(deck, editPoint, onEdit)
-        is Seq -> seqBlock(deck, editPoint, onEdit)
+        is Action -> actionCard(deck, editPoint, isEditable)
+        is Repeat -> repeatBlock(deck, editPoint, isEditable, onEdit)
+        is Seq -> seqBlock(deck, editPoint, isEditable, onEdit)
     }
 }
 
-fun RDOMBuilder<DIV>.cardRow(deck: Deck, row: List<ASTEditPoint>, onEdit: (Seq) -> Unit) {
+fun RDOMBuilder<DIV>.cardRow(deck: Deck, row: List<ASTEditPoint>, isEditable: Boolean, onEdit: (Seq) -> Unit) {
     div("cardrow") {
-        row.forEach { editPoint -> cardRowElement(deck, editPoint, onEdit) }
+        row.forEach { editPoint -> cardRowElement(deck, editPoint, isEditable, onEdit) }
         
         val last = row.lastOrNull()
         if (last != null) {
-            if (last.node !is Repeat) {
+            if (last.node !is Repeat && isEditable) {
                 extensionSpace(row.last(), onEdit)
             }
         }
     }
 }
 
-fun RBuilder.cardRows(deck: Deck, elements: List<ASTEditPoint>, onEdit: (Seq) -> Unit) {
+fun RBuilder.cardRows(deck: Deck, elements: List<ASTEditPoint>, isEditable: Boolean, onEdit: (Seq) -> Unit) {
     div("cardrows") {
         val rows = elements.toRows()
-        rows.forEach { row -> cardRow(deck, row, onEdit) }
+        rows.forEach { row -> cardRow(deck, row, isEditable, onEdit) }
         
         val last = rows.last().last()
-        if (last.node is Repeat) {
+        if (last.node is Repeat && isEditable) {
             div("cardrow") {
                 extensionSpace(last, onEdit)
             }
@@ -152,7 +152,7 @@ fun RBuilder.cardRows(deck: Deck, elements: List<ASTEditPoint>, onEdit: (Seq) ->
 private fun List<ASTEditPoint>.toRows() =
     splitAfter { it.node is Repeat || it.node is Seq }
 
-fun RBuilder.firstElementSpace(program: Seq, onEdit: (Seq) -> Unit) {
+fun RBuilder.firstElementSpace(program: Seq, isEditable: Boolean, onEdit: (Seq) -> Unit) {
     fun canAccept(dragged: Any) =
         dragged is AST
     
@@ -162,21 +162,24 @@ fun RBuilder.firstElementSpace(program: Seq, onEdit: (Seq) -> Unit) {
     
     div("cardsequence") {
         div("cardrow") {
-            dropTarget(canAccept = { canAccept(it) }, accept = { accept(it) }, classes = "cursor required") {
-                div("cursor required") {}
+            dropTarget(canAccept = { canAccept(it) }, accept = { accept(it) }, classes = "cursor", disabled = !isEditable) {
+                if (isEditable) attrs.classes += " required"
             }
-            tip("Drag a card from the stacks below and drop it onto here")
+            
+            if (isEditable) {
+                tip("Drag a card from the stacks below and drop it onto here")
+            }
         }
     }
 }
 
-fun RBuilder.programEditor(deck: Deck, program: Seq, onEdit: (Seq) -> Unit) {
+fun RBuilder.programEditor(deck: Deck, program: Seq, isEditable: Boolean, onEdit: (Seq) -> Unit = {}) {
     div("program") {
         if (program.steps.isEmpty()) {
-            firstElementSpace(program, onEdit)
+            firstElementSpace(program, isEditable, onEdit)
         }
         else {
-            cardRows(deck, program.editPoints(), onEdit)
+            cardRows(deck, program.editPoints(), isEditable, onEdit)
         }
     }
 }

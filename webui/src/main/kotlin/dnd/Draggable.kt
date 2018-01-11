@@ -11,12 +11,14 @@ import react.RElementBuilder
 import react.RProps
 import react.RState
 import react.dom.div
+import react.dom.set
 import react.setState
 import kotlin.browser.window
 
 external interface DraggableProps : RProps {
     var dataProvider: () -> Any
     var classes: String
+    var disabled: Boolean
 }
 
 external interface DraggableState : RState {
@@ -33,6 +35,7 @@ class Draggable(props: DraggableProps) : RComponent<DraggableProps, DraggableSta
     override fun RBuilder.render() {
         div(props.classes) {
             if (state.isBeingDragged) attrs.classes += "dragged"
+            attrs["aria-disabled"] = props.disabled.toString()
             
             ref { elt: Element? -> draggableElement = elt }
             children()
@@ -40,11 +43,15 @@ class Draggable(props: DraggableProps) : RComponent<DraggableProps, DraggableSta
     }
     
     override fun componentDidMount() {
-        draggableElement?.addEventListener(DND_DRAG_START, ::startDrag)
+        if (!props.disabled) {
+            draggableElement?.addEventListener(DND_DRAG_START, ::startDrag)
+        }
     }
     
     override fun componentWillUnmount() {
-        draggableElement?.removeEventListener(DND_DRAG_START, ::startDrag)
+        if (!props.disabled) {
+            draggableElement?.removeEventListener(DND_DRAG_START, ::startDrag)
+        }
     }
     
     private fun startDrag(ev: Event) {
@@ -77,10 +84,12 @@ class Draggable(props: DraggableProps) : RComponent<DraggableProps, DraggableSta
 fun RBuilder.draggable(
     dataProvider: () -> Any,
     classes: String = "draggable",
+    disabled: Boolean = false,
     contents: RElementBuilder<RProps>.() -> Unit
 ) =
     child(Draggable::class) {
         attrs.dataProvider = dataProvider
         attrs.classes = classes
+        attrs.disabled = disabled
         contents()
     }

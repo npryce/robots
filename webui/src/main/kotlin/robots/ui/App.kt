@@ -133,7 +133,6 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
     }
     
     private fun Running.currentState(): Seq = when {
-        trace == null -> source.current
         // TODO: the following state should be explicitly represented in the Running type
         speech.isSpeaking && !state.configurationShowing -> trace.current.prev
         else -> trace.current.next

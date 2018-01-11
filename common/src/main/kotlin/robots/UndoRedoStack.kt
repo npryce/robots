@@ -9,6 +9,9 @@ fun <T> UndoRedoStack(initialState: T) =
 fun <T> UndoRedoStack<T>.havingDone(nextState: T) =
     copy(Cons(current, back), nextState, Empty)
 
+inline fun <T> UndoRedoStack<T>.map(f: (T)->T) =
+    this.havingDone(f(current))
+
 fun <T> UndoRedoStack<T>.canUndo() = hasPrev()
 fun <T> UndoRedoStack<T>.undo() = prev() ?: this
 

@@ -9,18 +9,21 @@ import react.dom.button
 import react.dom.div
 import robots.Reduction
 import robots.UndoRedoStack
+import robots.canUndo
 
 
 fun RBuilder.runHeaderControls(game: Running, speech: Speech, update: (GameState) -> Unit) {
     controlGroup {
         button(classes="backwards") {
             attrs.title = "Single-step backwards"
-            attrs.disabled = speech.isSpeaking || !game.canStepBackward()
+            attrs.disabled = speech.isSpeaking || !game.canUndoStep()
+            attrs.onClickFunction = { update(game.undoStep()) }
             +"<<"
         }
         button(classes="forwards") {
             attrs.title = "Single-step forwards"
-            attrs.disabled = speech.isSpeaking || !game.canStepForward()
+            attrs.disabled = speech.isSpeaking || !game.canRedoStep()
+            attrs.onClickFunction = { update(game.redoStep()) }
             +">>"
         }
     }
@@ -36,12 +39,14 @@ fun RBuilder.runHeaderControls(game: Running, speech: Speech, update: (GameState
 }
 
 fun RBuilder.runControlPanel(game: Running, speech: Speech, update: (GameState) -> Unit) {
+    val trace = game.trace
+    
     div("controls") {
-        if (game.trace == null) {
+        if (!trace.canUndo()) {
             startControls(game, speech, update)
         }
         else {
-            stepControls(game.trace, game, speech, update)
+            stepControls(trace, game, speech, update)
         }
     }
 }
@@ -92,6 +97,6 @@ private fun performStep(game: Running, speech: Speech, update: (GameState) -> Un
     else {
         val next = game.step()
         update(next)
-        speech.speak(next.trace?.current?.action?.text, onSpoken = { console.log("done") })
+        speech.speak(next.trace.current.action?.text, onSpoken = { console.log("done") })
     }
 }

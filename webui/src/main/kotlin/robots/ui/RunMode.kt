@@ -15,13 +15,13 @@ import robots.canUndo
 fun RBuilder.runHeaderControls(game: Running, speech: Speech, update: (GameState) -> Unit) {
     controlGroup {
         button(classes= backwards) {
-            attrs.title = "Single-step backwards"
+            attrs.title = "Undo execution step"
             attrs.disabled = speech.isSpeaking || !game.canUndoStep()
             attrs.onClickFunction = { update(game.undoStep()) }
             +"<<"
         }
         button(classes= forwards) {
-            attrs.title = "Single-step forwards"
+            attrs.title = "Redo execution step"
             attrs.disabled = speech.isSpeaking || !game.canRedoStep()
             attrs.onClickFunction = { update(game.redoStep()) }
             +">>"

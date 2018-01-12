@@ -8,9 +8,9 @@ Better editing
 * User can change repeat count of card on the table
 
 Execution (reduction, play speech)
-  * Cannot edit while action is being executed
   * Animate active action card
   * Can edit fron current point in execution, with action history turned into a seq
+  * Scoring: how much have you saved by using control structures? (number-of-actions - cost)
 
 Configuration
 * Integrate emoji-picker into config dialog
@@ -32,6 +32,3 @@ Comprehensibility
   * Onion skin (layer execution steps on one another, with translucency)
 * Instructions
 
-
-Tech debt
- - don't allow nullable 'next' program in Reduction (let nop reduce to nop, not null)

@@ -8,14 +8,14 @@ import react.RBuilder
 import react.dom.RDOMBuilder
 import react.dom.button
 import react.dom.div
-
-/*
- * Common classews
- */
+import react.dom.span
 
 val backwards = "backwards"
 val forwards = "forwards"
 
+inline fun RBuilder.controlGroup(contents: RBuilder.() -> Unit) {
+    span("control-group", contents)
+}
 
 fun RBuilder.buttonBar(contents: RDOMBuilder<DIV>.() -> Unit) {
     div("button-bar", contents)
@@ -28,5 +28,15 @@ fun RDOMBuilder<DIV>.richButton(title: String, visibleText: String, icon: String
         attrs.title = title
         div("button-icon") { +icon }
         div("button-text") { +visibleText }
+    }
+}
+
+fun RBuilder.score(label: String, value: String) {
+    span("score") {
+        +"$label: "
+        span("value") {
+            attrs.title = label
+            +value
+        }
     }
 }

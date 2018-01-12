@@ -10,7 +10,6 @@ import react.RState
 import react.dom.a
 import react.dom.div
 import react.dom.header
-import react.dom.span
 import react.setState
 import robots.Seq
 import robots.UndoRedoStack
@@ -73,12 +72,7 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
         
         header {
             controlGroup { configureButton() }
-            
-            span("score") {
-                +"Cost: "
-                span("cost") { +"¢${game.source.current.cost()}" }
-            }
-            
+            score("Cost", "¢${game.source.current.cost()}")
             when (game) {
                 is Editing -> editHeaderControls(game, speech, ::updateGameState)
                 is Running -> runHeaderControls(game, speech, ::updateGameState)
@@ -133,7 +127,6 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
     }
     
     private fun Running.currentState(): Seq = when {
-    // TODO: the following state should be explicitly represented in the Running type
         speech.isSpeaking && !state.configurationShowing -> trace.current.prev
         else -> trace.current.next
     }
@@ -142,8 +135,4 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
 fun RBuilder.app(cards: Deck, initialProgram: Seq = Seq()) = child(App::class) {
     attrs.program = initialProgram
     attrs.initialCards = cards
-}
-
-inline fun RBuilder.controlGroup(contents: RBuilder.() -> Unit) {
-    span("control-group", contents)
 }

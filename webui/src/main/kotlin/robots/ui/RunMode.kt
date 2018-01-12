@@ -13,6 +13,8 @@ import robots.canUndo
 
 
 fun RBuilder.runHeaderControls(game: Running, speech: Speech, update: (GameState) -> Unit) {
+    score("Score", "¢${game.saving()}")
+
     controlGroup {
         button(classes= backwards) {
             attrs.title = "Undo execution step"

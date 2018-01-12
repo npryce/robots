@@ -5,6 +5,7 @@ import robots.Seq
 import robots.UndoRedoStack
 import robots.canRedo
 import robots.canUndo
+import robots.cost
 import robots.map
 import robots.nop
 import robots.redo
@@ -36,10 +37,10 @@ fun Running.hasFinished() =
 fun Running.stopRunning() =
     Editing(source)
 
-fun Running.step(): Running {
+fun Running.step(reduceFn: (Seq)->Reduction = Seq::reduceToAction): Running {
     return when (trace.current.next) {
         nop -> this
-        else -> copy(trace = trace.map { it.next.reduceToAction() })
+        else -> copy(trace = trace.map { reduceFn(it.next) })
     }
 }
 
@@ -54,3 +55,12 @@ fun Running.canRedoStep() =
 
 fun Running.redoStep() =
     copy(trace = trace.redo())
+
+fun Running.saving(): Int =
+    trace.cost() - source.current.cost()
+
+fun UndoRedoStack<Reduction>.cost(): Int
+    = current.price() + back.fold(0) { acc, r -> acc + r.price() }
+
+private fun Reduction.price() =
+    if (action != null) 1 else 0

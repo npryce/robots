@@ -9,6 +9,14 @@ import react.dom.RDOMBuilder
 import react.dom.button
 import react.dom.div
 
+/*
+ * Common classews
+ */
+
+val backwards = "backwards"
+val forwards = "forwards"
+
+
 fun RBuilder.buttonBar(contents: RDOMBuilder<DIV>.() -> Unit) {
     div("button-bar", contents)
 }

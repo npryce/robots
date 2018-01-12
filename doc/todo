@@ -9,7 +9,7 @@ Better editing
 
 Execution (reduction, play speech)
   * Animate active action card
-  * Can edit fron current point in execution, with action history turned into a seq
+  * Can edit from current point in execution, with action history turned into a seq
   * Scoring: how much have you saved by using control structures? (number-of-actions - cost)
 
 Configuration

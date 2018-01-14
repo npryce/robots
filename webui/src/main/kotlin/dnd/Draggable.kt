@@ -7,7 +7,6 @@ import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.Event
 import react.RBuilder
 import react.RComponent
-import react.RElementBuilder
 import react.RProps
 import react.RState
 import react.dom.div
@@ -18,7 +17,6 @@ import kotlin.browser.window
 external interface DraggableProps : RProps {
     var dataProvider: () -> Any
     var classes: String
-    var disabled: Boolean
 }
 
 external interface DraggableState : RState {
@@ -35,7 +33,7 @@ class Draggable(props: DraggableProps) : RComponent<DraggableProps, DraggableSta
     override fun RBuilder.render() {
         div(props.classes) {
             if (state.isBeingDragged) attrs.classes += "dragged"
-            attrs["aria-disabled"] = props.disabled.toString()
+            attrs["aria-disabled"] = "false"
             
             ref { elt: Element? -> draggableElement = elt }
             children()
@@ -43,15 +41,11 @@ class Draggable(props: DraggableProps) : RComponent<DraggableProps, DraggableSta
     }
     
     override fun componentDidMount() {
-        if (!props.disabled) {
-            draggableElement?.addEventListener(DND_DRAG_START, ::startDrag)
-        }
+        draggableElement?.addEventListener(DND_DRAG_START, ::startDrag)
     }
     
     override fun componentWillUnmount() {
-        if (!props.disabled) {
-            draggableElement?.removeEventListener(DND_DRAG_START, ::startDrag)
-        }
+        draggableElement?.removeEventListener(DND_DRAG_START, ::startDrag)
     }
     
     private fun startDrag(ev: Event) {
@@ -85,11 +79,16 @@ fun RBuilder.draggable(
     dataProvider: () -> Any,
     classes: String = "draggable",
     disabled: Boolean = false,
-    contents: RElementBuilder<RProps>.() -> Unit
+    contents: RBuilder.() -> Unit
 ) =
-    child(Draggable::class) {
-        attrs.dataProvider = dataProvider
-        attrs.classes = classes
-        attrs.disabled = disabled
-        contents()
-    }
+    if (disabled)
+        div(classes) {
+            attrs["aria-disabled"] = "true"
+            contents()
+        }
+    else
+        child(Draggable::class) {
+            attrs.dataProvider = dataProvider
+            attrs.classes = classes
+            contents()
+        }
